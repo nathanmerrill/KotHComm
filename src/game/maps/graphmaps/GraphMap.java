@@ -6,6 +6,12 @@ import game.maps.MapPoint;
 
 import java.util.*;
 
+/**
+ * A map where each point can connect to an unlimited number of points.
+ * We consider an Edge to be a two-way connection, i.e., both nodes list each other as a neighbor
+ * We consider an Arc to be a one-way connection, i.e., only one node lists the other as a neighbor
+ * @param <T> The item stored in the graph
+ */
 public class GraphMap<T> extends GameMap<T, MapPoint> {
     private final HashMap<MapPoint, Set<MapPoint>> connections;
     public GraphMap(){
@@ -31,6 +37,15 @@ public class GraphMap<T> extends GameMap<T, MapPoint> {
         if (connections.containsKey(origin)){
             connections.get(origin).remove(destination);
         }
+    }
+
+    public boolean isEdge(MapPoint point1, MapPoint point2){
+        return isNeighbor(point1, point2) && isNeighbor(point2, point1);
+    }
+
+    @Override
+    public boolean isNeighbor(MapPoint origin, MapPoint destination){
+        return connections.get(origin).contains(destination);
     }
 
     @Override

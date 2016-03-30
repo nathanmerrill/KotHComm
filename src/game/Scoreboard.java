@@ -25,36 +25,39 @@ public class Scoreboard {
 
     private final Function<List<Double>, Double> aggregator;
     private final boolean maxScoring;
-    private final Map<Player, Double> aggregates;
-    private final Map<Player, ArrayList<Double>> scores;
+    private final Map<PlayerType, Double> aggregates;
+    private final Map<PlayerType, ArrayList<Double>> scores;
 
-    public Scoreboard(Collection<Player> players, Function<List<Double>, Double> aggregator, boolean maxScoring) {
+    public Scoreboard(Collection<PlayerType> players, Function<List<Double>, Double> aggregator, boolean maxScoring) {
         this.aggregator = aggregator;
         this.maxScoring = maxScoring;
         this.aggregates = new HashMap<>();
         this.scores = players.stream().collect(Collectors.toMap(Function.identity(), i -> new ArrayList<>()));
     }
 
-    public Scoreboard(Collection<Player> players, Function<List<Double>, Double> aggregator) {
+    public Scoreboard(Collection<PlayerType> players, Function<List<Double>, Double> aggregator) {
         this(players, aggregator, true);
     }
 
-    public Scoreboard(Collection<Player> players) {
+    public Scoreboard(Collection<PlayerType> players) {
         this(players, Scoreboard::sumAggregator);
     }
 
     public void addScores(Scoreboard board) {
         scores.keySet().forEach(i -> addScore(i, board.getAggregatedScore(i)));
     }
-    public void addScore(Player player, double score) {
+    public void addScore(Player player, double score){
+        addScore(player.getType(), score);
+    }
+    public void addScore(PlayerType player, double score) {
         List<Double> history = scores.get(player);
         history.add(score);
         aggregates.remove(player);
     }
-    public List<Double> getPlayerHistory(Player player) {
+    public List<Double> getPlayerHistory(PlayerType player) {
         return new ArrayList<>(scores.get(player));
     }
-    public Double getAggregatedScore(Player player) {
+    public Double getAggregatedScore(PlayerType player) {
         if (aggregates.containsKey(player)) {
             return aggregates.get(player);
         }
@@ -62,8 +65,8 @@ public class Scoreboard {
         aggregates.put(player, aggregate);
         return aggregate;
     }
-    public List<Pair<Player, Double>> playerAggregates() {
-        List<Pair<Player, Double>> aggregates = scores.keySet().stream()
+    public List<Pair<PlayerType, Double>> playerAggregates() {
+        List<Pair<PlayerType, Double>> aggregates = scores.keySet().stream()
                 .map(i -> new Pair<>(i, getAggregatedScore(i)))
                 .sorted(Comparator.comparing(Pair::second))
                 .collect(Collectors.toList());

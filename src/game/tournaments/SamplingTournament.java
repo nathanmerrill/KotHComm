@@ -11,12 +11,12 @@ import java.util.stream.Collectors;
 public final class SamplingTournament implements Tournament {
 
     private final GameManager gameManager;
-    private final List<Player> players;
-    private final List<Player> currentPopulation;
+    private final List<PlayerType> players;
+    private final List<PlayerType> currentPopulation;
     private final Scoreboard scoreboard;
 
     public SamplingTournament(GameManager gameManager,
-                              List<Player> players,
+                              List<PlayerType> players,
                               Scoreboard scoreboard){
         this.gameManager = gameManager;
         this.players = players;
@@ -31,15 +31,15 @@ public final class SamplingTournament implements Tournament {
         currentPopulation.addAll(players);
         scoreboard.clear();
         Collections.shuffle(currentPopulation);
-        List<List<Player>> playerSets = new ArrayList<>();
+        List<List<PlayerType>> playerSets = new ArrayList<>();
         while (true) {
-            List<List<Player>> partitions = Tools.partition(currentPopulation, gameManager.preferredPlayerCount());
+            List<List<PlayerType>> partitions = Tools.partition(currentPopulation, gameManager.preferredPlayerCount());
             if (partitions.get(partitions.size()-1).size() == gameManager.preferredPlayerCount()){
                 playerSets.addAll(partitions);
                 break;
             }
-            Set<Player> remaining = new HashSet<>(partitions.remove(partitions.size()-1));
-            List<Player> availablePlayers;
+            Set<PlayerType> remaining = new HashSet<>(partitions.remove(partitions.size()-1));
+            List<PlayerType> availablePlayers;
             if (!gameManager.allowDuplicates()) {
                 availablePlayers = players.stream().filter(i -> !remaining.contains(i)).collect(Collectors.toList());
             } else {

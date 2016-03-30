@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 
 public final class Tools {
@@ -35,9 +36,17 @@ public final class Tools {
         return item;
     }
 
+    public static <T> Function<T, T> applied(Consumer<T> function){
+        return t -> apply(t, function);
+    }
+
     public static <T, U> T apply(T item, U parameter, BiConsumer<T, U> function){
         function.accept(item, parameter);
         return item;
+    }
+
+    public static <T, U> Function<T, T> applied(U parameter, BiConsumer<T, U> function){
+        return t -> apply(t, parameter, function);
     }
 
     public static int clamp(int num, int min, int max){

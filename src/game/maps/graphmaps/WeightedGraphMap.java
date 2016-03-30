@@ -8,6 +8,12 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * This class assigns costs to each arc in a graph.
+ *
+ *
+ * @param <T> The item stored in the graph
+ */
 public class WeightedGraphMap<T> extends GraphMap<T> {
 
     private final int defaultCost;

@@ -3,7 +3,6 @@ package game;
 import game.exceptions.InvalidPlayerCountException;
 import utils.iterables.Tools;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -78,14 +77,18 @@ public class GameManager {
         return allowDuplicates;
     }
 
-    public List<Scoreboard> runGames(Collection<List<Player>> playerSets){
+    public List<Scoreboard> runGames(Collection<List<PlayerType>> playerSets){
         return playerSets.stream().map(this::runGame).collect(Collectors.toList());
     }
 
-    public Scoreboard runGame(List<Player> playerSet){
+    public Scoreboard runGame(List<PlayerType> playerSet){
         if (!Tools.inBounds(playerSet.size(), minPlayerCount, maxPlayerCount+1)){
             throw new InvalidPlayerCountException();
         }
-        return gameFactory.apply(Tools.apply(new ArrayList<>(playerSet), Collections::shuffle)).run();
+        return gameFactory.apply(
+                Tools.apply(playerSet.stream()
+                    .map(PlayerType::create)
+                    .collect(Collectors.toList()),
+                Collections::shuffle)).run();
     }
 }

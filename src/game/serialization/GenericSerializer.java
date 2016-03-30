@@ -1,8 +1,7 @@
 package game.serialization;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class GenericSerializer implements Serializer<Map<String, Object>> {
     private final HashMap<Class, Serializer> serializers;
@@ -19,7 +18,12 @@ public class GenericSerializer implements Serializer<Map<String, Object>> {
 
     @Override
     public Map<String, Object> deserialize(String representation) {
-        return null;
+        String[] parts = representation.split(";");
+        Iterator<String> iter = Arrays.asList(parts).iterator();
+        return serializers.entrySet().stream()
+                .collect(Collectors.toMap(
+                        i -> names.get(i.getKey()),
+                        i -> i.getValue().deserialize(iter.next())));
     }
 
     @Override
@@ -39,10 +43,13 @@ public class GenericSerializer implements Serializer<Map<String, Object>> {
         return serializers.values().stream().mapToInt(Serializer::separationLevel).max().getAsInt()+1;
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
     public String serialize(Map<String, Object> objects){
-        for (Class clazz: names.keySet()){
-
+        StringBuilder builder = new StringBuilder();
+        for (Map.Entry<Class, String> name: names.entrySet()){
+            builder.append(serializers.get(name.getKey()).serialize(objects.get(name.getValue())));
         }
-        return "";
+        return builder.toString();
     }
 }
