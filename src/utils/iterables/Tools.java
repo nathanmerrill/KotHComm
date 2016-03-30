@@ -59,8 +59,4 @@ public final class Tools {
         return partitions;
     }
 
-    public static double geometricMean(List<Double> numbers){
-
-    }
-
 }

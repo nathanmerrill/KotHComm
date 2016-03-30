@@ -2,6 +2,7 @@ package game.maps.gridmaps;
 
 import game.maps.BoundedMap;
 import game.maps.gridmaps.adjacencies.AdjacencySet;
+import game.maps.gridmaps.adjacencies.SquareAdjacencySet;
 import utils.iterables.Tools;
 
 import java.util.List;
@@ -20,6 +21,42 @@ public final class TilingMap<T> extends BoundedMap<T, GridPoint> {
         this.wrapX = wrapX;
         this.wrapY = wrapY;
         this.adjacencies = adjacencies;
+    }
+
+    public TilingMap(int width, int height, boolean wrapX, boolean wrapY){
+        this(width, height, wrapX, wrapY, new SquareAdjacencySet());
+    }
+
+    public TilingMap(int width, int height, boolean wraps, AdjacencySet adjacencies){
+        this(width, height, wraps, wraps, adjacencies);
+    }
+
+    public TilingMap(int width, int height, AdjacencySet adjacencies){
+        this(width, height, false, adjacencies);
+    }
+
+    public TilingMap(int width, int height, boolean wraps){
+        this(width, height, wraps, wraps);
+    }
+
+    public TilingMap(int width, int height){
+        this(width, height, false);
+    }
+
+    public TilingMap(int size, boolean wraps, AdjacencySet adjacencies){
+        this(size, size, wraps, wraps, adjacencies);
+    }
+
+    public TilingMap(int size, AdjacencySet adjacencies){
+        this(size, false, adjacencies);
+    }
+
+    public TilingMap(int size, boolean wraps){
+        this(size, wraps, new SquareAdjacencySet());
+    }
+
+    public TilingMap(int size){
+        this(size, false);
     }
 
 

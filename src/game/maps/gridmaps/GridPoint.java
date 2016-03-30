@@ -1,7 +1,6 @@
 package game.maps.gridmaps;
 
 import game.maps.MapPoint;
-import org.jetbrains.annotations.NotNull;
 import utils.iterables.Tools;
 
 
@@ -38,7 +37,7 @@ public final class GridPoint extends MapPoint implements Comparable<GridPoint>{
     }
 
     @Override
-    public int compareTo(@NotNull GridPoint o) {
+    public int compareTo(GridPoint o) {
         if (y == o.y){
             return x - o.x;
         } else {

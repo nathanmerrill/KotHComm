@@ -1,7 +1,7 @@
 package game.serialization;
 
 
-import javafx.util.Pair;
+import utils.iterables.Pair;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -18,7 +18,7 @@ public class TupleSerializer implements Serializer<Map<String, Object>>{
         this.attributes = attributes;
         attributeMap = new HashMap<>();
         for (Pair<String, Serializer<Object>> attribute: attributes){
-            attributeMap.put(attribute.getKey(), attribute.getValue());
+            attributeMap.put(attribute.first(), attribute.second());
         }
         separationLevel = attributeMap.values().stream().map(Serializer::separationLevel).max(Integer::compare).get()+1;
         char[] arr = new char[separationLevel];
@@ -43,7 +43,7 @@ public class TupleSerializer implements Serializer<Map<String, Object>>{
         String[] parts = representation.split(separator);
         Map<String, Object> deserialized = new HashMap<>();
         for (int i = 0; i < attributes.size(); i++){
-            deserialized.put(parts[i], attributes.get(i).getValue().deserialize(representation));
+            deserialized.put(parts[i], attributes.get(i).second().deserialize(representation));
         }
         return deserialized;
     }
@@ -52,9 +52,9 @@ public class TupleSerializer implements Serializer<Map<String, Object>>{
     public String define() {
         StringBuilder definition = new StringBuilder("Tuple(");
         for (Pair<String, Serializer<Object>> serializer: attributes){
-            definition.append(serializer.getKey());
+            definition.append(serializer.first());
             definition.append(":");
-            definition.append(serializer.getValue().define());
+            definition.append(serializer.second().define());
             definition.append(",");
         }
         definition.deleteCharAt(definition.length()-1);

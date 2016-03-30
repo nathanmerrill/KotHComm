@@ -8,17 +8,7 @@ public class IOPipe extends TimedPipe {
     private final BufferedOutputStream output;
 
 
-    public IOPipe(String...commands){
-        ProcessBuilder builder = new ProcessBuilder(commands);
-        builder.redirectInput(ProcessBuilder.Redirect.PIPE);
-        builder.redirectOutput(ProcessBuilder.Redirect.PIPE);
-        Process process;
-        try {
-            process = builder.start();
-        } catch (IOException e){
-            throw new RuntimeException("Invalid commands passed to process:\n"+ Arrays.toString(commands), e);
-        }
-
+    public IOPipe(Process process){
         input = new BufferedInputStream(process.getInputStream());
         output = new BufferedOutputStream(process.getOutputStream());
     }
