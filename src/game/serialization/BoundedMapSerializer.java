@@ -32,8 +32,8 @@ public class BoundedMapSerializer<T, U extends MapPoint> implements Serializer<B
     public BoundedMap<T, U> deserialize(String representation) {
         BoundedMap<T, U> map = supplier.get();
         int index = 0;
-        for (U location: map.possibleLocations()){
-            map.put(location, mapping.get(representation.charAt(index)));
+        for (U location: map.filledLocations().keySet()){
+            map.put(mapping.get(representation.charAt(index)), location);
             index++;
         }
         return map;
@@ -68,7 +68,7 @@ public class BoundedMapSerializer<T, U extends MapPoint> implements Serializer<B
     @Override
     public String serialize(BoundedMap<T, U> value) {
         StringBuilder serialization = new StringBuilder();
-        for (U location: value.possibleLocations()){
+        for (U location: value.filledLocations().keySet()){
             T item = value.get(location);
             if (item == null){
                 serialization.append(" ");

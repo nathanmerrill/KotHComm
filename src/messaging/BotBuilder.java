@@ -1,6 +1,5 @@
 package messaging;
 
-import game.Player;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -9,31 +8,31 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class BotBuilder {
+public class BotBuilder<T> {
     private final File directory;
-    private final Function<Communicator, Player> playerConstructor;
+    private final Function<Communicator, T> playerConstructor;
 
-    public BotBuilder(File directory, Function<Communicator, Player> playerConstructor){
+    public BotBuilder(File directory, Function<Communicator, T> playerConstructor){
         this.directory = directory;
         this.playerConstructor = playerConstructor;
     }
-    public BotBuilder(String directory, Function<Communicator, Player> playerConstructor){
+    public BotBuilder(String directory, Function<Communicator, T> playerConstructor){
         this(new File(directory), playerConstructor);
     }
-    public BotBuilder(Function<Communicator, Player> playerConstructor){
+    public BotBuilder(Function<Communicator, T> playerConstructor){
         this(System.getProperty("user.dir")+"/bots", playerConstructor);
     }
 
     @SuppressWarnings("ConstantConditions")
-    public Map<String, Supplier<Player>> readBots(){
-        Map<String, Supplier<Player>> constructors = new HashMap<>();
+    public Map<String, Supplier<T>> readBots(){
+        Map<String, Supplier<T>> constructors = new HashMap<>();
         for (File botFolder: directory.listFiles()){
             List<String> commands = readCommandFile(botFolder);
             if (commands == null){
                 continue;
             }
             ProcessBuilder builder = buildProcess(botFolder, commands.toArray(new String[]{}));
-            Supplier<Player> constructor = () -> playerConstructor.apply(start(builder));
+            Supplier<T> constructor = () -> playerConstructor.apply(start(builder));
             constructors.put(botFolder.getName(), constructor);
         }
         return constructors;

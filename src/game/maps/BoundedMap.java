@@ -1,9 +1,12 @@
 package game.maps;
 
 
-import java.util.List;
+import utils.iterables.Tools;
 
-public abstract class BoundedMap<T, U extends MapPoint> extends GameMap<T, U>{
+import java.util.List;
+import java.util.stream.Collectors;
+
+public abstract class BoundedMap<T, U extends MapPoint> extends GameMap<T, U> implements ReadonlyBoundedMap<T, U>{
 
     @Override
     public T get(U point) {
@@ -55,5 +58,13 @@ public abstract class BoundedMap<T, U extends MapPoint> extends GameMap<T, U>{
     public abstract boolean inBounds(U point);
     protected abstract U wrapPoint(U point);
 
-    public abstract Iterable<U> possibleLocations();
+    public abstract Iterable<U> allLocationsIter();
+
+    public List<U> allLocations(){
+        return Tools.iterToList(allLocationsIter().iterator());
+    }
+
+    public List<U> emptyLocations(){
+        return allLocations().stream().filter(i -> !itemAt(i)).collect(Collectors.toList());
+    }
 }

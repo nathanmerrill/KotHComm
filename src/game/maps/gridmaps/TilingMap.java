@@ -72,7 +72,7 @@ public final class TilingMap<T> extends BoundedMap<T, GridPoint> {
     }
 
     @Override
-    public Iterable<GridPoint> possibleLocations() {
+    public Iterable<GridPoint> allLocationsIter() {
         return new GridIterable(width, height);
     }
 

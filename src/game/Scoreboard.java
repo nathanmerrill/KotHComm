@@ -6,7 +6,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class Scoreboard {
+public class Scoreboard<T> {
     public static Double sumAggregator(List<Double> list) {
         return list.stream().reduce(0.0, Double::sum);
     }
@@ -25,39 +25,41 @@ public class Scoreboard {
 
     private final Function<List<Double>, Double> aggregator;
     private final boolean maxScoring;
-    private final Map<PlayerType, Double> aggregates;
-    private final Map<PlayerType, ArrayList<Double>> scores;
+    private final Map<PlayerType<T>, Double> aggregates;
+    private final Directory<T> directory;
+    private final Map<PlayerType<T>, ArrayList<Double>> scores;
 
-    public Scoreboard(Collection<PlayerType> players, Function<List<Double>, Double> aggregator, boolean maxScoring) {
+    public Scoreboard(Directory<T> directory, Function<List<Double>, Double> aggregator, boolean maxScoring) {
         this.aggregator = aggregator;
         this.maxScoring = maxScoring;
         this.aggregates = new HashMap<>();
-        this.scores = players.stream().collect(Collectors.toMap(Function.identity(), i -> new ArrayList<>()));
+        this.directory = directory;
+        this.scores = directory.allPlayers().stream().collect(Collectors.toMap(Function.identity(), i -> new ArrayList<>()));
     }
 
-    public Scoreboard(Collection<PlayerType> players, Function<List<Double>, Double> aggregator) {
-        this(players, aggregator, true);
+    public Scoreboard(Directory<T> directory, Function<List<Double>, Double> aggregator) {
+        this(directory, aggregator, true);
     }
 
-    public Scoreboard(Collection<PlayerType> players) {
-        this(players, Scoreboard::sumAggregator);
+    public Scoreboard(Directory<T> directory) {
+        this(directory, Scoreboard::sumAggregator);
     }
 
-    public void addScores(Scoreboard board) {
+    public void addScores(Scoreboard<T> board) {
         scores.keySet().forEach(i -> addScore(i, board.getAggregatedScore(i)));
     }
-    public void addScore(Player player, double score){
-        addScore(player.getType(), score);
+    public void addScore(T player, double score){
+        addScore(directory.getType(player.getClass()), score);
     }
-    public void addScore(PlayerType player, double score) {
+    public void addScore(PlayerType<T> player, double score) {
         List<Double> history = scores.get(player);
         history.add(score);
         aggregates.remove(player);
     }
-    public List<Double> getPlayerHistory(PlayerType player) {
+    public List<Double> getPlayerHistory(PlayerType<T> player) {
         return new ArrayList<>(scores.get(player));
     }
-    public Double getAggregatedScore(PlayerType player) {
+    public Double getAggregatedScore(PlayerType<T> player) {
         if (aggregates.containsKey(player)) {
             return aggregates.get(player);
         }
@@ -65,8 +67,8 @@ public class Scoreboard {
         aggregates.put(player, aggregate);
         return aggregate;
     }
-    public List<Pair<PlayerType, Double>> playerAggregates() {
-        List<Pair<PlayerType, Double>> aggregates = scores.keySet().stream()
+    public List<Pair<PlayerType<T>, Double>> playerAggregates() {
+        List<Pair<PlayerType<T>, Double>> aggregates = scores.keySet().stream()
                 .map(i -> new Pair<>(i, getAggregatedScore(i)))
                 .sorted(Comparator.comparing(Pair::second))
                 .collect(Collectors.toList());
@@ -76,8 +78,8 @@ public class Scoreboard {
         return aggregates;
     }
 
-    public PlayerRanking playerRanking() {
-        return new PlayerRanking(playerAggregates().stream().map(Pair::first).collect(Collectors.toList()));
+    public PlayerRanking<T> playerRanking() {
+        return new PlayerRanking<>(playerAggregates().stream().map(Pair::first).collect(Collectors.toList()));
     }
 
     public void clear(){

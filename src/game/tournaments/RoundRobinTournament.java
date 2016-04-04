@@ -6,21 +6,19 @@ import java.util.*;
 import java.util.function.Function;
 
 
-public final class RoundRobinTournament implements Tournament{
+public final class RoundRobinTournament<T> implements Tournament<T>{
 
-    private final GameManager gameManager;
-    private final List<PlayerType> players;
-    private final Scoreboard scoreboard;
-    public RoundRobinTournament(GameManager gameManager, Scoreboard scoreboard, List<PlayerType> players){
+    private final GameManager<T> gameManager;
+    private final Scoreboard<T> scoreboard;
+    public RoundRobinTournament(GameManager<T> gameManager, Scoreboard<T> scoreboard){
         this.gameManager = gameManager;
-        this.players = players;
         this.scoreboard = scoreboard;
     }
 
     @Override
-    public PlayerRanking run() {
-        List<List<PlayerType>> playerSets = new ArrayList<>();
-        new CombinationIterable<>(players, gameManager.preferredPlayerCount()).forEach(playerSets::add);
+    public PlayerRanking<T> run() {
+        List<List<PlayerType<T>>> playerSets = new ArrayList<>();
+        new CombinationIterable<>(gameManager.getDirectory().allPlayers(), gameManager.preferredPlayerCount()).forEach(playerSets::add);
         gameManager.runGames(playerSets).forEach(scoreboard::addScores);
         return scoreboard.playerRanking();
     }

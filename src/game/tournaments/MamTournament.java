@@ -9,35 +9,33 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class MamTournament implements Tournament{
+public final class MamTournament<T> implements Tournament<T>{
 
-    private final GameManager gameManager;
-    private final List<PlayerType> players;
+    private final GameManager<T> gameManager;
+    private final Directory<T> directory;
     private final int numIterations;
-    private final Random random;
 
-    public MamTournament(GameManager gameManager, List<PlayerType> players, int numIterations){
+    public MamTournament(GameManager<T> gameManager, int numIterations){
         this.gameManager = gameManager;
-        this.players = players;
+        this.directory = gameManager.getDirectory();
         this.numIterations = numIterations;
-        this.random = new Random();
     }
 
     @Override
-    public PlayerRanking run() {
-        List<PlayerType> players = new ArrayList<>(this.players);
-        List<List<PlayerType>> games = IntStream.range(0, numIterations)
+    public PlayerRanking<T> run() {
+        List<PlayerType<T>> players = this.directory.allPlayers();
+        List<List<PlayerType<T>>> games = IntStream.range(0, numIterations)
                 .mapToObj(i -> players)
                 .map(Tools.applied(Collections::shuffle))
                 .map(i -> i.subList(0, gameManager.preferredPlayerCount()))
                 .collect(Collectors.toList());
 
-        List<Scoreboard> votes = gameManager.runGames(games);
+        List<Scoreboard<T>> votes = gameManager.runGames(games);
 
-        Map<Pair<PlayerType, PlayerType>, Integer> votesPreferences = new HashMap<>();
-        SortedSet<Pair<PlayerType, PlayerType>> majorities = new TreeSet<>(new ImportanceComparator(votesPreferences));
+        Map<Pair<PlayerType<T>, PlayerType<T>>, Integer> votesPreferences = new HashMap<>();
+        SortedSet<Pair<PlayerType<T>, PlayerType<T>>> majorities = new TreeSet<>(new ImportanceComparator(votesPreferences));
 
-        for (List<PlayerType> playerPair: new CombinationIterable<>(players, 2)) {
+        for (List<PlayerType<T>> playerPair: new CombinationIterable<>(players, 2)) {
             int p1Preferred = getPreferenceCount(votes, playerPair.get(0), playerPair.get(1));
             int p2Preferred = getPreferenceCount(votes, playerPair.get(1), playerPair.get(0));
             if (p1Preferred > p2Preferred) {
@@ -47,26 +45,26 @@ public class MamTournament implements Tournament{
             }
         }
 
-        Set<Pair<PlayerType, PlayerType>> affirmations = new HashSet<>();
-        for (Pair<PlayerType, PlayerType> majority: majorities) {
+        Set<Pair<PlayerType<T>, PlayerType<T>>> affirmations = new HashSet<>();
+        for (Pair<PlayerType<T>, PlayerType<T>> majority: majorities) {
             affirm(majority, affirmations);
         }
-        List<PlayerType> topCandidates = players.stream()
+        List<PlayerType<T>> topCandidates = players.stream()
                 .filter(player ->
                         players.stream().noneMatch(
                                 i ->affirmations.contains(new Pair<>(i, player))))
                 .collect(Collectors.toList());
-        Collections.shuffle(topCandidates, random);
-        PlayerRanking ranking = new PlayerRanking(players);
+        Collections.shuffle(topCandidates);
+        PlayerRanking<T> ranking = new PlayerRanking<>(players);
         topCandidates.forEach(ranking::rankTop);
         return ranking;
     }
 
 
 
-    private void affirm(Pair<PlayerType, PlayerType> preference, Set<Pair<PlayerType, PlayerType>> affirmations) {
+    private void affirm(Pair<PlayerType<T>, PlayerType<T>> preference, Set<Pair<PlayerType<T>, PlayerType<T>>> affirmations) {
         affirmations.add(preference);
-        for (PlayerType player: players.stream()
+        for (PlayerType<T> player: directory.allPlayers().stream()
                 .filter(p ->
                         !p.equals(preference.first()) &&
                         !p.equals(preference.second()))
@@ -81,14 +79,14 @@ public class MamTournament implements Tournament{
             }
         }
     }
-    class ImportanceComparator implements Comparator<Pair<PlayerType, PlayerType>> {
-        private final Map<Pair<PlayerType, PlayerType>, Integer> preferences;
-        private ImportanceComparator(Map<Pair<PlayerType, PlayerType>, Integer> preferences) {
+    class ImportanceComparator implements Comparator<Pair<PlayerType<T>, PlayerType<T>>> {
+        private final Map<Pair<PlayerType<T>, PlayerType<T>>, Integer> preferences;
+        private ImportanceComparator(Map<Pair<PlayerType<T>, PlayerType<T>>, Integer> preferences) {
             this.preferences = preferences;
         }
 
         @Override
-        public int compare(Pair<PlayerType, PlayerType> p0, Pair<PlayerType, PlayerType> p1) {
+        public int compare(Pair<PlayerType<T>, PlayerType<T>> p0, Pair<PlayerType<T>, PlayerType<T>> p1) {
             if (p0 == null || p1 == null){
                 throw new NullPointerException();
             }
@@ -104,7 +102,7 @@ public class MamTournament implements Tournament{
             return 0;
         }
     }
-    private int getPreferenceCount(List<Scoreboard> votes, PlayerType player1, PlayerType player2) {
+    private int getPreferenceCount(List<Scoreboard<T>> votes, PlayerType<T> player1, PlayerType<T> player2) {
         return (int)votes.stream().filter(i -> i.getAggregatedScore(player1) > i.getAggregatedScore(player2)).count();
     }
 }

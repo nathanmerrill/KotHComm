@@ -7,58 +7,66 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class GameManager {
+public class GameManager<T> {
     public final static int MIN_GAME_SIZE = 2;
-    private final Function<List<Player>, Game> gameFactory;
-    private final int preferredPlayerCount;
-    private final int minPlayerCount;
-    private final int maxPlayerCount;
-    private final boolean allowDuplicates;
-    public GameManager(Function<List<Player>, Game> gameFactory,
-                       int preferredPlayerCount,
-                       int minPlayerCount,
-                       int maxPlayerCount,
-                       boolean allowDuplicates){
+    private final Supplier<Game<T>> gameFactory;
+    private final Directory<T> directory;
+    private int preferredPlayerCount;
+    private int minPlayerCount;
+    private int maxPlayerCount;
+    private boolean allowDuplicates;
+    public GameManager(Supplier<Game<T>> gameFactory, Directory<T> directory){
         this.gameFactory = gameFactory;
-        this.maxPlayerCount = maxPlayerCount < MIN_GAME_SIZE ? Integer.MAX_VALUE : maxPlayerCount;
-        this.minPlayerCount = Tools.clamp(minPlayerCount, MIN_GAME_SIZE, this.maxPlayerCount);
-        this.preferredPlayerCount = Tools.clamp(preferredPlayerCount, this.minPlayerCount, this.maxPlayerCount);
-        this.allowDuplicates = allowDuplicates;
+        this.minPlayerCount = 2;
+        this.maxPlayerCount = -1;
+        this.preferredPlayerCount = -1;
+        this.directory = directory;
     }
-    public GameManager(Function<List<Player>, Game> gameFactory,
-                       int preferredPlayerCount,
-                       int minPlayerCount,
-                       int maxPlayerCount){
-        this(gameFactory, preferredPlayerCount, minPlayerCount, maxPlayerCount, false);
 
+    public Directory<T> getDirectory(){
+        return directory;
     }
-    public GameManager(Function<List<Player>, Game> gameFactory,
-                       int minPlayerCount,
-                       int maxPlayerCount,
-                       boolean allowDuplicates){
-        this(gameFactory, maxPlayerCount, minPlayerCount, maxPlayerCount, allowDuplicates);
+
+    public GameManager<T> maxPlayerCount(int maxPlayerCount) {
+        if (maxPlayerCount == -1){
+            maxPlayerCount = Integer.MAX_VALUE;
+        }
+        if (maxPlayerCount < minPlayerCount){
+            throw new InvalidPlayerCountException();
+        }
+        this.maxPlayerCount = maxPlayerCount;
+        if (this.preferredPlayerCount > this.maxPlayerCount){
+            this.preferredPlayerCount = this.maxPlayerCount;
+        }
+        return this;
     }
-    public GameManager(Function<List<Player>, Game> gameFactory,
-                       int minPlayerCount,
-                       int maxPlayerCount){
-        this(gameFactory, minPlayerCount, maxPlayerCount, false);
+
+    public GameManager<T> minPlayerCount(int minPlayerCount) {
+        if (minPlayerCount < 2 || minPlayerCount > maxPlayerCount){
+            throw new InvalidPlayerCountException();
+        }
+        this.minPlayerCount = minPlayerCount;
+        if (this.preferredPlayerCount < this.minPlayerCount){
+            this.preferredPlayerCount = this.minPlayerCount;
+        }
+        return this;
     }
-    public GameManager(Function<List<Player>, Game> gameFactory,
-                       int preferredPlayerCount,
-                       boolean allowDuplicates){
-        this(gameFactory, preferredPlayerCount, preferredPlayerCount, preferredPlayerCount, allowDuplicates);
+
+
+    public GameManager<T> preferredPlayerCount(int preferredPlayerCount) {
+        if (preferredPlayerCount > maxPlayerCount || preferredPlayerCount < minPlayerCount){
+            throw new InvalidPlayerCountException();
+        }
+        this.preferredPlayerCount = preferredPlayerCount;
+        return this;
     }
-    public GameManager(Function<List<Player>, Game> gameFactory,
-                       int preferredPlayerCount){
-        this(gameFactory, preferredPlayerCount, false);
-    }
-    public GameManager(Function<List<Player>, Game> gameFactory, boolean allowDuplicates){
-        this(gameFactory, 1, 0, allowDuplicates);
-    }
-    public GameManager(Function<List<Player>, Game> gameFactory){
-        this(gameFactory, false);
+
+    public GameManager<T> allowDuplicates(boolean allowDuplicates) {
+        this.allowDuplicates = allowDuplicates;
+        return this;
     }
 
     public int maxPlayerCount() {
@@ -73,22 +81,24 @@ public class GameManager {
         return preferredPlayerCount;
     }
 
-    public boolean allowDuplicates() {
+    public boolean allowsDuplicates() {
         return allowDuplicates;
     }
 
-    public List<Scoreboard> runGames(Collection<List<PlayerType>> playerSets){
+    public List<Scoreboard<T>> runGames(Collection<List<PlayerType<T>>> playerSets){
         return playerSets.stream().map(this::runGame).collect(Collectors.toList());
     }
 
-    public Scoreboard runGame(List<PlayerType> playerSet){
+    public Scoreboard<T> runGame(List<PlayerType<T>> playerSet){
         if (!Tools.inBounds(playerSet.size(), minPlayerCount, maxPlayerCount+1)){
             throw new InvalidPlayerCountException();
         }
-        return gameFactory.apply(
-                Tools.apply(playerSet.stream()
-                    .map(PlayerType::create)
-                    .collect(Collectors.toList()),
-                Collections::shuffle)).run();
+        List<T> players = directory.instantiate(playerSet);
+        Collections.shuffle(players);
+        Game<T> game = gameFactory.get();
+        game.setPlayers(players);
+        game.setDirectory(directory);
+        return game.run();
     }
+
 }

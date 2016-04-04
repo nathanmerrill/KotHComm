@@ -4,52 +4,50 @@ import game.*;
 import utils.iterables.Tools;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
-public final class SamplingTournament implements Tournament {
+public final class SamplingTournament<T> implements Tournament<T> {
 
-    private final GameManager gameManager;
-    private final List<PlayerType> players;
-    private final List<PlayerType> currentPopulation;
-    private final Scoreboard scoreboard;
+    private final GameManager<T> gameManager;
+    private final Directory<T> directory;
+    private final List<PlayerType<T>> currentPopulation;
+    private final Scoreboard<T> scoreboard;
 
-    public SamplingTournament(GameManager gameManager,
-                              List<PlayerType> players,
-                              Scoreboard scoreboard){
+    public SamplingTournament(GameManager<T> gameManager,
+                              Scoreboard<T> scoreboard){
         this.gameManager = gameManager;
-        this.players = players;
+        this.directory = gameManager.getDirectory();
         this.currentPopulation = new ArrayList<>();
         this.scoreboard = scoreboard;
     }
 
 
     @Override
-    public PlayerRanking run() {
+    public PlayerRanking<T> run() {
         currentPopulation.clear();
-        currentPopulation.addAll(players);
+        currentPopulation.addAll(directory.allPlayers());
         scoreboard.clear();
         Collections.shuffle(currentPopulation);
-        List<List<PlayerType>> playerSets = new ArrayList<>();
+        List<List<PlayerType<T>>> playerSets = new ArrayList<>();
         while (true) {
-            List<List<PlayerType>> partitions = Tools.partition(currentPopulation, gameManager.preferredPlayerCount());
+            List<List<PlayerType<T>>> partitions = Tools.partition(currentPopulation, gameManager.preferredPlayerCount());
             if (partitions.get(partitions.size()-1).size() == gameManager.preferredPlayerCount()){
                 playerSets.addAll(partitions);
                 break;
             }
-            Set<PlayerType> remaining = new HashSet<>(partitions.remove(partitions.size()-1));
-            List<PlayerType> availablePlayers;
-            if (!gameManager.allowDuplicates()) {
-                availablePlayers = players.stream().filter(i -> !remaining.contains(i)).collect(Collectors.toList());
+            Set<PlayerType<T>> remaining = new HashSet<>(partitions.remove(partitions.size()-1));
+            List<PlayerType<T>> availablePlayers;
+            if (!gameManager.allowsDuplicates()) {
+                availablePlayers = directory.allPlayers().stream().filter(i -> !remaining.contains(i)).collect(Collectors.toList());
             } else {
-                availablePlayers = new ArrayList<>(players);
+                availablePlayers = directory.allPlayers();
             }
             Collections.shuffle(availablePlayers);
             remaining.addAll(availablePlayers.subList(0, gameManager.preferredPlayerCount() - remaining.size()));
             playerSets.add(new ArrayList<>(remaining));
             currentPopulation.clear();
-            currentPopulation.addAll(players.stream().filter(i -> !remaining.contains(i)).collect(Collectors.toList()));
+            currentPopulation.addAll(directory.allPlayers().stream().filter(i -> !remaining.contains(i)).collect(Collectors.toList()));
         }
         gameManager.runGames(playerSets).forEach(scoreboard::addScores);
         return scoreboard.playerRanking();

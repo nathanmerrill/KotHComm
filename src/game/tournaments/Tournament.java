@@ -2,6 +2,6 @@ package game.tournaments;
 
 import game.PlayerRanking;
 
-interface Tournament {
-    PlayerRanking run();
+interface Tournament<T> {
+    PlayerRanking<T> run();
 }

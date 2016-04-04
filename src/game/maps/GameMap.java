@@ -9,7 +9,7 @@ import java.util.*;
  * @param <T>
  * @param <U>
  */
-public abstract class GameMap<T, U extends MapPoint> {
+public abstract class GameMap<T, U extends MapPoint> implements ReadonlyGameMap<T, U>{
     private final HashMap<U, T> items;
     private final HashMap<T, U> locations;
     public GameMap(){
@@ -70,7 +70,7 @@ public abstract class GameMap<T, U extends MapPoint> {
         return new HashMap<>(locations);
     }
 
-    public HashMap<U, T> locations(){
+    public HashMap<U, T> filledLocations(){
         return new HashMap<>(items);
     }
 
@@ -82,7 +82,7 @@ public abstract class GameMap<T, U extends MapPoint> {
      * @return True if there is a path between the two points, false otherwise.
      */
     public boolean isConnected(U from, U to){
-        return isConnected(from, to, new HashSet<U>());
+        return isConnected(from, to, new HashSet<>());
     }
 
     private boolean isConnected(U from, U to, HashSet<U> visited){

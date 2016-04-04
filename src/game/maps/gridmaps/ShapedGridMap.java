@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-public abstract class ShapedGridMap<T> extends BoundedMap<T, GridPoint> {
+public abstract class ShapedGridMap<T> extends BoundedMap<T, GridPoint> implements ReadonlyShapedGridMap<T>{
 
     private final int height;
     private final AdjacencySet adjacencies;
@@ -56,7 +56,7 @@ public abstract class ShapedGridMap<T> extends BoundedMap<T, GridPoint> {
     }
 
     @Override
-    public Iterable<GridPoint> possibleLocations() {
+    public Iterable<GridPoint> allLocationsIter() {
         return new ShapedMapIterable();
     }
 
