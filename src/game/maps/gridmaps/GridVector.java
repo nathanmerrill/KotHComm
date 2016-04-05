@@ -1,6 +1,6 @@
 package game.maps.gridmaps;
 
-public final class GridVector {
+public class GridVector {
     private final int xOffset, yOffset;
     public GridVector(int xOffset, int yOffset){
         this.xOffset = xOffset;

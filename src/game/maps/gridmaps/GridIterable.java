@@ -3,7 +3,7 @@ package game.maps.gridmaps;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public final class GridIterable implements Iterable<GridPoint> {
+public class GridIterable implements Iterable<GridPoint> {
     private final int width, height;
     public GridIterable(int width, int height){
         this.width = width;

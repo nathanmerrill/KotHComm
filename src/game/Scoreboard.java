@@ -6,7 +6,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class Scoreboard<T> {
+public class Scoreboard<T> implements Iterable<PlayerType<T>>{
     public static Double sumAggregator(List<Double> list) {
         return list.stream().reduce(0.0, Double::sum);
     }
@@ -78,16 +78,32 @@ public class Scoreboard<T> {
         return aggregates;
     }
 
-    public PlayerRanking<T> playerRanking() {
-        return new PlayerRanking<>(playerAggregates().stream().map(Pair::first).collect(Collectors.toList()));
-    }
 
     public void clear(){
         aggregates.clear();
         scores.clear();
     }
 
+    @Override
+    public Iterator<PlayerType<T>> iterator() {
+        return playerAggregates().stream().map(Pair::first).iterator();
+    }
+
     public boolean isMaxScoring() {
         return maxScoring;
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        List<Pair<PlayerType<T>, Double>> aggregates = playerAggregates();
+        for (int i = 0; i < aggregates.size(); i++){
+            builder.append(i).append(".\t");
+            builder.append(aggregates.get(i).second()).append("\t");
+            builder.append(aggregates.get(i).first().getName());
+            builder.append('\n');
+        }
+        return builder.toString();
     }
 }

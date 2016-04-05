@@ -8,7 +8,7 @@ import utils.iterables.Tools;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public final class TilingMap<T> extends BoundedMap<T, GridPoint> {
+public class TilingMap<T> extends BoundedMap<T, GridPoint> {
 
 
     private final int width, height;

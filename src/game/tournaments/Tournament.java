@@ -1,7 +1,7 @@
 package game.tournaments;
 
-import game.PlayerRanking;
+import game.PlayerType;
 
 interface Tournament<T> {
-    PlayerRanking<T> run();
+    Iterable<PlayerType<T>> run();
 }

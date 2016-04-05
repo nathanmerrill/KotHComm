@@ -10,7 +10,7 @@ public class PermutationIterable<T> extends SubsequenceIterable<T> {
 
     public PermutationIterable(Iterator<T> iter, int length) {
         super(iter, length);
-        this.availableDigits = new TreeSet<Integer>(digits);
+        this.availableDigits = new TreeSet<>(Tools.range(pool.size()).subList(length, pool.size()));
     }
     public PermutationIterable(Iterator<T> iter){
         this(iter, 2);
@@ -28,10 +28,10 @@ public class PermutationIterable<T> extends SubsequenceIterable<T> {
             return;
         }
         int digit = digits.get(index);
-        SortedSet<Integer> nextAvailable = availableDigits.tailSet(digit);
+        SortedSet<Integer> nextAvailable = new TreeSet<>(availableDigits.tailSet(digit));
+        availableDigits.add(digit);
         int nextDigit;
         if (nextAvailable.isEmpty()) {
-            availableDigits.add(digit);
             nextDigits(index - 1);
             nextDigit = availableDigits.first();
         } else {

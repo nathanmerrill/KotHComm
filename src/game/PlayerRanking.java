@@ -79,4 +79,14 @@ public class PlayerRanking<T> implements Iterable<PlayerType<T>> {
         return indexes;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < rankings.size(); i++){
+            builder.append(i).append(".\t");
+            builder.append(rankings.get(i).getName());
+            builder.append('\n');
+        }
+        return builder.toString();
+    }
 }

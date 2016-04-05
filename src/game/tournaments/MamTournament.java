@@ -9,7 +9,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public final class MamTournament<T> implements Tournament<T>{
+public class MamTournament<T> implements Tournament<T>{
 
     private final GameManager<T> gameManager;
     private final Directory<T> directory;

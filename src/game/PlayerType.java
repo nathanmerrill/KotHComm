@@ -2,7 +2,7 @@ package game;
 
 import java.util.function.Supplier;
 
-public final class PlayerType<T> {
+public class PlayerType<T> {
     private final Supplier<T> supplier;
     private final String name;
 

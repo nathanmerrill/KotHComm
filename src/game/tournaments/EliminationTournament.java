@@ -11,7 +11,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
-public final class EliminationTournament<T> implements Tournament<T> {
+public class EliminationTournament<T> implements Tournament<T> {
 
     private final GameManager<T> gameManager;
     private final Directory<T> directory;

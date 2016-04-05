@@ -3,7 +3,7 @@ package game.maps.gridmaps;
 
 import game.maps.gridmaps.adjacencies.TriangleAdjacencySet;
 
-public final class TriangleMap<T> extends ShapedGridMap<T> {
+public class TriangleMap<T> extends ShapedGridMap<T> {
 
     private final int sideLength;
     public TriangleMap(int sideLength){

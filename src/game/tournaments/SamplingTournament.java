@@ -7,7 +7,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
-public final class SamplingTournament<T> implements Tournament<T> {
+public class SamplingTournament<T> implements Tournament<T> {
 
     private final GameManager<T> gameManager;
     private final Directory<T> directory;
@@ -24,7 +24,7 @@ public final class SamplingTournament<T> implements Tournament<T> {
 
 
     @Override
-    public PlayerRanking<T> run() {
+    public Scoreboard<T> run() {
         currentPopulation.clear();
         currentPopulation.addAll(directory.allPlayers());
         scoreboard.clear();
@@ -50,7 +50,7 @@ public final class SamplingTournament<T> implements Tournament<T> {
             currentPopulation.addAll(directory.allPlayers().stream().filter(i -> !remaining.contains(i)).collect(Collectors.toList()));
         }
         gameManager.runGames(playerSets).forEach(scoreboard::addScores);
-        return scoreboard.playerRanking();
+        return scoreboard;
     }
 
 

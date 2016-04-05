@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class HexagonalAdjacencySet implements AdjacencySet{
+
     @Override
     public List<GridVector> getAdjacencies(GridPoint point) {
         List<GridVector> points = new ArrayList<>();

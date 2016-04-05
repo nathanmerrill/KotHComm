@@ -21,8 +21,8 @@ public class GameManager<T> {
     public GameManager(Supplier<Game<T>> gameFactory, Directory<T> directory){
         this.gameFactory = gameFactory;
         this.minPlayerCount = 2;
-        this.maxPlayerCount = -1;
-        this.preferredPlayerCount = -1;
+        this.maxPlayerCount = Integer.MAX_VALUE;
+        this.preferredPlayerCount = Integer.MAX_VALUE;
         this.directory = directory;
     }
 
@@ -35,7 +35,7 @@ public class GameManager<T> {
             maxPlayerCount = Integer.MAX_VALUE;
         }
         if (maxPlayerCount < minPlayerCount){
-            throw new InvalidPlayerCountException();
+            throw new InvalidPlayerCountException("Maximum players below minimum");
         }
         this.maxPlayerCount = maxPlayerCount;
         if (this.preferredPlayerCount > this.maxPlayerCount){
@@ -46,7 +46,7 @@ public class GameManager<T> {
 
     public GameManager<T> minPlayerCount(int minPlayerCount) {
         if (minPlayerCount < 2 || minPlayerCount > maxPlayerCount){
-            throw new InvalidPlayerCountException();
+            throw new InvalidPlayerCountException("Minimum players above maximum");
         }
         this.minPlayerCount = minPlayerCount;
         if (this.preferredPlayerCount < this.minPlayerCount){
@@ -58,7 +58,7 @@ public class GameManager<T> {
 
     public GameManager<T> preferredPlayerCount(int preferredPlayerCount) {
         if (preferredPlayerCount > maxPlayerCount || preferredPlayerCount < minPlayerCount){
-            throw new InvalidPlayerCountException();
+            throw new InvalidPlayerCountException("Preferred player count outside of maximum and minimum");
         }
         this.preferredPlayerCount = preferredPlayerCount;
         return this;
@@ -91,7 +91,7 @@ public class GameManager<T> {
 
     public Scoreboard<T> runGame(List<PlayerType<T>> playerSet){
         if (!Tools.inBounds(playerSet.size(), minPlayerCount, maxPlayerCount+1)){
-            throw new InvalidPlayerCountException();
+            throw new InvalidPlayerCountException("Game does not support "+playerSet.size()+" players");
         }
         List<T> players = directory.instantiate(playerSet);
         Collections.shuffle(players);

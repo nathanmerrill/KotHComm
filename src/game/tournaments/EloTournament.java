@@ -10,7 +10,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public final class EloTournament<T> implements Tournament{
+public class EloTournament<T> implements Tournament{
 
     public static final double INITIAL_RATING = 1000;
     public static final double DEFAULT_KFACTOR = 32;
@@ -33,7 +33,7 @@ public final class EloTournament<T> implements Tournament{
     }
 
     @Override
-    public PlayerRanking run() {
+    public Scoreboard<T> run() {
         Iterator<PlayerType<T>> focuses = new ArrayList<PlayerType<T>>().iterator();
         for (int i = 0; i < numGames; i++){
             if (!focuses.hasNext()){
@@ -43,10 +43,9 @@ public final class EloTournament<T> implements Tournament{
             Scoreboard<T> scores = gameManager.runGame(players);
             updateScores(scores);
         }
-        return new PlayerRanking<>(ratings.entrySet().stream()
-                .sorted(Map.Entry.comparingByValue())
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toList()));
+        Scoreboard<T> scoreboard = new Scoreboard<>(gameManager.getDirectory());
+        ratings.forEach(scoreboard::addScore);
+        return scoreboard;
     }
 
     private void updateScores(Scoreboard<T> scoreboard){
@@ -72,6 +71,9 @@ public final class EloTournament<T> implements Tournament{
         double min = aggregates.get(0).second();
         double max = aggregates.get(aggregates.size()-1).second();
         double range = max - min;
+        if (range == 0){
+            return aggregates.stream().collect(Collectors.toMap(Pair::first, i -> .5));
+        }
         return aggregates.stream().collect(Collectors.toMap(Pair::first, i -> 1 - (i.second()-min)/range));
     }
 
@@ -85,7 +87,7 @@ public final class EloTournament<T> implements Tournament{
         int maxIndex = minIndex;
         while (maxIndex - minIndex + 1 < gameManager.preferredPlayerCount()){
             if (minIndex == 0){
-                maxIndex = gameManager.preferredPlayerCount();
+                maxIndex = gameManager.preferredPlayerCount()-1;
                 break;
             }
             if (maxIndex == sorted.size()-1){
@@ -97,7 +99,7 @@ public final class EloTournament<T> implements Tournament{
             if (maxDiff < minDiff){
                 maxIndex++;
             } else {
-                minIndex++;
+                minIndex--;
             }
         }
         return sorted.subList(minIndex, maxIndex+1);

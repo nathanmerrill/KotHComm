@@ -4,7 +4,7 @@ import game.maps.MapPoint;
 import utils.iterables.Tools;
 
 
-public final class GridPoint extends MapPoint implements Comparable<GridPoint>{
+public class GridPoint extends MapPoint implements Comparable<GridPoint>{
     private final int x, y;
     public GridPoint(int x, int y){
         this.x = x;
