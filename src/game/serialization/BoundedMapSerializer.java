@@ -49,7 +49,7 @@ public class BoundedMapSerializer<T, U extends MapPoint> implements Serializer<B
             definition.append(tilingMap.getWidth()).append(",").append(tilingMap.getHeight()).append(")");
         }
         if (map instanceof ShapedGridMap) {
-            ShapedGridMap<T> shapedGridMap = (ShapedGridMap<T>) map;
+            ShapedGridMap<T, ?> shapedGridMap = (ShapedGridMap<T, ?>) map;
             definition.append("ShapeMap(").append(defineAdjacency(shapedGridMap.getAdjacencies())).append(",");
             definition.append(shapedGridMap.getHeight());
             for (int i = 0; i < shapedGridMap.getHeight(); i++){

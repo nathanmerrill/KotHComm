@@ -26,38 +26,33 @@ public class Scoreboard<T> implements Iterable<PlayerType<T>>{
     private final Function<List<Double>, Double> aggregator;
     private final boolean maxScoring;
     private final Map<PlayerType<T>, Double> aggregates;
-    private final Directory<T> directory;
     private final Map<PlayerType<T>, ArrayList<Double>> scores;
 
-    public Scoreboard(Directory<T> directory, Function<List<Double>, Double> aggregator, boolean maxScoring) {
+    public Scoreboard(Function<List<Double>, Double> aggregator, boolean maxScoring) {
         this.aggregator = aggregator;
         this.maxScoring = maxScoring;
         this.aggregates = new HashMap<>();
-        this.directory = directory;
-        this.scores = directory.allPlayers().stream().collect(Collectors.toMap(Function.identity(), i -> new ArrayList<>()));
+        this.scores = new HashMap<>();
     }
 
-    public Scoreboard(Directory<T> directory, Function<List<Double>, Double> aggregator) {
-        this(directory, aggregator, true);
+    public Scoreboard(Function<List<Double>, Double> aggregator) {
+        this(aggregator, true);
     }
 
-    public Scoreboard(Directory<T> directory) {
-        this(directory, Scoreboard::sumAggregator);
+    public Scoreboard() {
+        this(Scoreboard::sumAggregator);
     }
 
     public void addScores(Scoreboard<T> board) {
-        scores.keySet().forEach(i -> addScore(i, board.getAggregatedScore(i)));
-    }
-    public void addScore(T player, double score){
-        addScore(directory.getType(player.getClass()), score);
+        board.playerAggregates().forEach(a -> this.addScore(a.first(), a.second()));
     }
     public void addScore(PlayerType<T> player, double score) {
-        List<Double> history = scores.get(player);
-        history.add(score);
+        scores.putIfAbsent(player, new ArrayList<>());
+        scores.get(player).add(score);
         aggregates.remove(player);
     }
     public List<Double> getPlayerHistory(PlayerType<T> player) {
-        return new ArrayList<>(scores.get(player));
+        return new ArrayList<>(scores.getOrDefault(player, new ArrayList<>()));
     }
     public Double getAggregatedScore(PlayerType<T> player) {
         if (aggregates.containsKey(player)) {
@@ -68,7 +63,9 @@ public class Scoreboard<T> implements Iterable<PlayerType<T>>{
         return aggregate;
     }
     public List<Pair<PlayerType<T>, Double>> playerAggregates() {
-        List<Pair<PlayerType<T>, Double>> aggregates = scores.keySet().stream()
+        List<Pair<PlayerType<T>, Double>> aggregates = scores.entrySet().stream()
+                .filter(i -> !i.getValue().isEmpty())
+                .map(Map.Entry::getKey)
                 .map(i -> new Pair<>(i, getAggregatedScore(i)))
                 .sorted(Comparator.comparing(Pair::second))
                 .collect(Collectors.toList());
@@ -98,10 +95,20 @@ public class Scoreboard<T> implements Iterable<PlayerType<T>>{
     public String toString() {
         StringBuilder builder = new StringBuilder();
         List<Pair<PlayerType<T>, Double>> aggregates = playerAggregates();
+        if (aggregates.isEmpty()){
+            return "No scores";
+        }
+        int currentRank = 1;
+        double lastScore = aggregates.get(0).second();
         for (int i = 0; i < aggregates.size(); i++){
-            builder.append(i).append(".\t");
-            builder.append(aggregates.get(i).second()).append("\t");
-            builder.append(aggregates.get(i).first().getName());
+            String name = aggregates.get(i).first().getName();
+            double score = aggregates.get(i).second();
+            if (score != lastScore){
+                currentRank = i+1;
+            }
+            builder.append(currentRank).append(".\t");
+            builder.append(score).append("\t");
+            builder.append(name);
             builder.append('\n');
         }
         return builder.toString();

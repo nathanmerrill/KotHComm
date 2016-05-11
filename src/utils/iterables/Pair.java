@@ -48,11 +48,23 @@ public class Pair<T, U> {
         return result;
     }
 
+    @Override
+    public String toString() {
+        return first.toString()+", "+second.toString();
+    }
+
+    public Pair<U, T> swap(){
+        return new Pair<>(second, first);
+    }
+
     public static <T, U> Map<T, U> toMap(List<Pair<T, U>> list){
         return list.stream().collect(Collectors.toMap(Pair::first, Pair::second));
     }
 
     public static <T, U> Map<U, T> toReverseMap(List<Pair<T, U>> list){
         return list.stream().collect(Collectors.toMap(Pair::second, Pair::first));
+    }
+    public static <T> Pair<T, T> fromList(List<T> list){
+        return new Pair<>(list.get(0), list.get(1));
     }
 }

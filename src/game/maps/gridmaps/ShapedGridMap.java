@@ -8,14 +8,21 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-public abstract class ShapedGridMap<T> extends BoundedMap<T, GridPoint> implements ReadonlyShapedGridMap<T>{
+public abstract class ShapedGridMap<T, U extends AdjacencySet>
+        extends BoundedMap<T, GridPoint>
+        implements ReadonlyShapedGridMap<T> {
 
     private final int height;
-    private final AdjacencySet adjacencies;
-    public ShapedGridMap(int height, AdjacencySet adjacencies){
+    private final U adjacencies;
+    public ShapedGridMap(int height, U adjacencies){
         this.height = height;
         this.adjacencies = adjacencies;
+    }
+
+    public U getAdjacencies(){
+        return adjacencies;
     }
 
     private class ShapedMapIterable implements Iterable<GridPoint> {
@@ -77,10 +84,6 @@ public abstract class ShapedGridMap<T> extends BoundedMap<T, GridPoint> implemen
                 Tools.inBounds(point.getX(), minX(y), maxX(y));
     }
 
-    public AdjacencySet getAdjacencies() {
-        return adjacencies;
-    }
-
     @Override
     protected GridPoint wrapPoint(GridPoint point) {
         return point;
@@ -88,6 +91,10 @@ public abstract class ShapedGridMap<T> extends BoundedMap<T, GridPoint> implemen
 
     public int getHeight() {
         return height;
+    }
+
+    public int getMaxWidth(){
+        return IntStream.range(0, height).map(this::maxX).max().getAsInt();
     }
 
     public abstract int minX(int y);

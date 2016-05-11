@@ -1,108 +1,157 @@
 package game.tournaments;
 
 import game.*;
+import game.exceptions.InvalidPlayerCountException;
 import utils.iterables.CombinationIterable;
 import utils.iterables.Pair;
+import utils.iterables.PermutationIterable;
 import utils.iterables.Tools;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.StreamSupport;
 
 public class MamTournament<T> implements Tournament<T>{
 
-    private final GameManager<T> gameManager;
-    private final Directory<T> directory;
+    private final GameManager<T> manager;
     private final int numIterations;
 
     public MamTournament(GameManager<T> gameManager, int numIterations){
-        this.gameManager = gameManager;
-        this.directory = gameManager.getDirectory();
+        this.manager = gameManager;
         this.numIterations = numIterations;
     }
 
+
     @Override
-    public PlayerRanking<T> run() {
-        List<PlayerType<T>> players = this.directory.allPlayers();
-        List<List<PlayerType<T>>> games = IntStream.range(0, numIterations)
-                .mapToObj(i -> players)
-                .map(Tools.applied(Collections::shuffle))
-                .map(i -> i.subList(0, gameManager.preferredPlayerCount()))
-                .collect(Collectors.toList());
-
-        List<Scoreboard<T>> votes = gameManager.runGames(games);
-
-        Map<Pair<PlayerType<T>, PlayerType<T>>, Integer> votesPreferences = new HashMap<>();
-        SortedSet<Pair<PlayerType<T>, PlayerType<T>>> majorities = new TreeSet<>(new ImportanceComparator(votesPreferences));
-
-        for (List<PlayerType<T>> playerPair: new CombinationIterable<>(players, 2)) {
-            int p1Preferred = getPreferenceCount(votes, playerPair.get(0), playerPair.get(1));
-            int p2Preferred = getPreferenceCount(votes, playerPair.get(1), playerPair.get(0));
-            if (p1Preferred > p2Preferred) {
-                majorities.add(new Pair<>(playerPair.get(0), playerPair.get(1)));
-            } else if (p2Preferred > p1Preferred) {
-                majorities.add(new Pair<>(playerPair.get(1), playerPair.get(0)));
-            }
-        }
-
-        Set<Pair<PlayerType<T>, PlayerType<T>>> affirmations = new HashSet<>();
-        for (Pair<PlayerType<T>, PlayerType<T>> majority: majorities) {
-            affirm(majority, affirmations);
-        }
-        List<PlayerType<T>> topCandidates = players.stream()
-                .filter(player ->
-                        players.stream().noneMatch(
-                                i ->affirmations.contains(new Pair<>(i, player))))
-                .collect(Collectors.toList());
-        Collections.shuffle(topCandidates);
-        PlayerRanking<T> ranking = new PlayerRanking<>(players);
-        topCandidates.forEach(ranking::rankTop);
-        return ranking;
+    public MamTournamentIterator iterator() {
+        return new MamTournamentIterator();
     }
+    private class MamTournamentIterator implements TournamentIterator<T>{
+        private final List<PlayerType<T>> players;
+        private final List<Scoreboard<T>> votes;
+        private final Iterator<Game<T>> games;
 
-
-
-    private void affirm(Pair<PlayerType<T>, PlayerType<T>> preference, Set<Pair<PlayerType<T>, PlayerType<T>>> affirmations) {
-        affirmations.add(preference);
-        for (PlayerType<T> player: directory.allPlayers().stream()
-                .filter(p ->
-                        !p.equals(preference.first()) &&
-                        !p.equals(preference.second()))
-                .collect(Collectors.toList())){
-            if (affirmations.contains(new Pair<>(player, preference.first())) &&
-                    !affirmations.contains(new Pair<>(player, preference.second()))) {
-                affirm(new Pair<>(player, preference.second()), affirmations);
+        public MamTournamentIterator(){
+            players = manager.getDirectory().allPlayers();
+            if (players.size() < manager.minPlayerCount()){
+                throw new InvalidPlayerCountException("Need more players");
             }
-            if (affirmations.contains(new Pair<>(preference.second(), player)) &&
-                    !affirmations.contains(new Pair<>(preference.first(), player))) {
-                affirm(new Pair<>(preference.first(), player), affirmations);
-            }
-        }
-    }
-    class ImportanceComparator implements Comparator<Pair<PlayerType<T>, PlayerType<T>>> {
-        private final Map<Pair<PlayerType<T>, PlayerType<T>>, Integer> preferences;
-        private ImportanceComparator(Map<Pair<PlayerType<T>, PlayerType<T>>, Integer> preferences) {
-            this.preferences = preferences;
+            int gameSize = Math.min(players.size(), manager.preferredPlayerCount());
+            votes = new ArrayList<>();
+            games = IntStream.range(0, numIterations)
+                    .mapToObj(i -> players)
+                    .map(Tools.applied(Collections::shuffle))
+                    .map(i -> i.subList(0, gameSize))
+                    .map(manager::construct)
+                    .collect(Collectors.toList()).iterator();
+
+
         }
 
         @Override
-        public int compare(Pair<PlayerType<T>, PlayerType<T>> p0, Pair<PlayerType<T>, PlayerType<T>> p1) {
-            if (p0 == null || p1 == null){
-                throw new NullPointerException();
-            }
-            int preferred = preferences.get(p0) - preferences.get(p1);
-            if (preferred != 0){
-                return preferred;
-            }
-            int opposition = preferences.get(new Pair<>(p1.second(), p1.first()))
-                    - preferences.get(new Pair<>(p0.second(), p0.first()));
-            if (opposition != 0){
-                return opposition;
-            }
-            return 0;
+        public Game<T> next() {
+            Game<T> next = games.next();
+            next.onFinish(votes::add);
+            return next;
         }
+
+        @Override
+        public boolean hasNext() {
+            return games.hasNext();
+        }
+
+        @Override
+        public Scoreboard<T> currentRankings() {
+            Map<Pair<PlayerType<T>, PlayerType<T>>, Integer> votesPreferences =
+                    new PermutationIterable<>(players, 2).stream()
+                    .map(Pair::fromList)
+                    .collect(Collectors.toMap(Function.identity(), (a) -> getPreferenceCount(votes, a)));
+
+            SortedSet<Pair<PlayerType<T>, PlayerType<T>>> majorities = new TreeSet<>(new ImportanceComparator(votesPreferences));
+            new PermutationIterable<>(players, 2).stream()
+                    .map(Pair::fromList)
+                    .filter((a) -> votesPreferences.get(a) > votesPreferences.get(a.swap()))
+                    .forEach(majorities::add);
+
+            Set<Pair<PlayerType<T>, PlayerType<T>>> affirmations = new HashSet<>();
+            for (Pair<PlayerType<T>, PlayerType<T>> majority: majorities) {
+                affirm(majority, affirmations);
+            }
+
+            List<PlayerType<T>> sortedCandidates = new ArrayList<>(players);
+            Collections.sort(sortedCandidates, (o1, o2) -> {
+                if (affirmations.contains(new Pair<>(o1, o2))){
+                    return -1;
+                } else if (affirmations.contains(new Pair<>(o2, o1))){
+                    return 1;
+                }
+                return 0;
+            });
+
+            Scoreboard<T> scoreboard = new Scoreboard<>(Scoreboard::sumAggregator, false);
+
+            int currentRank = 1;
+
+            for (int i = 0; i < sortedCandidates.size(); i++){
+                scoreboard.addScore(sortedCandidates.get(i), currentRank);
+                if (i + 1 < sortedCandidates.size()) {
+                    if (affirmations.contains(new Pair<>(sortedCandidates.get(i), sortedCandidates.get(i + 1)))) {
+                        currentRank++;
+                    }
+                }
+            }
+            return scoreboard;
+        }
+
+        private void affirm(Pair<PlayerType<T>, PlayerType<T>> preference, Set<Pair<PlayerType<T>, PlayerType<T>>> affirmations) {
+            affirmations.add(preference);
+            for (PlayerType<T> player: players.stream()
+                    .filter(p ->
+                            !p.equals(preference.first()) &&
+                                    !p.equals(preference.second()))
+                    .collect(Collectors.toList())){
+                if (affirmations.contains(new Pair<>(player, preference.first())) &&
+                        !affirmations.contains(new Pair<>(player, preference.second()))) {
+                    affirm(new Pair<>(player, preference.second()), affirmations);
+                }
+                if (affirmations.contains(new Pair<>(preference.second(), player)) &&
+                        !affirmations.contains(new Pair<>(preference.first(), player))) {
+                    affirm(new Pair<>(preference.first(), player), affirmations);
+                }
+            }
+        }
+        class ImportanceComparator implements Comparator<Pair<PlayerType<T>, PlayerType<T>>> {
+            private final Map<Pair<PlayerType<T>, PlayerType<T>>, Integer> preferences;
+            private ImportanceComparator(Map<Pair<PlayerType<T>, PlayerType<T>>, Integer> preferences) {
+                this.preferences = preferences;
+            }
+
+            @Override
+            public int compare(Pair<PlayerType<T>, PlayerType<T>> p0, Pair<PlayerType<T>, PlayerType<T>> p1) {
+                if (p0 == null || p1 == null){
+                    throw new NullPointerException();
+                }
+                if (p0.equals(p1)){
+                    return 0;
+                }
+                int preferred = preferences.get(p0) - preferences.get(p1);
+                if (preferred != 0){
+                    return preferred;
+                }
+                int opposition = preferences.get(p1.swap()) - preferences.get(p0.swap());
+                if (opposition != 0){
+                    return opposition;
+                }
+                return new Random().nextInt();
+            }
+        }
+        private int getPreferenceCount(List<Scoreboard<T>> votes, Pair<PlayerType<T>, PlayerType<T>> players) {
+            return (int)votes.stream().filter(i -> i.getAggregatedScore(players.first()) > i.getAggregatedScore(players.second())).count();
+        }
+
     }
-    private int getPreferenceCount(List<Scoreboard<T>> votes, PlayerType<T> player1, PlayerType<T> player2) {
-        return (int)votes.stream().filter(i -> i.getAggregatedScore(player1) > i.getAggregatedScore(player2)).count();
-    }
+
+
 }

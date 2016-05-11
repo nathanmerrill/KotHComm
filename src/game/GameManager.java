@@ -3,9 +3,10 @@ package game;
 import game.exceptions.InvalidPlayerCountException;
 import utils.iterables.Tools;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.SynchronousQueue;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -85,11 +86,7 @@ public class GameManager<T> {
         return allowDuplicates;
     }
 
-    public List<Scoreboard<T>> runGames(Collection<List<PlayerType<T>>> playerSets){
-        return playerSets.stream().map(this::runGame).collect(Collectors.toList());
-    }
-
-    public Scoreboard<T> runGame(List<PlayerType<T>> playerSet){
+    public Game<T> construct(List<PlayerType<T>> playerSet){
         if (!Tools.inBounds(playerSet.size(), minPlayerCount, maxPlayerCount+1)){
             throw new InvalidPlayerCountException("Game does not support "+playerSet.size()+" players");
         }
@@ -98,7 +95,8 @@ public class GameManager<T> {
         Game<T> game = gameFactory.get();
         game.setPlayers(players);
         game.setDirectory(directory);
-        return game.run();
+        return game;
     }
+
 
 }

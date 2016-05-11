@@ -2,7 +2,7 @@ package game.maps.gridmaps;
 
 import game.maps.gridmaps.adjacencies.HexagonalAdjacencySet;
 
-public class HexagonGrid<T> extends ShapedGridMap<T>{
+public class HexagonGrid<T> extends ShapedGridMap<T, HexagonalAdjacencySet>{
     private final int sideLength;
     public HexagonGrid(int sideLength){
         super(sideLength*2-1, new HexagonalAdjacencySet());

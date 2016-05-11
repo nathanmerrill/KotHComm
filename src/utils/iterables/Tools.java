@@ -62,7 +62,7 @@ public final class Tools {
     public static <T> List<List<T>> partition(List<T> list, int wordSize){
         List<List<T>> partitions = new ArrayList<>();
         for (int i = 0; i < list.size(); i+=wordSize){
-            partitions.add(list.subList(i, i+wordSize));
+            partitions.add(list.subList(i, Math.min(i+wordSize, list.size())));
         }
 
         return partitions;

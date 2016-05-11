@@ -18,13 +18,14 @@ public class CombinationIterable<T> extends SubsequenceIterable<T> {
     }
 
     protected void nextDigits(int index) {
-        if (index < 0) {
-            return;
-        }
         int digit = digits.get(index);
 
-        int digitMax = index + 1 == digits.size()? pool.size() : index + 1;
+        int digitMax = pool.size() - digits.size() + index;
         if (digit >= digitMax) {
+            if (index == 0){
+                hasNext = false;
+                return;
+            }
             nextDigits(index - 1);
             digits.set(index, digits.get(index - 1) + 1);
         } else {

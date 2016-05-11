@@ -4,6 +4,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public abstract class SubsequenceIterable<T> implements Iterable<List<T>> {
     protected final List<T> pool;
@@ -40,4 +42,8 @@ public abstract class SubsequenceIterable<T> implements Iterable<List<T>> {
     }
 
     protected abstract void nextDigits(int index);
+
+    public Stream<List<T>> stream(){
+        return StreamSupport.stream(this.spliterator(), false);
+    }
 }

@@ -38,6 +38,10 @@ public class Directory<T> {
         return registry.get(clazz);
     }
 
+    public PlayerType<T> getType(T item){
+        return registry.get(item.getClass());
+    }
+
     private static <T> Supplier<T> getSupplier(Class<?> player){
         Constructor<?> constructor;
         try {
