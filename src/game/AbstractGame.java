@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
 
-public abstract class AbstractGame<T extends GamePlayer> {
+public abstract class AbstractGame<T extends AbstractPlayer<T>> {
     protected Random random;
     protected List<T> players;
     private final List<Consumer<Scoreboard<T>>> listeners;

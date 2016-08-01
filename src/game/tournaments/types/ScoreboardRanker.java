@@ -8,16 +8,14 @@ import utils.Pair;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class ScoreboardRanker<T extends GamePlayer> implements RankerSupplier<T> {
+public class ScoreboardRanker<T extends AbstractPlayer<T>> implements RankerSupplier<T> {
     private final Supplier<Scoreboard<PlayerType<T>>> supplier;
-    private final GameManager<T> manager;
-    public ScoreboardRanker(Supplier<Scoreboard<PlayerType<T>>> supplier, GameManager<T> manager){
+    public ScoreboardRanker(Supplier<Scoreboard<PlayerType<T>>> supplier){
         this.supplier = supplier;
-        this.manager = manager;
     }
 
-    public ScoreboardRanker(GameManager<T> manager){
-        this(Scoreboard::new, manager);
+    public ScoreboardRanker(){
+        this(Scoreboard::new);
     }
 
     @Override
@@ -42,7 +40,7 @@ public class ScoreboardRanker<T extends GamePlayer> implements RankerSupplier<T>
         private void onFinish(Scoreboard<T> gameScores){
             scoreboard.addScores(gameScores.stream()
                     .map(Pair.fromValue(
-                        manager.getDirectory()::getType,
+                        AbstractPlayer::getType,
                         gameScores::getScore))
                     .collect(Collectors.toList()));
         }

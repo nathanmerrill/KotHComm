@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class MamRanker<T extends GamePlayer> implements RankerSupplier<T> {
+public class MamRanker<T extends AbstractPlayer<T>> implements RankerSupplier<T> {
 
     private final GameManager<T> manager;
 
@@ -28,7 +28,7 @@ public class MamRanker<T extends GamePlayer> implements RankerSupplier<T> {
         private final List<Map<PlayerType<T>, Double>> votes;
 
         public Mam(){
-            players = manager.getDirectory().allPlayers();
+            players = manager.allPlayers();
             votes = new ArrayList<>();
         }
 
@@ -37,7 +37,7 @@ public class MamRanker<T extends GamePlayer> implements RankerSupplier<T> {
             game.onFinish(scoreboard-> votes.add(
                     scoreboard.stream()
                             .collect(Collectors.toMap(
-                                    manager.getDirectory()::getType,
+                                    AbstractPlayer::getType,
                                     scoreboard::getScore)
                             )
                     ));

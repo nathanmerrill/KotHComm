@@ -10,7 +10,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class EloTournament<T extends GamePlayer> implements TournamentSupplier<T> {
+public class EloTournament<T extends AbstractPlayer<T>> implements TournamentSupplier<T> {
 
     public static final double INITIAL_RATING = 1000;
     public static final double DEFAULT_K_FACTOR = 32;
@@ -38,7 +38,7 @@ public class EloTournament<T extends GamePlayer> implements TournamentSupplier<T
         private final int gameSize;
 
         public Elo() {
-            ratings = manager.getDirectory().allPlayers().stream()
+            ratings = manager.allPlayers().stream()
                     .collect(Collectors.toMap(Function.identity(), i -> INITIAL_RATING));
             focuses = new LinkedList<>();
             gameSize = manager.gameSize();
@@ -86,7 +86,7 @@ public class EloTournament<T extends GamePlayer> implements TournamentSupplier<T
 
         private Map<PlayerType<T>, Double> mapScores(Scoreboard<T> scores) {
             List<Pair<PlayerType<T>, Double>> aggregates = scores.stream().map(Pair.fromValue(
-                            manager.getDirectory()::getType,
+                            AbstractPlayer::getType,
                             scores::getScore))
                     .collect(Collectors.toList());
 

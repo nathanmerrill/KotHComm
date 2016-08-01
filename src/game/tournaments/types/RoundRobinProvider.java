@@ -7,7 +7,7 @@ import utils.iterables.CombinationIterable;
 import java.util.*;
 
 
-public class RoundRobinProvider<T extends GamePlayer> implements ProviderSupplier<T> {
+public class RoundRobinProvider<T extends AbstractPlayer<T>> implements ProviderSupplier<T> {
 
 
     private final GameManager<T> manager;
@@ -25,7 +25,7 @@ public class RoundRobinProvider<T extends GamePlayer> implements ProviderSupplie
         Iterator<List<PlayerType<T>>> iterator;
 
         public RoundRobin(){
-            iterable = new CombinationIterable<>(manager.getDirectory().allPlayers(), manager.gameSize());
+            iterable = new CombinationIterable<>(manager.allPlayers(), manager.gameSize());
             iterator = iterable.iterator();
         }
 

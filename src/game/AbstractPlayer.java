@@ -2,13 +2,17 @@ package game;
 
 import java.util.Random;
 
-public abstract class GamePlayer {
+public abstract class AbstractPlayer<T extends AbstractPlayer<T>> {
 
-    private PlayerType type;
+    private PlayerType<T> type;
     private Random random;
 
-    public final void setType(PlayerType type){
+    public final void setType(PlayerType<T> type){
         this.type = type;
+    }
+
+    public final PlayerType<T> getType(){
+        return type;
     }
 
     public final String getName(){

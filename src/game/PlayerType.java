@@ -2,7 +2,7 @@ package game;
 
 import java.util.function.Supplier;
 
-public final class PlayerType<T extends GamePlayer> {
+public final class PlayerType<T extends AbstractPlayer<T>> {
     private final Supplier<T> supplier;
     private final String name;
 

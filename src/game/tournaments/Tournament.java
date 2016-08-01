@@ -1,7 +1,7 @@
 package game.tournaments;
 
-import game.GamePlayer;
+import game.AbstractPlayer;
 
-public interface Tournament<T extends GamePlayer> extends GameProvider<T>, GameRanker<T>{
+public interface Tournament<T extends AbstractPlayer<T>> extends GameProvider<T>, GameRanker<T>{
 
 }

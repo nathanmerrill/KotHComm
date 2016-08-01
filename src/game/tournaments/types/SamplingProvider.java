@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
-public class SamplingProvider<T extends GamePlayer> implements ProviderSupplier<T> {
+public class SamplingProvider<T extends AbstractPlayer<T>> implements ProviderSupplier<T> {
 
     private final GameManager<T> manager;
 
@@ -28,7 +28,7 @@ public class SamplingProvider<T extends GamePlayer> implements ProviderSupplier<
         final int gameSize;
 
         public Sampling(){
-            availablePlayers = manager.getDirectory().allPlayers();
+            availablePlayers = manager.allPlayers();
             currentPopulation = new LinkedList<>(availablePlayers);
             gameSize = manager.gameSize();
             repopulate(null);

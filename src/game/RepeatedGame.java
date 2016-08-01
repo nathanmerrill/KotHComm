@@ -1,6 +1,6 @@
 package game;
 
-public abstract class RepeatedGame<T extends GamePlayer> extends AbstractGame<T> {
+public abstract class RepeatedGame<T extends AbstractPlayer<T>> extends AbstractGame<T> {
     private int iterations;
     public RepeatedGame(int iterations){
         this.iterations = iterations;
@@ -8,6 +8,7 @@ public abstract class RepeatedGame<T extends GamePlayer> extends AbstractGame<T>
     @Override
     protected boolean step() {
         iterations--;
+        nextStep();
         return iterations <= 0;
     }
     protected abstract void nextStep();

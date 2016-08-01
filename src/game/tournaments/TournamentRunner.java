@@ -4,11 +4,9 @@ import game.*;
 import game.tournaments.types.SamplingProvider;
 import game.tournaments.types.ScoreboardRanker;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class TournamentRunner<T extends GamePlayer> {
+public class TournamentRunner<T extends AbstractPlayer<T>> {
     private final ProviderSupplier<T> providerSupplier;
     private final RankerSupplier<T> rankerSupplier;
     private final TournamentSupplier<T> bothSupplier;
@@ -25,7 +23,7 @@ public class TournamentRunner<T extends GamePlayer> {
     }
 
     public TournamentRunner(GameManager<T> gameManager){
-        this(new SamplingProvider<>(gameManager), new ScoreboardRanker<>(gameManager));
+        this(new SamplingProvider<>(gameManager), new ScoreboardRanker<>());
     }
 
 

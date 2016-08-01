@@ -3,37 +3,36 @@ package game;
 import game.exceptions.InvalidPlayerCountException;
 import utils.Tools;
 
+import java.io.File;
 import java.util.*;
+import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
-public class GameManager<T extends GamePlayer> {
+public class GameManager<T extends AbstractPlayer<T>> {
     public final static int MIN_GAME_SIZE = 2;
     private final Supplier<AbstractGame<T>> gameFactory;
-    private final Directory<T> directory;
+    private final List<PlayerType<T>> registeredPlayers;
     private final Random random;
     private int preferredPlayerCount;
     private int minPlayerCount;
     private int maxPlayerCount;
     private boolean allowDuplicates;
-    public GameManager(Supplier<AbstractGame<T>> gameFactory, Directory<T> directory, Random random){
+    public GameManager(Supplier<AbstractGame<T>> gameFactory, Random random){
         this.gameFactory = gameFactory;
         this.minPlayerCount = 2;
         this.maxPlayerCount = Integer.MAX_VALUE-1;
         this.preferredPlayerCount = Integer.MAX_VALUE-1;
-        this.directory = directory;
+        this.registeredPlayers = new ArrayList<>();
         this.random = random;
     }
 
-    public GameManager(Supplier<AbstractGame<T>> gameFactory, Directory<T> directory){
-        this(gameFactory, directory, new Random());
+    public GameManager(Supplier<AbstractGame<T>> gameFactory){
+        this(gameFactory, new Random());
     }
 
     public Random getRandom(){
         return random;
-    }
-
-    public Directory<T> getDirectory(){
-        return directory;
     }
 
     public GameManager<T> playerCount(int playerCount){
@@ -85,6 +84,27 @@ public class GameManager<T extends GamePlayer> {
         return this;
     }
 
+    public void register(Class<? extends AbstractPlayer<T>> clazz, Supplier<T> supplier){
+        register(clazz.getSimpleName(), supplier);
+    }
+
+    public void register(String name, Supplier<T> supplier){
+        registeredPlayers.add(new PlayerType<>(name, supplier));
+    }
+
+    public void registerDirectory(Function<String, T> constructor, String directory){
+        File file = new File(System.getProperty("user.dir"),directory);
+        File[] children = file.listFiles();
+        if (children == null){
+            throw new RuntimeException("Cannot find directory:"+file.getAbsolutePath());
+        }
+        for (File child: children){
+            if (child.isDirectory()){
+                register(child.getName(), () -> constructor.apply(child.getAbsolutePath()));
+            }
+        }
+    }
+
     public int maxPlayerCount() {
         return maxPlayerCount;
     }
@@ -98,7 +118,7 @@ public class GameManager<T extends GamePlayer> {
     }
 
     public int gameSize(){
-        int playerCount = directory.allPlayers().size();
+        int playerCount = registeredPlayers.size();
         if (playerCount < minPlayerCount){
             throw new InvalidPlayerCountException("Need more players");
         }
@@ -119,7 +139,11 @@ public class GameManager<T extends GamePlayer> {
     }
 
     public AbstractGame<T> constructFromType(Collection<PlayerType<T>> playerSet){
-        return construct(directory.instantiate(playerSet));
+        return construct(playerSet.stream().map(PlayerType::create).collect(Collectors.toList()));
+    }
+
+    public List<PlayerType<T>> allPlayers(){
+        return new ArrayList<>(registeredPlayers);
     }
 
 
