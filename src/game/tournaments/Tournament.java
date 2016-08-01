@@ -1,18 +1,7 @@
 package game.tournaments;
 
-import game.Game;
-import game.Scoreboard;
+import game.GamePlayer;
 
-public interface Tournament<T> extends Iterable<Game<T>> {
+public interface Tournament<T extends GamePlayer> extends GameProvider<T>, GameRanker<T>{
 
-    default Scoreboard<T> run(){
-        TournamentIterator<T> iter = iterator();
-        while (iter.hasNext()){
-            iter.next().run();
-        }
-        return iter.currentRankings();
-    }
-
-    @Override
-    TournamentIterator<T> iterator();
 }

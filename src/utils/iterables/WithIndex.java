@@ -1,6 +1,8 @@
 package utils.iterables;
 
 
+import utils.Pair;
+
 import java.util.Iterator;
 
 public class WithIndex<T> implements Iterable<Pair<Integer, T>>{

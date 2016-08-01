@@ -1,10 +1,10 @@
 package game.maps.gridmaps.adjacencies;
 
-import game.maps.gridmaps.GridPoint;
-import game.maps.gridmaps.GridVector;
+import game.maps.MapPoint;
+import game.maps.gridmaps.Vector;
 
-import java.util.List;
+import java.util.Set;
 
-public interface AdjacencySet {
-    List<GridVector> getAdjacencies(GridPoint point);
+public interface AdjacencySet<U extends MapPoint> {
+    Set<? extends Vector<U>> getAdjacencies(U point);
 }

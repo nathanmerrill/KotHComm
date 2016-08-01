@@ -1,34 +1,49 @@
 package game;
 
 import game.exceptions.InvalidPlayerCountException;
-import utils.iterables.Tools;
+import utils.Tools;
 
 import java.util.*;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.SynchronousQueue;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
-public class GameManager<T> {
+public class GameManager<T extends GamePlayer> {
     public final static int MIN_GAME_SIZE = 2;
-    private final Supplier<Game<T>> gameFactory;
+    private final Supplier<AbstractGame<T>> gameFactory;
     private final Directory<T> directory;
+    private final Random random;
     private int preferredPlayerCount;
     private int minPlayerCount;
     private int maxPlayerCount;
     private boolean allowDuplicates;
-    public GameManager(Supplier<Game<T>> gameFactory, Directory<T> directory){
+    public GameManager(Supplier<AbstractGame<T>> gameFactory, Directory<T> directory, Random random){
         this.gameFactory = gameFactory;
         this.minPlayerCount = 2;
-        this.maxPlayerCount = Integer.MAX_VALUE;
-        this.preferredPlayerCount = Integer.MAX_VALUE;
+        this.maxPlayerCount = Integer.MAX_VALUE-1;
+        this.preferredPlayerCount = Integer.MAX_VALUE-1;
         this.directory = directory;
+        this.random = random;
+    }
+
+    public GameManager(Supplier<AbstractGame<T>> gameFactory, Directory<T> directory){
+        this(gameFactory, directory, new Random());
+    }
+
+    public Random getRandom(){
+        return random;
     }
 
     public Directory<T> getDirectory(){
         return directory;
+    }
+
+    public GameManager<T> playerCount(int playerCount){
+        if (minPlayerCount < 2){
+            throw new InvalidPlayerCountException("Too few players");
+        }
+        this.minPlayerCount = playerCount;
+        this.maxPlayerCount = playerCount;
+        this.preferredPlayerCount = playerCount;
+        return this;
     }
 
     public GameManager<T> maxPlayerCount(int maxPlayerCount) {
@@ -82,20 +97,29 @@ public class GameManager<T> {
         return preferredPlayerCount;
     }
 
+    public int gameSize(){
+        int playerCount = directory.allPlayers().size();
+        if (playerCount < minPlayerCount){
+            throw new InvalidPlayerCountException("Need more players");
+        }
+        return Math.min(playerCount, preferredPlayerCount);
+    }
+
     public boolean allowsDuplicates() {
         return allowDuplicates;
     }
 
-    public Game<T> construct(List<PlayerType<T>> playerSet){
-        if (!Tools.inBounds(playerSet.size(), minPlayerCount, maxPlayerCount+1)){
-            throw new InvalidPlayerCountException("Game does not support "+playerSet.size()+" players");
+    public AbstractGame<T> construct(Collection<T> players){
+        if (!Tools.inRange(players.size(), minPlayerCount, maxPlayerCount+1)){
+            throw new InvalidPlayerCountException("Game does not support "+players.size()+" players. Must be between "+minPlayerCount+" and "+maxPlayerCount);
         }
-        List<T> players = directory.instantiate(playerSet);
-        Collections.shuffle(players);
-        Game<T> game = gameFactory.get();
-        game.setPlayers(players);
-        game.setDirectory(directory);
+        AbstractGame<T> game = gameFactory.get();
+        game.setPlayers(new ArrayList<>(players));
         return game;
+    }
+
+    public AbstractGame<T> constructFromType(Collection<PlayerType<T>> playerSet){
+        return construct(directory.instantiate(playerSet));
     }
 
 

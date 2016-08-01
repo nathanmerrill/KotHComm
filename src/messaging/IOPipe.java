@@ -1,9 +1,8 @@
 package messaging;
 
 import java.io.*;
-import java.util.Arrays;
 
-public class IOPipe extends TimedPipe {
+public class IOPipe {
     private final BufferedInputStream input;
     private final BufferedOutputStream output;
 
@@ -35,7 +34,6 @@ public class IOPipe extends TimedPipe {
         return "";
     }
 
-    @Override
     public void sendMessage(String message){
         try {
             output.write(message.getBytes());
@@ -44,7 +42,6 @@ public class IOPipe extends TimedPipe {
         }
     }
 
-    @Override
     public String getMessage(int timeout) {
         return readData(timeout);
     }

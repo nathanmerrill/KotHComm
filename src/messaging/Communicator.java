@@ -1,13 +1,9 @@
 package messaging;
 
-
-public final class Communicator {
-    private final IOPipe pipe;
-    public Communicator(IOPipe pipe){
-        this.pipe = pipe;
-    }
-
-    public void sendMessage(){
-
+public interface Communicator<T, U> {
+    int DEFAULT_TIMEOUT = 1000;
+    U sendMessage(T message, String method, int timeout);
+    default U sendMessage(T message, String method){
+        return sendMessage(message, method, DEFAULT_TIMEOUT);
     }
 }

@@ -2,26 +2,14 @@ package game.maps;
 
 import java.util.*;
 
-public interface ReadonlyGameMap<T, U extends MapPoint>  {
+public interface ReadonlyGameMap<U extends MapPoint, T>  {
     T get(U point);
 
-    U locationOf(T item);
+    boolean outOfBounds(U point);
 
-    boolean isNeighbor(U origin, U destination);
+    boolean contains(U point, T item);
 
-    boolean itemAt(U point);
+    boolean contains(U point);
 
-    boolean itemAt(U point, T item);
-
-    boolean contains(T item);
-
-    HashMap<T, U> items();
-
-    HashMap<U, T> filledLocations();
-
-    List<U> getNeighbors(U point);
-
-    boolean isConnected(U from, U to);
-
-    List<U> findPath(U from, U to);
+    HashMap<U, T> toMap();
 }

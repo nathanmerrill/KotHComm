@@ -2,7 +2,7 @@ package game;
 
 import java.util.function.Supplier;
 
-public class PlayerType<T> {
+public final class PlayerType<T extends GamePlayer> {
     private final Supplier<T> supplier;
     private final String name;
 
@@ -12,7 +12,9 @@ public class PlayerType<T> {
     }
 
     public T create(){
-        return supplier.get();
+        T player = supplier.get();
+        player.setType(this);
+        return player;
     }
 
     public String getName() {
