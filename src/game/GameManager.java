@@ -105,6 +105,10 @@ public class GameManager<T extends AbstractPlayer<T>> {
         }
     }
 
+    public void registerClasses(String directory){
+
+    }
+
     public int maxPlayerCount() {
         return maxPlayerCount;
     }

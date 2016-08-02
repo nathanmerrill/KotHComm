@@ -4,6 +4,7 @@
 
 # User-specific stuff:
 .idea/*
+out/
 
 ## File-based project format:
 ## Plugin-specific files:
