@@ -1,0 +1,4 @@
+TODO: Process piping
+TODO: Add tests for: game/maps, game/tournaments, AbstractGame, GameManager, loader/FileReader, messaging, utils
+TODO: Remove all RuntimeExceptions
+TODO: Add config for final static variables

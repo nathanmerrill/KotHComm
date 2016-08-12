@@ -6,29 +6,61 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class Pair<T, U> {
+/**
+ * A pair/tuple of two arbitrary elements.
+ * A pair is immutable, so you can ensure that the pair you have will never change.
+ * @param <T>
+ * @param <U>
+ */
+public final class Pair<T, U> {
     private final T first;
     private final U second;
+
+    /**
+     * Creates a Pair
+     * @param first The first element in the pair
+     * @param second The second element in the pair
+     */
     public Pair(T first, U second){
         this.first = first;
         this.second = second;
     }
+
+    /**
+     * Copy constructor
+     * @param pair The pair you want to make a copy of
+     */
     public Pair(Pair<T, U> pair){
         this(pair.first, pair.second);
     }
 
+    /**
+     * Creates a Pair from a Map Entry
+     * @param entry The entry to copy from
+     */
     public Pair(Map.Entry<T, U> entry){
         this(entry.getKey(), entry.getValue());
     }
 
+    /**
+     * @return The first element in the pair
+     */
     public T first() {
         return first;
     }
 
+    /**
+     * @return The second element in the pair
+     */
     public U second() {
         return second;
     }
 
+    /**
+     * Tests if the pair is equal to another object. Elements in a pair are tested for equality using .equals()
+     * @param o The object to check for equality
+     * @return true if the objects are of the same type, and contain equal elements, false otherwise
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -43,6 +75,10 @@ public class Pair<T, U> {
 
     }
 
+    /**
+     * Used to hash the pair.  Two equal elements will have the same hash
+     * @return The hash of the Pair
+     */
     @Override
     public int hashCode() {
         int result = first != null ? first.hashCode() : 0;
@@ -50,17 +86,35 @@ public class Pair<T, U> {
         return result;
     }
 
+    /**
+     * Maps the pair to a new pair by applying two functions to its elements
+     * @param map1 A function that accepts the first element in the pair
+     * @param map2 A function that accepts the second element in the pair
+     * @param <V> The type of the first element in the new pair
+     * @param <W> The type of the second element in the new pair
+     * @return A new pair after applying the two functions to its elements
+     */
     public <V, W> Pair<V, W> map(Function<T, V> map1, Function<U, W> map2){
         return new Pair<>(map1.apply(first), map2.apply(second));
     }
 
+    /**
+     * Does the same thing as map(Function, Function), however, it accepts a Pair of functions
+     * @param mapping The pair of functions that can convert the element
+     * @param <V> The type of the first element in the new pair
+     * @param <W> The type of the second element in the new pair
+     * @return A new pair after applying the paired functions to its elements
+     */
     public <V, W> Pair<V, W> map(Pair<Function<T, V>, Function<U, W>> mapping){
         return map(mapping.first, mapping.second);
     }
 
+    /**
+     * @return A string in "(obj1, obj2)" format
+     */
     @Override
     public String toString() {
-        return first.toString()+", "+second.toString();
+        return "("+first.toString()+", "+second.toString()+")";
     }
 
     public Pair<U, T> swap(){

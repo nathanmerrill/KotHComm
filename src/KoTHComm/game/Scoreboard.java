@@ -13,15 +13,18 @@ public class Scoreboard<T> implements Iterable<T>, Comparator<T> {
         return list.stream().reduce(0.0, Double::sum);
     }
 
-    public static Double minAggregator(List<Double> list) {
-        return list.stream().min(Double::compare).orElse(0.0);
-    }
-
     public static Double maxAggregator(List<Double> list) {
         return list.stream().max(Double::compare).orElse(0.0);
     }
 
+    public static Double minAggregator(List<Double> list) {
+        return list.stream().min(Double::compare).orElse(0.0);
+    }
+
     public static Double meanAggregator(List<Double> list) {
+        if (list.isEmpty()){
+            return 0.0;
+        }
         return sumAggregator(list) / list.size();
     }
 
@@ -39,6 +42,10 @@ public class Scoreboard<T> implements Iterable<T>, Comparator<T> {
 
     public Scoreboard(Function<List<Double>, Double> aggregator) {
         this(aggregator, true);
+    }
+
+    public Scoreboard(boolean maxScoring){
+        this(Scoreboard::sumAggregator, maxScoring);
     }
 
     public Scoreboard() {
@@ -96,7 +103,7 @@ public class Scoreboard<T> implements Iterable<T>, Comparator<T> {
         return new ArrayList<>(scores.keySet());
     }
 
-    public List<T> sortedPlayers(){
+    public List<T> getPlayersRanked(){
         return stream().collect(Collectors.toList());
     }
 
@@ -128,7 +135,7 @@ public class Scoreboard<T> implements Iterable<T>, Comparator<T> {
         int currentRank = 1;
         double lastScore = aggregates.get(0).second();
         for (int i = 0; i < aggregates.size(); i++){
-            String name = aggregates.get(i).first().toString();
+            String name = aggregates.get(i).first().toString().split("\n")[0];
             double score = aggregates.get(i).second();
             if (score != lastScore){
                 currentRank = i+1;

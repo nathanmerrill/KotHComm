@@ -1,5 +1,6 @@
 package KoTHComm.game;
 
+import KoTHComm.game.exceptions.InvalidFilePathException;
 import KoTHComm.game.exceptions.InvalidPlayerCountException;
 import KoTHComm.utils.Tools;
 
@@ -96,7 +97,7 @@ public class GameManager<T extends AbstractPlayer<T>> {
         File file = new File(System.getProperty("user.dir"),directory);
         File[] children = file.listFiles();
         if (children == null){
-            throw new RuntimeException("Cannot find directory:"+file.getAbsolutePath());
+            throw new InvalidFilePathException("Cannot find directory", file);
         }
         for (File child: children){
             if (child.isDirectory()){

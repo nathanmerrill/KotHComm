@@ -7,7 +7,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class PipeCommunicator implements Communicator<String, String>{
-    public static final String BOTS_FOLDER = System.getProperty("user.dir")+"/bots";
     public static final String COMMAND_FILE = "command.txt";
     private final File directory;
     private final IOPipe pipe;
@@ -30,9 +29,6 @@ public class PipeCommunicator implements Communicator<String, String>{
     }
     public PipeCommunicator(String directory){
         this(new File(directory));
-    }
-    public PipeCommunicator(){
-        this(BOTS_FOLDER);
     }
 
     @Override
