@@ -85,29 +85,20 @@ public class GameManager<T extends AbstractPlayer<T>> {
         return this;
     }
 
+    public void register(List<PlayerType<T>> playerTypes){
+        playerTypes.forEach(this::register);
+    }
+
+    public void register(PlayerType<T> playerType){
+        registeredPlayers.add(playerType);
+    }
+
     public void register(Class<? extends AbstractPlayer<T>> clazz, Supplier<T> supplier){
         register(clazz.getSimpleName(), supplier);
     }
 
     public void register(String name, Supplier<T> supplier){
         registeredPlayers.add(new PlayerType<>(name, supplier));
-    }
-
-    public void registerDirectory(Function<String, T> constructor, String directory){
-        File file = new File(System.getProperty("user.dir"),directory);
-        File[] children = file.listFiles();
-        if (children == null){
-            throw new InvalidFilePathException("Cannot find directory", file);
-        }
-        for (File child: children){
-            if (child.isDirectory()){
-                register(child.getName(), () -> constructor.apply(child.getAbsolutePath()));
-            }
-        }
-    }
-
-    public void registerClasses(String directory){
-
     }
 
     public int maxPlayerCount() {
