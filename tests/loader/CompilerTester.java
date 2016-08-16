@@ -24,8 +24,8 @@ public class CompilerTester {
 
     @Test
     public void createClass(){
-        Compiler compiler = new Compiler(file);
-        Class clazz = compiler.compile();
+        Compiler compiler = new Compiler();
+        Class clazz = compiler.compile(file);
         Assert.assertEquals(clazz.getSimpleName(), className);
     }
 

@@ -12,15 +12,11 @@ import java.util.List;
 import java.util.function.Function;
 
 public class FileReader {
-    public final static String JAVA_SUBDIRECTORY = "java";
-    public final static String ALTERNATE_SUBDIRECTORY = "other";
-
-    private final File javaDirectory, alternateDirectory;
     private final Compiler compiler;
-    public FileReader(File submissionsDirectory){
-        this.javaDirectory = new File(submissionsDirectory, JAVA_SUBDIRECTORY);
-        this.alternateDirectory = new File(submissionsDirectory, ALTERNATE_SUBDIRECTORY);
+    private final SubmissionFileManager fileManager;
+    public FileReader(SubmissionFileManager fileManager){
         this.compiler = new Compiler();
+        this.fileManager = fileManager;
     }
 
     public <T extends AbstractPlayer<T>> List<PlayerType<T>> registerAllSubmissions(Class<T> playerType, Function<PipeCommunicator, T> pipeBot){
@@ -32,9 +28,9 @@ public class FileReader {
 
     public <T extends AbstractPlayer<T>> List<PlayerType<T>> registerJavaFiles(Class<T> playerType){
         ArrayList<PlayerType<T>> players = new ArrayList<>();
-        File[] files = javaDirectory.listFiles();
+        File[] files = fileManager.getJavaDirectory().listFiles();
         if (files == null){
-            throw new RuntimeException("No folder at:"+javaDirectory.toString());
+            throw new RuntimeException("No folder at:"+fileManager.getJavaDirectory().toString());
         }
         for (File file: files){
             Class<?> clazz = compiler.compile(file);
@@ -45,9 +41,9 @@ public class FileReader {
 
     public <T extends AbstractPlayer<T>> List<PlayerType<T>> registerOtherLanguages(Function<PipeCommunicator, T> pipeBot){
         ArrayList<PlayerType<T>> players = new ArrayList<>();
-        File[] folders = alternateDirectory.listFiles();
+        File[] folders = fileManager.getAlternateDirectory().listFiles();
         if (folders == null){
-            throw new RuntimeException("No folder at:"+alternateDirectory.toString());
+            throw new RuntimeException("No folder at:"+fileManager.getAlternateDirectory().toString());
         }
         for (File folder: folders){
             players.add(new PlayerType<>(folder.getName(), () -> pipeBot.apply(new PipeCommunicator(folder))));
