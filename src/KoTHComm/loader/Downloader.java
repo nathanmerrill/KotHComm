@@ -11,9 +11,7 @@ import org.jsoup.nodes.Element;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.List;
-import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 
@@ -92,6 +90,9 @@ public class Downloader {
         for (String codeBlock: codeBlocks){
             int lineIndex = codeBlock.indexOf('\n');
             String fileName = codeBlock.substring(0, lineIndex).trim();
+            if (!fileName.contains(".") || fileName.contains(" ")){
+                continue;
+            }
             File dest = new File(submissionDirectory, fileName);
             try{
                 dest.getCanonicalPath();
