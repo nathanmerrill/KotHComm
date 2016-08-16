@@ -19,7 +19,7 @@ public class FileReader {
         this.fileManager = fileManager;
     }
 
-    public <T extends AbstractPlayer<T>> List<PlayerType<T>> registerAllSubmissions(Class<T> playerType, Function<PipeCommunicator, ? extends T> pipeBot){
+    public <T extends AbstractPlayer<T>> List<PlayerType<T>> registerAllSubmissions(Class<T> playerType, Function<PipeCommunicator, T> pipeBot){
         List<PlayerType<T>> submissions = new ArrayList<>();
         submissions.addAll(registerJavaFiles(playerType));
         submissions.addAll(registerOtherLanguages(pipeBot));
@@ -39,7 +39,7 @@ public class FileReader {
         return players;
     }
 
-    public <T extends AbstractPlayer<T>> List<PlayerType<T>> registerOtherLanguages(Function<PipeCommunicator, ? extends T> pipeBot){
+    public <T extends AbstractPlayer<T>> List<PlayerType<T>> registerOtherLanguages(Function<PipeCommunicator, T> pipeBot){
         ArrayList<PlayerType<T>> players = new ArrayList<>();
         File[] folders = fileManager.getAlternateDirectory().listFiles();
         if (folders == null){
