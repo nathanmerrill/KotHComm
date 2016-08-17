@@ -4,7 +4,10 @@
 
 # User-specific stuff:
 .idea/*
-out/
+out/*
+.gradle/*
+build/*
+gradle/*
 
 ## File-based project format:
 ## Plugin-specific files:
