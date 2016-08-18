@@ -33,8 +33,12 @@ public class PipeCommunicator implements Communicator<String, String>{
 
     @Override
     public String sendMessage(String message, String method, int timeout) {
-        pipe.sendMessage(method+"\n"+message+"\n");
-        return pipe.getMessage(timeout);
+        try {
+            pipe.sendMessage(method + "\n" + message + "\n");
+            return pipe.getMessage(timeout);
+        } catch (IOException e){
+            throw new RuntimeException("Unable to communicate with "+directory.getName(), e);
+        }
     }
 
     private IOPipe start(ProcessBuilder builder){

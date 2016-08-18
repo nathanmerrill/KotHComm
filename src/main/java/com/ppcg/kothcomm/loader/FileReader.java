@@ -28,7 +28,7 @@ public class FileReader {
 
     public <T extends AbstractPlayer<T>> List<PlayerType<T>> registerJavaFiles(Class<T> playerType){
         ArrayList<PlayerType<T>> players = new ArrayList<>();
-        File[] files = fileManager.getJavaDirectory().listFiles();
+        File[] files = fileManager.getJavaDirectory().listFiles((f, i) -> i.endsWith(".java"));
         if (files == null){
             throw new RuntimeException("No folder at:"+fileManager.getJavaDirectory().toString());
         }

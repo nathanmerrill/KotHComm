@@ -22,6 +22,7 @@ public class GameManager<T extends AbstractPlayer<T>> {
         this.maxPlayerCount = Integer.MAX_VALUE-1;
         this.preferredPlayerCount = Integer.MAX_VALUE-1;
         this.registeredPlayers = new ArrayList<>();
+        this.allowDuplicates = true;
         this.random = random;
     }
 
@@ -113,6 +114,9 @@ public class GameManager<T extends AbstractPlayer<T>> {
     public int gameSize(){
         int playerCount = registeredPlayers.size();
         if (playerCount < minPlayerCount){
+            if (allowDuplicates){
+                return minPlayerCount;
+            }
             throw new InvalidPlayerCountException("Need more players");
         }
         return Math.min(playerCount, preferredPlayerCount);
@@ -132,7 +136,15 @@ public class GameManager<T extends AbstractPlayer<T>> {
     }
 
     public AbstractGame<T> constructFromType(Collection<PlayerType<T>> playerSet){
-        return construct(playerSet.stream().map(PlayerType::create).collect(Collectors.toList()));
+        if (playerSet.size() == 0){
+            throw new InvalidPlayerCountException("No players!");
+        }
+        int gameSize = gameSize();
+        List<T> players = new ArrayList<>();
+        while (players.size() < gameSize){
+            playerSet.stream().map(PlayerType::create).forEach(players::add);
+        }
+        return construct(players.subList(0, gameSize));
     }
 
     public List<PlayerType<T>> allPlayers(){

@@ -1,6 +1,7 @@
 package com.ppcg.kothcomm.game.tournaments.types;
 
 import com.ppcg.kothcomm.game.*;
+import com.ppcg.kothcomm.game.exceptions.InvalidPlayerCountException;
 import com.ppcg.kothcomm.game.tournaments.*;
 import com.ppcg.kothcomm.utils.Pair;
 import com.ppcg.kothcomm.utils.iterables.PermutationIterable;
@@ -17,10 +18,12 @@ public class EloTournament<T extends AbstractPlayer<T>> implements TournamentSup
 
     private final double kFactor;
     private final GameManager<T> manager;
+    private final int gameSize;
 
     public EloTournament(GameManager<T> manager, double kFactor){
         this.manager = manager;
         this.kFactor = kFactor;
+        gameSize = manager.gameSize();
     }
 
     public EloTournament(GameManager<T> gameManager){
@@ -35,13 +38,14 @@ public class EloTournament<T extends AbstractPlayer<T>> implements TournamentSup
     public class Elo implements Tournament<T> {
         private final Queue<PlayerType<T>> focuses;
         private final Map<PlayerType<T>, Double> ratings;
-        private final int gameSize;
 
         public Elo() {
             ratings = manager.allPlayers().stream()
                     .collect(Collectors.toMap(Function.identity(), i -> INITIAL_RATING));
             focuses = new LinkedList<>();
-            gameSize = manager.gameSize();
+            if (ratings.size() < gameSize){
+                throw new InvalidPlayerCountException("Elo Tournament only supports games with unique players: more players needed");
+            }
         }
 
         @Override

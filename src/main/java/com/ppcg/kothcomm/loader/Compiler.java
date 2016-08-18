@@ -30,7 +30,7 @@ public final class Compiler {
         if (task.call()) {
             URLClassLoader classLoader;
             try {
-                 classLoader = new URLClassLoader(new URL[]{new File("./").toURI().toURL()});
+                classLoader = new URLClassLoader(new URL[]{new File(file, "../").toURI().toURL()});
             } catch (MalformedURLException e){
                 throw new RuntimeException("Unable to load class file", e);
             }
@@ -42,9 +42,9 @@ public final class Compiler {
         } else {
             String errors = diagnostics.getDiagnostics().stream()
                     .map(diagnostic ->
-                            String.format("Error on line %d in %s%n",
+                            String.format("Error on line %d: %s%n",
                                     diagnostic.getLineNumber(),
-                                    diagnostic.getSource().toUri())
+                                    diagnostic.getMessage(null))
                     ).collect(Collectors.joining("\n"));
             throw new RuntimeException(errors);
         }
