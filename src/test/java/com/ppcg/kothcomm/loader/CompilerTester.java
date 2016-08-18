@@ -1,6 +1,5 @@
 package com.ppcg.kothcomm.loader;
 
-import com.ppcg.kothcomm.loader.Compiler;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
