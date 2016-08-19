@@ -4,6 +4,7 @@ import com.ppcg.kothcomm.game.*;
 import com.ppcg.kothcomm.game.exceptions.InvalidPlayerCountException;
 import com.ppcg.kothcomm.game.tournaments.*;
 import com.ppcg.kothcomm.utils.Pair;
+import com.ppcg.kothcomm.utils.Tools;
 import com.ppcg.kothcomm.utils.iterables.PermutationIterable;
 
 import java.util.*;
@@ -43,9 +44,6 @@ public class EloTournament<T extends AbstractPlayer<T>> implements TournamentSup
             ratings = manager.allPlayers().stream()
                     .collect(Collectors.toMap(Function.identity(), i -> INITIAL_RATING));
             focuses = new LinkedList<>();
-            if (ratings.size() < gameSize){
-                throw new InvalidPlayerCountException("Elo Tournament only supports games with unique players: more players needed");
-            }
         }
 
         @Override
@@ -98,9 +96,9 @@ public class EloTournament<T extends AbstractPlayer<T>> implements TournamentSup
             double max = aggregates.get(aggregates.size() - 1).second();
             double range = max - min;
             if (range == 0) {
-                return aggregates.stream().collect(Collectors.toMap(Pair::first, i -> .5));
+                return aggregates.stream().collect(Collectors.toMap(Pair::first, i -> .5, (i, j)->i));
             }
-            return aggregates.stream().collect(Collectors.toMap(Pair::first, i -> 1 - (i.second() - min) / range));
+            return aggregates.stream().collect(Collectors.toMap(Pair::first, i -> 1 - (i.second() - min) / range, (i, j)->i));
         }
 
 
@@ -108,6 +106,9 @@ public class EloTournament<T extends AbstractPlayer<T>> implements TournamentSup
             List<PlayerType<T>> sorted = ratings.keySet().stream()
                     .sorted(Comparator.comparingDouble(ratings::get))
                     .collect(Collectors.toList());
+            if (sorted.size() < gameSize){
+                return sorted;
+            }
             int minIndex = sorted.indexOf(player);
             int maxIndex = minIndex;
             while (maxIndex - minIndex + 1 < gameSize) {

@@ -19,7 +19,7 @@ public abstract class AbstractPlayer<T extends AbstractPlayer<T>> {
         return type.getName();
     }
 
-    public final void setRandom(Random random){
+    public void setRandom(Random random){
         this.random = random;
     }
 

@@ -37,7 +37,7 @@ public class PipeCommunicator implements Communicator<String, String>{
             pipe.sendMessage(method + "\n" + message + "\n");
             return pipe.getMessage(timeout);
         } catch (IOException e){
-            throw new RuntimeException("Unable to communicate with "+directory.getName(), e);
+            throw new RuntimeException("Unable to communicate with "+directory.getName()+". Method: "+method+" Message: "+message, e);
         }
     }
 

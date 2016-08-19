@@ -5,6 +5,7 @@ import java.io.*;
 public class IOPipe {
     private final BufferedInputStream input;
     private final BufferedOutputStream output;
+    private final BufferedInputStream error;
     private final Process process;
 
 
@@ -12,20 +13,32 @@ public class IOPipe {
         this.process = process;
         input = new BufferedInputStream(process.getInputStream());
         output = new BufferedOutputStream(process.getOutputStream());
+        error = new BufferedInputStream(process.getErrorStream());
+    }
+
+    private String readStream(BufferedInputStream stream) throws IOException{
+        int available = stream.available();
+        if (available > 0) {
+            byte[] bytes = new byte[available];
+            stream.read(bytes);
+            return new String(bytes);
+        }
+        return null;
     }
 
     private String readData(int timeout) throws IOException{
         long timeoutTime = System.currentTimeMillis() + timeout;
-        int available = 0;
-        while (available == 0 && System.currentTimeMillis() < timeoutTime) {
-            available = input.available();
-            if (available > 0) {
-                byte[] bytes = new byte[available];
-                input.read(bytes);
-                return new String(bytes);
+        while (System.currentTimeMillis() < timeoutTime) {
+            String input = readStream(this.input);
+            if (input != null){
+                return input;
+            }
+            String error = readStream(this.error);
+            if (error != null){
+                throw new IOException("Error thrown by bot:"+error);
             }
             try {
-                Thread.sleep(0);
+                Thread.sleep(10);
             } catch (InterruptedException e){
                 throw new RuntimeException(e);
             }
