@@ -1,15 +1,15 @@
-package com.ppcg.kothcomm.game.tournaments.types;
+package com.ppcg.kothcomm.game.tournaments;
 
 import com.ppcg.kothcomm.game.*;
-import com.ppcg.kothcomm.game.tournaments.GameProvider;
-import com.ppcg.kothcomm.game.tournaments.ProviderSupplier;
+import com.ppcg.kothcomm.game.scoreboards.Scoreboard;
 
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
-public class SamplingProvider<T extends AbstractPlayer<T>> implements ProviderSupplier<T> {
+public class SamplingProvider<T extends AbstractPlayer<T>> implements Supplier<GameProvider<T>> {
 
     private final GameManager<T> manager;
 
@@ -18,7 +18,7 @@ public class SamplingProvider<T extends AbstractPlayer<T>> implements ProviderSu
     }
 
     @Override
-    public Sampling getTournament() {
+    public Sampling get() {
         return new Sampling();
     }
 
@@ -45,7 +45,7 @@ public class SamplingProvider<T extends AbstractPlayer<T>> implements ProviderSu
         }
 
         @Override
-        public AbstractGame<T> get() {
+        public AbstractGame<T> get(Scoreboard<PlayerType<T>> scoreboard) {
             if (currentPopulation.size() < gameSize){
                 repopulate(currentPopulation);
             }

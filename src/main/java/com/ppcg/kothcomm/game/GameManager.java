@@ -136,8 +136,8 @@ public class GameManager<T extends AbstractPlayer<T>> {
     }
 
     public AbstractGame<T> constructFromType(Collection<PlayerType<T>> playerSet){
-        if (playerSet.size() == 0){
-            throw new InvalidPlayerCountException("No players!");
+        if (playerSet.size() < 2){
+            throw new InvalidPlayerCountException("Too few players!");
         }
         int gameSize = gameSize();
         List<T> players = new ArrayList<>();

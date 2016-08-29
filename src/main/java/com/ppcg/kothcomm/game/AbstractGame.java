@@ -1,5 +1,7 @@
 package com.ppcg.kothcomm.game;
 
+import com.ppcg.kothcomm.game.scoreboards.AggregateScoreboard;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -8,10 +10,10 @@ import java.util.function.Consumer;
 public abstract class AbstractGame<T extends AbstractPlayer<T>> {
     protected Random random;
     protected List<T> players;
-    private final List<Consumer<Scoreboard<T>>> listeners;
+    private final List<Consumer<AggregateScoreboard<T>>> listeners;
     private boolean started;
     private boolean finished;
-    private Scoreboard<T> scores;
+    private AggregateScoreboard<T> scores;
 
     public AbstractGame(){
         this.players = new ArrayList<>();
@@ -43,7 +45,7 @@ public abstract class AbstractGame<T extends AbstractPlayer<T>> {
 
     protected abstract boolean step();
 
-    public abstract Scoreboard<T> getScores();
+    public abstract AggregateScoreboard<T> getScores();
 
     public final boolean next(){
         if (!started){
@@ -68,7 +70,7 @@ public abstract class AbstractGame<T extends AbstractPlayer<T>> {
     }
 
 
-    public final Scoreboard<T> run(){
+    public final AggregateScoreboard<T> run(){
         setup();
         started = true;
         //noinspection StatementWithEmptyBody
@@ -79,7 +81,7 @@ public abstract class AbstractGame<T extends AbstractPlayer<T>> {
         return scores;
     }
 
-    public final void onFinish(Consumer<Scoreboard<T>> listener){
+    public final void onFinish(Consumer<AggregateScoreboard<T>> listener){
         if (finished){
             listener.accept(scores);
         }

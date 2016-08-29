@@ -27,8 +27,9 @@ dependencies {
     compile 'com.beust:jcommander:1.48'
     compile 'com.google.code.gson:gson:2.7'
     compile 'org.jsoup:jsoup:1.9.1'
+    compile files("${System.properties['java.home']}/../lib/tools.jar")
 
-    // Declare the dependency for your favourite test framework you want to use in your tests.
+    // Declare the dependency   for your favourite test framework you want to use in your tests.
     // TestNG is also supported by the Gradle Test task. Just change the
     // testCompile dependency to testCompile 'org.testng:testng:6.8.1' and add
     // 'test.useTestNG()' to your build script.

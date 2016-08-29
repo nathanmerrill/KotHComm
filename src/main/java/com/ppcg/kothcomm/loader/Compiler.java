@@ -16,6 +16,9 @@ public final class Compiler {
     public Compiler(){
         diagnostics = new DiagnosticCollector<>();
         compiler = ToolProvider.getSystemJavaCompiler();
+        if (compiler == null){
+            throw new RuntimeException("Compiler not available.  Either include tools.jar in your classpath or run from the JDK");
+        }
         fileManager = compiler.getStandardFileManager(diagnostics, null, null);
     }
 

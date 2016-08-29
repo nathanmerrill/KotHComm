@@ -31,6 +31,10 @@ public final class Tools {
         return num < max && num >= min;
     }
 
+    public static boolean inRange(double num, double min, double max){
+        return num < max && num >= min;
+    }
+
     public static int modulo(int num, int mod){
         return ((num%mod)+mod)%mod;
     }

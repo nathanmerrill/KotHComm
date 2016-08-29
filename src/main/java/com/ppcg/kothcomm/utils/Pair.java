@@ -1,5 +1,6 @@
 package com.ppcg.kothcomm.utils;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -121,12 +122,16 @@ public final class Pair<T, U> {
         return new Pair<>(second, first);
     }
 
-    public static <T, U> Map<T, U> toMap(List<Pair<T, U>> list){
-        return list.stream().collect(Collectors.toMap(Pair::first, Pair::second));
+    public static <T, U> Map<T, U> toMap(Iterable<Pair<T, U>> iter){
+        Map<T, U> map = new HashMap<>();
+        iter.forEach(i -> map.put(i.first, i.second));
+        return map;
     }
 
-    public static <T, U> Map<U, T> toReverseMap(List<Pair<T, U>> list){
-        return list.stream().collect(Collectors.toMap(Pair::second, Pair::first));
+    public static <T, U> Map<U, T> toReverseMap(Iterable<Pair<T, U>> iter){
+        Map<U, T> map = new HashMap<>();
+        iter.forEach(i -> map.put(i.second, i.first));
+        return map;
     }
     public static <T, U> List<Pair<T, U>> fromMap(Map<T, U> map){
         return map.entrySet().stream().map(Pair::new).collect(Collectors.toList());

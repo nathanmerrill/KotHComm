@@ -8,6 +8,6 @@ public class IntegerSerializer implements Serializer<Integer> {
 
     @Override
     public Integer deserialize(String representation) {
-        return Integer.parseInt(representation);
+        return Integer.parseInt(representation.trim());
     }
 }

@@ -1,13 +1,13 @@
-package com.ppcg.kothcomm.game.tournaments.types;
+package com.ppcg.kothcomm.game.tournaments;
 
 import com.ppcg.kothcomm.game.*;
-import com.ppcg.kothcomm.game.tournaments.GameProvider;
-import com.ppcg.kothcomm.game.tournaments.ProviderSupplier;
+import com.ppcg.kothcomm.game.scoreboards.Scoreboard;
 import com.ppcg.kothcomm.utils.iterables.CombinationIterable;
 import java.util.*;
+import java.util.function.Supplier;
 
 
-public class RoundRobinProvider<T extends AbstractPlayer<T>> implements ProviderSupplier<T> {
+public class RoundRobinProvider<T extends AbstractPlayer<T>> implements Supplier<GameProvider<T>> {
 
 
     private final GameManager<T> manager;
@@ -16,7 +16,7 @@ public class RoundRobinProvider<T extends AbstractPlayer<T>> implements Provider
     }
 
     @Override
-    public RoundRobin getTournament() {
+    public RoundRobin get() {
         return new RoundRobin();
     }
 
@@ -30,7 +30,7 @@ public class RoundRobinProvider<T extends AbstractPlayer<T>> implements Provider
         }
 
         @Override
-        public AbstractGame<T> get() {
+        public AbstractGame<T> get(Scoreboard<PlayerType<T>> scoreboard) {
             if (!iterator.hasNext()){
                 iterator = iterable.iterator();
             }
