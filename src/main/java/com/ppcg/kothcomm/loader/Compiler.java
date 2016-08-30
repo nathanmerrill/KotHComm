@@ -49,7 +49,7 @@ public final class Compiler {
                                     diagnostic.getLineNumber(),
                                     diagnostic.getMessage(null))
                     ).collect(Collectors.joining("\n"));
-            throw new RuntimeException(errors);
+            throw new RuntimeException("Error when compiling "+file.getName()+"\n"+errors);
         }
     }
 }

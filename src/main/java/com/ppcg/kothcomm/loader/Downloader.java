@@ -1,5 +1,6 @@
 package com.ppcg.kothcomm.loader;
 
+import com.google.gson.JsonArray;
 import com.ppcg.kothcomm.messaging.PipeCommunicator;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -7,6 +8,7 @@ import com.google.gson.JsonParser;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -41,6 +43,10 @@ public class Downloader {
 
     private void readJSON(BufferedReader reader) throws IOException{
         JsonObject parent = new JsonParser().parse(reader).getAsJsonObject();
+        JsonArray items = parent.get("items").getAsJsonArray();
+        if (items.size() == 0){
+            System.out.println("No submissions");
+        }
         for (JsonElement item: parent.get("items").getAsJsonArray()){
             String body = item.getAsJsonObject().get("body").getAsString();
             saveSubmission(body);
@@ -49,12 +55,17 @@ public class Downloader {
 
     private void saveSubmission(String html){
         Document document = Jsoup.parse(html);
-        String header = document.select("h1,h2,h3,h4,h5,h6").get(0).text();
+        Elements elements = document.select("h1,h2,h3,h4,h5,h6");
+        if (elements.isEmpty()){
+            System.out.print("No header found");
+        }
+        String header = elements.get(0).text();
         String[] parts =  header.split(",");
         String name = parts[0];
         String language = parts.length < 2 ? "" : parts[1];
         List<Element> codeBlocks = document.select("pre>code");
         if (codeBlocks.size() == 0){
+            System.out.println("No code blocks in submission:"+header);
             return;
         }
         if (language.contains("Java")){
@@ -62,6 +73,7 @@ public class Downloader {
             return;
         }
         if (codeBlocks.size() == 1){
+            System.out.println("Not enough code blocks for non-java submission:"+header);
             return;
         }
         saveOther(name, codeBlocks.remove(0).text(), codeBlocks.stream().map(Element::text).collect(Collectors.toList()));
@@ -91,6 +103,7 @@ public class Downloader {
             int lineIndex = codeBlock.indexOf('\n');
             String fileName = codeBlock.substring(0, lineIndex).trim();
             if (!fileName.contains(".") || fileName.contains(" ")){
+                System.out.println("Skipping code block, doesn't contain valid filename");
                 continue;
             }
             File dest = new File(submissionDirectory, fileName);
