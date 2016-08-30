@@ -22,7 +22,7 @@ public class PipeCommunicator implements Communicator<String, String>{
             for (ProcessBuilder builder: commands){
                 builder.start().waitFor();
             }
-            pipe = new IOPipe(last.start());
+            pipe = start(last);
         } catch (IOException | InterruptedException e){
             throw new RuntimeException(e);
         }

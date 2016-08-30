@@ -33,7 +33,7 @@ public final class Compiler {
         if (task.call()) {
             URLClassLoader classLoader;
             try {
-                classLoader = new URLClassLoader(new URL[]{new File(file, "../").toURI().toURL()});
+                classLoader = new URLClassLoader(new URL[]{file.getAbsoluteFile().getParentFile().toURI().toURL()});
             } catch (MalformedURLException e){
                 throw new RuntimeException("Unable to load class file", e);
             }

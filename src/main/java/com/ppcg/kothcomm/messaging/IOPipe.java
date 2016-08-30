@@ -57,7 +57,7 @@ public class IOPipe {
 
     @Override
     protected void finalize() throws Throwable {
-        process.destroyForcibly();
         super.finalize();
+        process.destroyForcibly();
     }
 }
