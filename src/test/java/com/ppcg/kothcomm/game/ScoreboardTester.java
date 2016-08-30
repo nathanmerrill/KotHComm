@@ -34,7 +34,7 @@ public class ScoreboardTester {
         scoreboard.toString();
     }
 
-    @Test
+
     public void addPlayer(){
         AggregateScoreboard<Object> scoreboard = new AggregateScoreboard<>();
         scoreboard.addScore(player, 20);
@@ -56,7 +56,7 @@ public class ScoreboardTester {
         Assert.assertEquals(minScoreboard.items().get(0), player, "Min scoring not being respected");
     }
 
-    @Test
+
     public void scoringMethods(){
         Map<Object, Double> scores = new HashMap<>();
         scores.put(player, 15.0);

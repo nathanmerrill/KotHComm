@@ -1,6 +1,8 @@
 package com.ppcg.kothcomm.messaging;
 
 import java.io.*;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class IOPipe {
     private final BufferedInputStream input;
@@ -58,6 +60,14 @@ public class IOPipe {
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
+        readStream(input);
+        input.close();
+        readStream(error);
+        error.close();
+        output.flush();
+        output.close();
         process.destroyForcibly();
+
     }
+
 }
