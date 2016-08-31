@@ -5,6 +5,9 @@ import com.ppcg.kothcomm.game.scoreboards.Scoreboard;
 import com.ppcg.kothcomm.game.tournaments.GameProvider;
 import com.ppcg.kothcomm.game.tournaments.SamplingProvider;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -34,13 +37,25 @@ public class TournamentRunner<T extends AbstractPlayer<T>> {
         this(new SamplingProvider<>(gameManager), AggregateScoreboard::new);
     }
 
-    @SuppressWarnings("ConstantConditions")
     public Scoreboard<PlayerType<T>> run(int numGames){
+        return run(numGames, new PrintStream(new OutputStream() {
+            @Override
+            public void write(int b) throws IOException {
+
+            }
+        }));
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    public Scoreboard<PlayerType<T>> run(int numGames, PrintStream stream){
+        stream.println("Running "+numGames+" games");
         GameProvider<T> provider = providerSupplier.get();
         Scoreboard<PlayerType<T>> scoreboard = rankerSupplier.get();
-
+        int updateFrequency = Math.max(1, numGames/100);
         for (int i = 0; i < numGames; i++){
-
+            if (updateFrequency%numGames == 0){
+                stream.println("Game "+i);
+            }
             Scoreboard<T> results = provider.get(scoreboard).run();
             if (results.isEmpty()){
                 continue;

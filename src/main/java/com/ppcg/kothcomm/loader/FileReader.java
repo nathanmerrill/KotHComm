@@ -12,10 +12,8 @@ import java.util.List;
 import java.util.function.Function;
 
 public class FileReader {
-    private final Compiler compiler;
     private final SubmissionFileManager fileManager;
     public FileReader(SubmissionFileManager fileManager){
-        this.compiler = new Compiler();
         this.fileManager = fileManager;
     }
 
@@ -28,13 +26,24 @@ public class FileReader {
 
     public <T extends AbstractPlayer<T>> List<PlayerType<T>> registerJavaFiles(Class<T> playerType){
         ArrayList<PlayerType<T>> players = new ArrayList<>();
+        Compiler compiler;
+        try {
+            compiler = new Compiler();
+        } catch (RuntimeException e){
+            System.out.print(e.getMessage());
+            return players;
+        }
         File[] files = fileManager.getJavaDirectory().listFiles((f, i) -> i.endsWith(".java"));
         if (files == null){
             throw new RuntimeException("No folder at:"+fileManager.getJavaDirectory().toString());
         }
         for (File file: files){
-            Class<?> clazz = compiler.compile(file);
-            players.add(classToPlayerType(clazz.asSubclass(playerType)));
+            try {
+                Class<?> clazz = compiler.compile(file);
+                players.add(classToPlayerType(clazz.asSubclass(playerType)));
+            } catch (RuntimeException e){
+                System.out.println(e.getMessage());
+            }
         }
         return players;
     }
