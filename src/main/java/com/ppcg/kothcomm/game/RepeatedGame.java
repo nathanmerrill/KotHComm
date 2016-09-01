@@ -9,7 +9,7 @@ public abstract class RepeatedGame<T extends AbstractPlayer<T>> extends Abstract
     protected boolean step() {
         iterations--;
         nextStep();
-        return iterations <= 0;
+        return iterations >= 0;
     }
     protected abstract void nextStep();
 }

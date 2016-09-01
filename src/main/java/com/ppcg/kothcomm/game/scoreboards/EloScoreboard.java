@@ -61,7 +61,7 @@ public class EloScoreboard<T> extends Scoreboard<T> {
         if (range == 0) {
             return scores.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, i -> .5));
         }
-        return scores.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, i -> 1 - (i.getValue() - min) / range));
+        return scores.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, i -> (i.getValue() - min) / range));
     }
 
     @Override
