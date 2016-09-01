@@ -53,7 +53,7 @@ public class TournamentRunner<T extends AbstractPlayer<T>> {
         Scoreboard<PlayerType<T>> scoreboard = rankerSupplier.get();
         int updateFrequency = Math.max(1, numGames/100);
         for (int i = 0; i < numGames; i++){
-            if (updateFrequency%numGames == 0){
+            if (i%updateFrequency == 0){
                 stream.println("Game "+i);
             }
             Scoreboard<T> results = provider.get(scoreboard).run();

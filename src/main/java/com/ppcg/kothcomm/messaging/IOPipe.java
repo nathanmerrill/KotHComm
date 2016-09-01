@@ -1,8 +1,6 @@
 package com.ppcg.kothcomm.messaging;
 
 import java.io.*;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class IOPipe {
     private final BufferedInputStream input;

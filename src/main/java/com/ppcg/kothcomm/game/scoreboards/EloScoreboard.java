@@ -37,8 +37,8 @@ public class EloScoreboard<T> extends Scoreboard<T> {
         updates.forEach(p -> updateScore(p.first(), p.second(), mapped.get(p.first())));
     }
 
-    private void updateScore(T player, double score, double update) {
-        ratings.put(player, ratings.get(player) + kFactor * (update - score));
+    private void updateScore(T player, double expected, double score) {
+        ratings.put(player, ratings.get(player) + kFactor * (score-expected));
     }
 
     private Pair<Double, Double> expectedScore(Pair<T, T> matchup) {
