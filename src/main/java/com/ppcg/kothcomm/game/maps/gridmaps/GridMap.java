@@ -12,6 +12,7 @@ import org.eclipse.collections.api.multimap.MutableMultimap;
 import org.eclipse.collections.api.set.MutableSet;
 import org.eclipse.collections.impl.factory.Maps;
 import org.eclipse.collections.impl.factory.Multimaps;
+import org.eclipse.collections.impl.factory.Sets;
 
 import java.util.Iterator;
 import java.util.Objects;
@@ -54,6 +55,21 @@ public class GridMap<U extends MapPoint, T>
     @Override
     public MutableSet<U> getNeighbors(U origin) {
         return connections.get(origin).toSet();
+    }
+
+    public MutableSet<U> getNeighbors(U origin, int maxDistance){
+        MutableSet<U> points = Sets.mutable.empty();
+        points.add(origin);
+        MutableSet<U> borders = points.clone();
+        for (int i = 1; i <= maxDistance; i++){
+            borders = borders.flatCollect(this::getNeighbors);
+            borders.removeIf(points::contains);
+            if (borders.isEmpty()){
+                break;
+            }
+            points.addAll(borders);
+        }
+        return points;
     }
 
     @Override
@@ -139,4 +155,5 @@ public class GridMap<U extends MapPoint, T>
     public MutableList<T> items() {
         return items.toList();
     }
+
 }
