@@ -3,7 +3,6 @@ package com.ppcg.kothcomm.communication.languages.java;
 import com.ppcg.kothcomm.game.AbstractPlayer;
 import com.ppcg.kothcomm.game.PlayerType;
 import com.ppcg.kothcomm.communication.languages.LanguageLoader;
-import org.eclipse.collections.api.block.function.Function2;
 import org.eclipse.collections.api.list.MutableList;
 
 import java.io.File;
@@ -35,10 +34,14 @@ public class JavaLoader<T extends AbstractPlayer<T>> implements LanguageLoader<T
         return files
                 .select(f -> f.getName().endsWith(".java"))
                 .collect(compiler::compile)
-                .collectWith((Function2<Class, Class<T>, Class>) Class::asSubclass, playerType)
+                .collect(this::cast)
                 .collect(this::classToPlayerType);
     }
 
+    @SuppressWarnings("unchecked")
+    private Class<? extends T> cast(Class clazz){
+        return playerType.asSubclass(clazz);
+    }
 
     private PlayerType<T> classToPlayerType(Class<? extends T> clazz){
         try {
