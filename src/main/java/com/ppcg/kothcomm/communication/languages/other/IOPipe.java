@@ -57,7 +57,15 @@ public class IOPipe {
 
     @Override
     protected void finalize() throws Throwable {
-        process.destroyForcibly();
         super.finalize();
+        readStream(input);
+        input.close();
+        readStream(error);
+        error.close();
+        output.flush();
+        output.close();
+        process.destroyForcibly();
+
     }
+
 }

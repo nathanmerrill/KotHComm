@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class PipeCommunicator implements Communicator<String, String> {
@@ -18,17 +19,23 @@ public class PipeCommunicator implements Communicator<String, String> {
         File commandFile = new File(directory, COMMAND_FILE);
         try {
             List<ProcessBuilder> commands =  Files.lines(commandFile.toPath())
-                    .map(a -> buildProcess(a.split(" ")))
+                    .map(this::buildCommands)
+                    .map(this::buildProcess)
                     .collect(Collectors.toList());
             ProcessBuilder last = commands.remove(commands.size()-1);
             for (ProcessBuilder builder: commands){
-                builder.start().waitFor();
+                builder.start().waitFor(10, TimeUnit.SECONDS);
             }
-            pipe = new IOPipe(last.start());
+            pipe = start(last);
         } catch (IOException | InterruptedException e){
             throw new RuntimeException(e);
         }
     }
+
+    private String[] buildCommands(String command){
+        return command.trim().split(" ");
+    }
+
     public PipeCommunicator(String directory){
         this(new File(directory));
     }
