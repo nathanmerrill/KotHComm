@@ -1,10 +1,9 @@
 package com.ppcg.kothcomm.game.maps.gridmaps.adjacencies;
 
 import com.ppcg.kothcomm.game.maps.MapPoint;
-import com.ppcg.kothcomm.game.maps.gridmaps.Vector;
+import org.eclipse.collections.api.set.MutableSet;
 
-import java.util.Set;
 
 public interface AdjacencySet<U extends MapPoint> {
-    Set<? extends Vector<U>> getAdjacencies(U point);
+    MutableSet<U> getAdjacencies(U point);
 }

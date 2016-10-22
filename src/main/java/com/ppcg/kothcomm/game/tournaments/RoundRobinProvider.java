@@ -1,8 +1,10 @@
 package com.ppcg.kothcomm.game.tournaments;
 
 import com.ppcg.kothcomm.game.*;
-import com.ppcg.kothcomm.game.scoreboards.Scoreboard;
+import com.ppcg.kothcomm.game.scoring.Scoreboard;
 import com.ppcg.kothcomm.utils.iterables.CombinationIterable;
+import org.eclipse.collections.api.list.MutableList;
+
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -21,8 +23,8 @@ public class RoundRobinProvider<T extends AbstractPlayer<T>> implements Supplier
     }
 
     public class RoundRobin implements GameProvider<T> {
-        final Iterable<List<PlayerType<T>>> iterable;
-        Iterator<List<PlayerType<T>>> iterator;
+        final Iterable<MutableList<PlayerType<T>>> iterable;
+        Iterator<MutableList<PlayerType<T>>> iterator;
 
         public RoundRobin(){
             iterable = new CombinationIterable<>(manager.allPlayers(), manager.gameSize());

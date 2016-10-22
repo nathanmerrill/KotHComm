@@ -1,43 +1,37 @@
 package com.ppcg.kothcomm.game;
 
-import com.ppcg.kothcomm.game.scoreboards.AggregateScoreboard;
+import com.ppcg.kothcomm.game.scoring.Scoreboard;
+import org.eclipse.collections.api.collection.MutableCollection;
+import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.impl.factory.Lists;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
-import java.util.function.Consumer;
 
 public abstract class AbstractGame<T extends AbstractPlayer<T>> {
     protected Random random;
-    protected List<T> players;
-    private final List<Consumer<AggregateScoreboard<T>>> listeners;
+    protected MutableList<T> players;
     private boolean started;
     private boolean finished;
-    private AggregateScoreboard<T> scores;
+    private Scoreboard<T> scores;
 
     public AbstractGame(){
-        this.players = new ArrayList<>();
+        this.players = Lists.mutable.empty();
         this.random = new Random();
-        this.listeners = new ArrayList<>();
         this.started = false;
         this.finished = false;
     }
 
-    public final void setPlayers(List<T> players){
-        this.players = players;
+    public final void addPlayers(MutableCollection<T> players){
+        this.players.addAll(players);
         if (random != null) {
-            for (T player : players) {
-                player.setRandom(random);
-            }
+            players.forEachWith(AbstractPlayer::setRandom, random);
         }
     }
 
     public final void setRandom(Random random){
         this.random = random;
         if (players != null){
-            for (T player: players){
-                player.setRandom(random);
-            }
+            players.forEachWith(AbstractPlayer::setRandom, random);
         }
     }
 
@@ -45,9 +39,12 @@ public abstract class AbstractGame<T extends AbstractPlayer<T>> {
 
     protected abstract boolean step();
 
-    public abstract AggregateScoreboard<T> getScores();
+    public abstract Scoreboard<T> getScores();
 
     public final boolean next(){
+        if (finished){
+            return false;
+        }
         if (!started){
             setup();
             started = true;
@@ -57,7 +54,6 @@ public abstract class AbstractGame<T extends AbstractPlayer<T>> {
         }
         finished = true;
         scores = getScores();
-        listeners.forEach(i -> i.accept(scores));
         return true;
     }
 
@@ -70,22 +66,15 @@ public abstract class AbstractGame<T extends AbstractPlayer<T>> {
     }
 
 
-    public final AggregateScoreboard<T> run(){
+    public final Scoreboard<T> run(){
         setup();
         started = true;
         //noinspection StatementWithEmptyBody
         while (step()){ }
         finished = true;
         scores = getScores();
-        listeners.forEach(i -> i.accept(scores));
         return scores;
     }
 
-    public final void onFinish(Consumer<AggregateScoreboard<T>> listener){
-        if (finished){
-            listener.accept(scores);
-        }
-        listeners.add(listener);
-    }
 
 }

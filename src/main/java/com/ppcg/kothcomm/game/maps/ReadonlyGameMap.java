@@ -1,6 +1,7 @@
 package com.ppcg.kothcomm.game.maps;
 
-import java.util.*;
+import org.eclipse.collections.api.map.ImmutableMap;
+
 
 public interface ReadonlyGameMap<U extends MapPoint, T>  {
     T get(U point);
@@ -11,5 +12,5 @@ public interface ReadonlyGameMap<U extends MapPoint, T>  {
 
     boolean contains(U point);
 
-    HashMap<U, T> toMap();
+    ImmutableMap<U, T> toMap();
 }

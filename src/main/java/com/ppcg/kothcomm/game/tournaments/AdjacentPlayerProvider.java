@@ -1,7 +1,9 @@
 package com.ppcg.kothcomm.game.tournaments;
 
 import com.ppcg.kothcomm.game.*;
-import com.ppcg.kothcomm.game.scoreboards.Scoreboard;
+import com.ppcg.kothcomm.game.scoring.Scoreboard;
+import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.tuple.primitive.ObjectDoublePair;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -29,17 +31,14 @@ public class AdjacentPlayerProvider<T extends AbstractPlayer<T>> implements Supp
         @Override
         public AbstractGame<T> get(Scoreboard<PlayerType<T>> scoreboard) {
             if (focuses.isEmpty()) {
-                List<PlayerType<T>> next = new ArrayList<>(scoreboard.items());
-                Collections.shuffle(next);
-                focuses.addAll(next);
+                focuses.addAll(scoreboard.items().toList().shuffleThis(manager.getRandom()));
             }
-            List<PlayerType<T>> players = rangeAround(focuses.poll(), scoreboard);
+            MutableList<PlayerType<T>> players = rangeAround(focuses.poll(), scoreboard);
             return manager.constructFromType(players);
         }
 
-
-        private <U> List<U> rangeAround(U player, Scoreboard<U> scoreboard) {
-            List<U> sorted = scoreboard.itemsOrdered();
+        private <U> MutableList<U> rangeAround(U player, Scoreboard<U> scoreboard) {
+            MutableList<U> sorted = scoreboard.scoresOrdered().collect(ObjectDoublePair::getOne);
             int gameSize = manager.gameSize();
             if (sorted.size() < gameSize){
                 return sorted;

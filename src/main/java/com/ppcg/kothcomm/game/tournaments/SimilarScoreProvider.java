@@ -4,12 +4,13 @@ import com.ppcg.kothcomm.game.AbstractGame;
 import com.ppcg.kothcomm.game.AbstractPlayer;
 import com.ppcg.kothcomm.game.GameManager;
 import com.ppcg.kothcomm.game.PlayerType;
-import com.ppcg.kothcomm.game.scoreboards.Scoreboard;
+import com.ppcg.kothcomm.game.scoring.Scoreboard;
 import com.ppcg.kothcomm.utils.Tools;
+import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.tuple.primitive.ObjectDoublePair;
 
 import java.util.*;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 public class SimilarScoreProvider<T extends AbstractPlayer<T>> implements Supplier<GameProvider<T>> {
 
@@ -35,7 +36,7 @@ public class SimilarScoreProvider<T extends AbstractPlayer<T>> implements Suppli
 
         @Override
         public AbstractGame<T> get(Scoreboard<PlayerType<T>> scoreboard) {
-            List<PlayerType<T>> players = rangeAround(poll(), scoreboard);
+            MutableList<PlayerType<T>> players = rangeAround(poll(), scoreboard);
             if (players.size() == 1){
                 PlayerType<T> next = poll();
                 if (next == players.get(0)){
@@ -48,30 +49,37 @@ public class SimilarScoreProvider<T extends AbstractPlayer<T>> implements Suppli
 
         private PlayerType<T> poll(){
             if (focuses.isEmpty()) {
-                List<PlayerType<T>> next = new ArrayList<>(manager.allPlayers());
-                Collections.shuffle(next);
-                focuses.addAll(next);
+                focuses.addAll(manager.allPlayers().shuffleThis(manager.getRandom()));
             }
             return focuses.poll();
         }
 
 
-        private List<PlayerType<T>> rangeAround(PlayerType<T> player, Scoreboard<PlayerType<T>> scoreboard) {
-            int gameSize = manager.gameSize();
-            if (scoreboard.size() < gameSize){
-                if (scoreboard.isEmpty()){
-                    List<PlayerType<T>> players =  manager.allPlayers();
-                    Collections.shuffle(players);
-                    return players.subList(0, players.size());
-                }
-                return scoreboard.items();
+        private MutableList<PlayerType<T>> rangeAround(PlayerType<T> player, Scoreboard<PlayerType<T>> scoreboard) {
+
+            if (scoreboard.size() < manager.minPlayerCount()){
+                return manager.allPlayers().shuffleThis().subList(0, manager.gameSize());
             }
             double focus = scoreboard.getScore(player);
             double minimum = focus - maxDistance;
             double maximum = focus + maxDistance;
-            return scoreboard.stream()
-                    .filter(i -> Tools.inRange(scoreboard.getScore(i), minimum, maximum))
-                    .collect(Collectors.toList());
+            MutableList<PlayerType<T>> players = scoreboard.scores()
+                    .keyValuesView()
+                    .select(i -> Tools.inRange(i.getTwo(), minimum, maximum))
+                    .collect(ObjectDoublePair::getOne)
+                    .toList();
+            if (players.size() > manager.maxPlayerCount()){
+                return players.shuffleThis(manager.getRandom()).subList(0, manager.maxPlayerCount());
+            }
+            if (players.size() < manager.minPlayerCount()){
+                players.addAll(
+                    manager.allPlayers().toSet()
+                            .withoutAll(players).toList()
+                            .shuffleThis(manager.getRandom())
+                            .subList(0, manager.minPlayerCount() - players.size())
+                );
+            }
+            return players;
         }
     }
 }

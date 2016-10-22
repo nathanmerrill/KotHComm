@@ -1,22 +1,20 @@
 package com.ppcg.kothcomm.game.maps.gridmaps.adjacencies;
 
 import com.ppcg.kothcomm.game.maps.gridmaps.Point2D;
-import com.ppcg.kothcomm.game.maps.gridmaps.Vector2D;
-
-import java.util.HashSet;
-import java.util.Set;
+import org.eclipse.collections.api.set.MutableSet;
+import org.eclipse.collections.impl.factory.Sets;
 
 public final class HexagonalAdjacencySet implements AdjacencySet<Point2D>{
 
     @Override
-    public Set<Vector2D> getAdjacencies(Point2D point) {
-        HashSet<Vector2D> points = new HashSet<>();
-        points.add(new Vector2D(-1, -1));
-        points.add(new Vector2D(-1, 0));
-        points.add(new Vector2D(0, -1));
-        points.add(new Vector2D(0, 1));
-        points.add(new Vector2D(1, 0));
-        points.add(new Vector2D(1, 1));
-        return points;
+    public MutableSet<Point2D> getAdjacencies(Point2D point) {
+        return Sets.mutable.of(
+                point.move(-1, -1),
+                point.move(-1, 0),
+                point.move(0, -1),
+                point.move(0, 1),
+                point.move(1, 0),
+                point.move(1, 1)
+        );
     }
 }

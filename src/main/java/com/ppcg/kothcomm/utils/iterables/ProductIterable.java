@@ -1,21 +1,14 @@
 package com.ppcg.kothcomm.utils.iterables;
 
-import java.util.Iterator;
 
 class ProductIterable<T> extends SubsequenceIterable<T> {
 
-    public ProductIterable(Iterator<T> iter, int length) {
+    public ProductIterable(Iterable<T> iter, int length){
         super(iter, length);
     }
 
-    public ProductIterable(Iterator<T> iter){
-        this(iter, 2);
-    }
     public ProductIterable(Iterable<T> iter){
-        this(iter.iterator());
-    }
-    public ProductIterable(Iterable<T> iter, int length){
-        this(iter.iterator(), length);
+        this(iter, 2);
     }
 
     protected void nextDigits(int index) {

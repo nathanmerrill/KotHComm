@@ -1,23 +1,18 @@
 package com.ppcg.kothcomm.game.maps.gridmaps.adjacencies;
 
 import com.ppcg.kothcomm.game.maps.gridmaps.Point2D;
-import com.ppcg.kothcomm.game.maps.gridmaps.Vector2D;
+import org.eclipse.collections.api.set.MutableSet;
+import org.eclipse.collections.impl.factory.Sets;
 
-import java.util.HashSet;
-import java.util.Set;
 
 public final class TriangleAdjacencySet implements AdjacencySet<Point2D>{
     @Override
-    public Set<Vector2D> getAdjacencies(Point2D point) {
+    public MutableSet<Point2D> getAdjacencies(Point2D point) {
         boolean pointUp = (point.getX()+point.getY())%2 == 0;
-        HashSet<Vector2D> points = new HashSet<>();
-        points.add(new Vector2D(-1, 0));
-        if (pointUp) {
-            points.add(new Vector2D(0, -1));
-        } else {
-            points.add(new Vector2D(0, 1));
-        }
-        points.add(new Vector2D(1, 0));
-        return points;
+        return Sets.mutable.of(
+                point.move(-1, 0),
+                point.move(0, pointUp?-1:1),
+                point.move(1, 0)
+        );
     }
 }

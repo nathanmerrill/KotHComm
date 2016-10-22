@@ -3,9 +3,18 @@ package com.ppcg.kothcomm.game.maps.gridmaps;
 
 import com.ppcg.kothcomm.game.maps.GameMap;
 import com.ppcg.kothcomm.game.maps.MapPoint;
+import com.ppcg.kothcomm.game.maps.gridmaps.bounds.Bounds;
+import com.ppcg.kothcomm.utils.Tools;
+import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.map.ImmutableMap;
+import org.eclipse.collections.api.map.MutableMap;
+import org.eclipse.collections.api.multimap.MutableMultimap;
+import org.eclipse.collections.api.set.MutableSet;
+import org.eclipse.collections.impl.factory.Maps;
+import org.eclipse.collections.impl.factory.Multimaps;
 
-import java.util.*;
-import java.util.stream.Stream;
+import java.util.Iterator;
+import java.util.Objects;
 
 
 /**
@@ -16,12 +25,25 @@ import java.util.stream.Stream;
 public class GridMap<U extends MapPoint, T>
         implements GameMap<U, T>, ReadonlyGridMap<U, T> {
 
-    private final HashMap<U, Set<U>> connections;
-    private final HashMap<U, T> items;
+    private final MutableMultimap<U, U> connections;
+    private final MutableMap<U, T> items;
 
     public GridMap(){
-        connections = new HashMap<>();
-        items = new HashMap<>();
+        connections = Multimaps.mutable.set.empty();
+        items = Maps.mutable.empty();
+    }
+
+    @Override
+    public U randomPoint(boolean canBeEmpty) {
+        return Tools.sample(connections.keyBag().toList());
+    }
+
+    @Override
+    public ReadonlyGridMap<U, T> subMap(Bounds<U> bounds) {
+        GridMap<U, T> map = new GridMap<>();
+        map.connections.putAll(connections.selectKeysValues((i, j) -> bounds.inBounds(i) && bounds.inBounds(j)));
+        map.items.putAll(items.select((i, j) -> bounds.inBounds(i)));
+        return map;
     }
 
     @Override
@@ -30,8 +52,8 @@ public class GridMap<U extends MapPoint, T>
     }
 
     @Override
-    public Set<U> getNeighbors(U origin) {
-        return new HashSet<>(connections.get(origin));
+    public MutableSet<U> getNeighbors(U origin) {
+        return connections.get(origin).toSet();
     }
 
     @Override
@@ -43,7 +65,7 @@ public class GridMap<U extends MapPoint, T>
     public T clear(U point) {
         T item = items.remove(point);
         if (item != null) {
-            connections.remove(point)
+            connections.removeAll(point)
                     .forEach(connection -> connections.get(connection).remove(point));
         }
         return item;
@@ -67,7 +89,6 @@ public class GridMap<U extends MapPoint, T>
     @Override
     public void put(U point, T item) {
         items.put(point, item);
-        connections.putIfAbsent(point, new HashSet<>());
     }
 
     @Override
@@ -75,9 +96,10 @@ public class GridMap<U extends MapPoint, T>
         return items.containsKey(point);
     }
 
+
     @Override
-    public HashMap<U, T> toMap() {
-        return new HashMap<>(items);
+    public ImmutableMap<U, T> toMap() {
+        return items.toImmutable();
     }
 
     @Override
@@ -90,27 +112,8 @@ public class GridMap<U extends MapPoint, T>
     }
 
     @Override
-    public Stream<U> stream() {
-        return locations().stream();
-    }
-
-    @Override
-    public Set<U> locations() {
-        return new HashSet<>(items.keySet());
-    }
-
-    @Override
-    public Set<U> emptyLocations() {
-        Set<U> locations = locations();
-        locations.removeIf(this::isFilled);
-        return locations;
-    }
-
-    @Override
-    public Set<U> filledLocations() {
-        Set<U> locations = locations();
-        locations.removeIf(this::isEmpty);
-        return locations;
+    public MutableSet<U> locations() {
+        return items.keysView().toSet();
     }
 
     @Override
@@ -133,7 +136,7 @@ public class GridMap<U extends MapPoint, T>
     }
 
     @Override
-    public List<T> items() {
-        return new ArrayList<>(items.values());
+    public MutableList<T> items() {
+        return items.toList();
     }
 }

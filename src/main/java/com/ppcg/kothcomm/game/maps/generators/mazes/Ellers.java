@@ -4,6 +4,7 @@ import com.ppcg.kothcomm.game.maps.generators.Generator;
 import com.ppcg.kothcomm.game.maps.gridmaps.GridMap;
 import com.ppcg.kothcomm.game.maps.gridmaps.Point2D;
 import com.ppcg.kothcomm.utils.Tools;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
 
 import java.util.List;
 import java.util.Random;
@@ -36,12 +37,12 @@ public class Ellers implements Generator<GridMap<Point2D, ?>> {
 
     @Override
     public void generate(GridMap<Point2D, ?> map) {
-        List<Integer> states = Tools.range(maxX-minX);
+        MutableIntList states = Tools.range(maxX-minX);
         IntStream.range(minY, maxY).forEach(y -> {
             IntStream.range(minX, maxX).forEach(x->map.put(new Point2D(x, y), null));
-            for (int x: connectNeighbors(states)) {
-                map.connect(new Point2D(minX+x, y), new Point2D(minX+x+1, y));
-            }
+            connectNeighbors(states).forEach(x ->
+                map.connect(new Point2D(minX+x, y), new Point2D(minX+x+1, y))
+            );
         });
 
     }
@@ -51,12 +52,10 @@ public class Ellers implements Generator<GridMap<Point2D, ?>> {
     }
 
 
-    private List<Integer> connectNeighbors(List<Integer> states){
-        return IntStream.range(0, states.size()-1)
-                .filter(x -> !states.get(x+1).equals(states.get(x)) && random.nextBoolean())
-                .mapToObj(i -> i)
-                .collect(Collectors.toList());
-
+    private MutableIntList connectNeighbors(MutableIntList states){
+        return Tools.range(0, states.size()-1)
+                .select(x -> states.get(x+1) != states.get(x))
+                .select(i -> random.nextBoolean());
     }
     /*
     states = range(self.maze.width)

@@ -1,29 +1,26 @@
 package com.ppcg.kothcomm.utils;
 
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.factory.primitive.IntLists;
+
 import java.util.*;
 import java.util.function.*;
 
 
 public final class Tools {
     private Tools(){}
-    public static <T> List<T> iterToList(Iterator<T> iter){
-        ArrayList<T> list = new ArrayList<>();
-        while (iter.hasNext()){
-            list.add(iter.next());
-        }
-        return list;
-    }
-    public static List<Integer> range(int min, int max, int step){
-        List<Integer> range = new ArrayList<>();
+
+    public static MutableIntList range(int min, int max, int step){
+        MutableIntList range = IntLists.mutable.empty();
         for (int i = min; i < max; i += step){
             range.add(i);
         }
         return range;
     }
-    public static List<Integer> range(int min, int max){
+    public static MutableIntList range(int min, int max){
         return range(min, max, 1);
     }
-    public static List<Integer> range(int max){
+    public static MutableIntList range(int max){
         return range(0, max);
     }
 
@@ -67,22 +64,6 @@ public final class Tools {
                 num > min ? min : num;
     }
 
-    public static <T> List<List<T>> partition(List<T> list, int wordSize){
-        List<List<T>> partitions = new ArrayList<>();
-        for (int i = 0; i < list.size(); i+=wordSize){
-            partitions.add(list.subList(i, Math.min(i+wordSize, list.size())));
-        }
-        return partitions;
-    }
-
-    public static <T> T sample(Collection<T> collection, Random random){
-        return collection.stream().skip(random.nextInt(collection.size())).findFirst().orElse(null);
-    }
-
-    public static <T> T sample(Collection<T> collection){
-        return sample(collection, new Random());
-    }
-
     public static <T> T sample(List<T> list, Random random){
         return list.get(random.nextInt(list.size()));
     }
@@ -90,15 +71,4 @@ public final class Tools {
     public static <T> T sample(List<T> list){
         return sample(list, new Random());
     }
-
-    public static <T> List<T> sample(Collection<T> list, int count, Random random){
-        List<T> shuffled = new ArrayList<>(list);
-        Collections.shuffle(shuffled, random);
-        return shuffled.subList(0, count);
-    }
-
-    public static <T> List<T> sample(Collection<T> list, int count){
-        return sample(list, count, new Random());
-    }
-
 }

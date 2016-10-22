@@ -1,16 +1,18 @@
 package com.ppcg.kothcomm.game;
 
-import com.ppcg.kothcomm.game.exceptions.InvalidPlayerCountException;
+import com.ppcg.kothcomm.exceptions.InvalidPlayerCountException;
 import com.ppcg.kothcomm.utils.Tools;
+import org.eclipse.collections.api.collection.MutableCollection;
+import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.impl.factory.Lists;
 
 import java.util.*;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 public class GameManager<T extends AbstractPlayer<T>> {
     public final static int MIN_GAME_SIZE = 2;
     private final Supplier<AbstractGame<T>> gameFactory;
-    private final List<PlayerType<T>> registeredPlayers;
+    private final MutableList<PlayerType<T>> registeredPlayers;
     private final Random random;
     private int preferredPlayerCount;
     private int minPlayerCount;
@@ -21,7 +23,7 @@ public class GameManager<T extends AbstractPlayer<T>> {
         this.minPlayerCount = 2;
         this.maxPlayerCount = Integer.MAX_VALUE-1;
         this.preferredPlayerCount = Integer.MAX_VALUE-1;
-        this.registeredPlayers = new ArrayList<>();
+        this.registeredPlayers = Lists.mutable.empty();
         this.allowDuplicates = true;
         this.random = random;
     }
@@ -83,7 +85,7 @@ public class GameManager<T extends AbstractPlayer<T>> {
         return this;
     }
 
-    public void register(List<PlayerType<T>> playerTypes){
+    public void register(MutableList<PlayerType<T>> playerTypes){
         playerTypes.forEach(this::register);
     }
 
@@ -126,29 +128,27 @@ public class GameManager<T extends AbstractPlayer<T>> {
         return allowDuplicates;
     }
 
-    public AbstractGame<T> construct(Collection<T> players){
+    public AbstractGame<T> construct(MutableCollection<T> players){
         if (!Tools.inRange(players.size(), minPlayerCount, maxPlayerCount+1)){
             throw new InvalidPlayerCountException("Game does not support "+players.size()+" players. Must be between "+minPlayerCount+" and "+maxPlayerCount);
         }
         AbstractGame<T> game = gameFactory.get();
-        game.setPlayers(new ArrayList<>(players));
+        game.addPlayers(players);
         return game;
     }
 
-    public AbstractGame<T> constructFromType(Collection<PlayerType<T>> playerSet){
-        if (playerSet.size() < 2){
+    public AbstractGame<T> constructFromType(MutableList<PlayerType<T>> players){
+        if (players.size() < 2){
             throw new InvalidPlayerCountException("Too few players!");
         }
-        int gameSize = gameSize();
-        List<T> players = new ArrayList<>();
-        while (players.size() < gameSize){
-            playerSet.stream().map(PlayerType::create).forEach(players::add);
-        }
-        return construct(players.subList(0, gameSize));
+
+        return construct(
+                players.subList(0, gameSize())
+                        .collect(PlayerType::create));
     }
 
-    public List<PlayerType<T>> allPlayers(){
-        return new ArrayList<>(registeredPlayers);
+    public MutableList<PlayerType<T>> allPlayers(){
+        return registeredPlayers.clone();
     }
 
 

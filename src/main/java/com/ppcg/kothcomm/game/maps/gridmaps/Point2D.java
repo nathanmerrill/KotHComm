@@ -44,6 +44,18 @@ public class Point2D extends MapPoint implements Comparable<Point2D> {
         }
     }
 
+    public Point2D move(int x, int y){
+        return new Point2D(this.x + x, this.y + y);
+    }
+
+    public Point2D moveX(int x){
+        return move(x, 0);
+    }
+
+    public Point2D moveY(int y){
+        return move(0, y);
+    }
+
     public Point2D wrapY(int maxY){
         return new Point2D(x, Tools.modulo(y, maxY));
     }

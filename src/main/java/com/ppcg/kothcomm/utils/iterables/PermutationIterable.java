@@ -1,6 +1,9 @@
 package com.ppcg.kothcomm.utils.iterables;
 
 import com.ppcg.kothcomm.utils.Tools;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.api.set.sorted.MutableSortedSet;
+import org.eclipse.collections.impl.factory.SortedSets;
 
 import java.util.Iterator;
 import java.util.SortedSet;
@@ -8,20 +11,15 @@ import java.util.TreeSet;
 
 public class PermutationIterable<T> extends SubsequenceIterable<T> {
 
-    private final SortedSet<Integer> availableDigits;
+    private final MutableSortedSet<Integer> availableDigits;
 
-    public PermutationIterable(Iterator<T> iter, int length) {
-        super(iter, length);
-        this.availableDigits = new TreeSet<>(Tools.range(pool.size()).subList(length, pool.size()));
-    }
-    public PermutationIterable(Iterator<T> iter){
-        this(iter, 2);
-    }
-    public PermutationIterable(Iterable<T> iter){
-        this(iter.iterator());
-    }
     public PermutationIterable(Iterable<T> iter, int length){
-        this(iter.iterator(), length);
+        super(iter, length);
+        this.availableDigits = SortedSets.mutable.withAll(Tools.range(length, pool.size()).collect(i->i));
+    }
+
+    public PermutationIterable(Iterable<T> iter){
+        this(iter, 2);
     }
 
     protected void nextDigits(int index) {
@@ -30,7 +28,7 @@ public class PermutationIterable<T> extends SubsequenceIterable<T> {
             return;
         }
         int digit = digits.get(index);
-        SortedSet<Integer> nextAvailable = new TreeSet<>(availableDigits.tailSet(digit));
+        MutableSortedSet<Integer> nextAvailable = availableDigits.tailSet(digit);
         availableDigits.add(digit);
         int nextDigit;
         if (nextAvailable.isEmpty()) {

@@ -1,20 +1,13 @@
 package com.ppcg.kothcomm.utils.iterables;
 
-import java.util.Iterator;
-
 public class CombinationWithReplacementIterable<T> extends SubsequenceIterable<T> {
 
-    public CombinationWithReplacementIterable(Iterator<T> iter, int length) {
+    public CombinationWithReplacementIterable(Iterable<T> iter, int length){
         super(iter, length);
     }
-    public CombinationWithReplacementIterable(Iterator<T> iter){
-        this(iter, 2);
-    }
+
     public CombinationWithReplacementIterable(Iterable<T> iter){
-        this(iter.iterator());
-    }
-    public CombinationWithReplacementIterable(Iterable<T> iter, int length){
-        this(iter.iterator(), length);
+        this(iter, 2);
     }
 
     protected void nextDigits(int index) {
