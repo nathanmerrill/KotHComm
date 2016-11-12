@@ -15,19 +15,16 @@ import java.io.File;
 public final class LanguageLoader<T extends AbstractPlayer<T>> {
 
     private final MutableSet<Language<T>> loaders;
-    private final Language<T> defaultLanguageLoader;
     private final MutableSet<String> excludedLanguages;
     private File submissionsDirectory;
 
-    public LanguageLoader(Language<T> defaultLanguageLoader){
+    public LanguageLoader(){
         this.loaders = Sets.mutable.empty();
-        this.defaultLanguageLoader = defaultLanguageLoader;
-        this.loaders.add(defaultLanguageLoader);
         this.excludedLanguages = Sets.mutable.empty();
     }
 
-    public LanguageLoader(Language<T> defaultLanguageLoader, Arguments arguments){
-        this(defaultLanguageLoader);
+    public LanguageLoader(Arguments arguments){
+        this();
         setSubmissionsDirectory(arguments.submissionDirectory());
         arguments.excludedLanguages.forEach(this::excludeLoader);
     }
@@ -42,7 +39,7 @@ public final class LanguageLoader<T extends AbstractPlayer<T>> {
     public Language<T> byName(String name){
         RichIterable<Language<T>> iter = loaders.selectWith(this::namesMatch, name);
         if (iter.isEmpty()){
-            return defaultLanguageLoader;
+            return null;
         }
         return iter.getOnly();
     }

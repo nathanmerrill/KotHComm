@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.nmerrill.kothcomm.communication.languages.Language;
 import com.nmerrill.kothcomm.exceptions.DownloadingException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -70,7 +71,11 @@ public final class Downloader {
             System.out.println("No code blocks in submission:"+header);
             return;
         }
-        File directory = fileManager.getDirectory(fileManager.byName(name));
+        Language loader = fileManager.byName(name);
+        if (loader == null){
+            System.out.println("Cannot find a language with the name "+name);
+        }
+        File directory = fileManager.getDirectory(loader);
 
         for (Element element: codeBlocks){
             saveOther(element.toString(), directory);
