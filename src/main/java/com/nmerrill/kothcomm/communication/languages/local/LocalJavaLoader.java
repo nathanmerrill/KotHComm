@@ -11,9 +11,9 @@ import java.io.File;
 import java.util.function.Supplier;
 
 
-public final class JavaLocalLoader<T extends AbstractPlayer<T>> implements Language<T> {
+public final class LocalJavaLoader<T extends AbstractPlayer<T>> implements Language<T> {
     private final MutableSet<PlayerType<T>> suppliers;
-    public JavaLocalLoader(){
+    public LocalJavaLoader(){
         suppliers = Sets.mutable.empty();
     }
 
