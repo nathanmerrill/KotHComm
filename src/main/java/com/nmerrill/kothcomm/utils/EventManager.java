@@ -1,31 +1,31 @@
 package com.nmerrill.kothcomm.utils;
 
-import fellowship.events.Event;
-import fellowship.events.Events;
+import org.eclipse.collections.api.map.MutableMap;
+import org.eclipse.collections.api.multimap.MutableMultimap;
 import org.eclipse.collections.api.tuple.Pair;
+import org.eclipse.collections.impl.factory.Maps;
+import org.eclipse.collections.impl.factory.Multimaps;
 import org.eclipse.collections.impl.tuple.Tuples;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
-public class EventManager {
-    private final HashMap<Events, List<Function<Event, Boolean>>> listeners;
-    private final HashMap<Integer, Function<Event, Boolean>> eventNums;
-    private final HashMap<Function<Event, Boolean>, Pair<Integer, Events>> reverseMapping;
+public class EventManager<T> {
+    private final MutableMultimap<T, Function<Event, Boolean>> listeners;
+    private final MutableMap<Integer, Function<Event, Boolean>> eventNums;
+    private final MutableMap<Function<Event, Boolean>, Pair<Integer, T>> reverseMapping;
     private int counter;
 
     public EventManager(){
-        listeners = new HashMap<>();
-        for (Events type: Events.values()){
-            listeners.put(type, new ArrayList<>());
-        }
-        eventNums = new HashMap<>();
-        reverseMapping = new HashMap<>();
+        listeners = Multimaps.mutable.list.empty();
+        eventNums = Maps.mutable.empty();
+        reverseMapping = Maps.mutable.empty();
         counter = 1;
     }
 
-    public int addListener(Events type, Function<Event, Boolean> listener){
-        listeners.get(type).add(listener);
+    public int addListener(T type, Function<Event, Boolean> listener){
+        listeners.put(type, listener);
         eventNums.put(counter, listener);
         reverseMapping.put(listener, Tuples.pair(0, type));
         return counter++;
@@ -36,14 +36,14 @@ public class EventManager {
     }
 
     public void removeListener(Function<Event, Boolean> listener){
-        Pair<Integer, Events> keys = reverseMapping.get(listener);
+        Pair<Integer, T> keys = reverseMapping.get(listener);
         if (keys != null){
             eventNums.remove(keys.getOne());
             listeners.get(keys.getTwo()).remove(listener);
         }
     }
 
-    public void addEvent(Event event, Events type){
+    public void addEvent(Event event, T type){
         List<Function<Event, Boolean>> toRemove = new ArrayList<>();
         listeners.get(type).forEach(f -> {
             if (!f.apply(event)){

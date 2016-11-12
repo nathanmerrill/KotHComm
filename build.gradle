@@ -26,6 +26,7 @@ dependencies {
     compile 'org.jsoup:jsoup:1.9.1'
     compile 'org.eclipse.collections:eclipse-collections-api:8.0.0'
     compile 'org.eclipse.collections:eclipse-collections:8.0.0'
+    compile 'com.beust:jcommander:1.48'
     compile files("${System.properties['java.home']}/../lib/tools.jar")
 
 }
