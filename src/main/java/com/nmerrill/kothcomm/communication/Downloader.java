@@ -23,9 +23,9 @@ public final class Downloader {
     public final static String QUERY_URL = "http://api.stackexchange.com/2.2/questions/";
     public final static String QUERY_PARAMS = "/answers?pagesize=100&order=desc&sort=activity&site=codegolf&filter=!FcbKgRqyv4bqdqoj9fAB6fZ05P";
     private final URL url;
-    private final LanguageLoader fileManager;
+    private final LanguageLoader languageLoader;
 
-    public Downloader(LanguageLoader fileManager, int questionID){
+    public Downloader(LanguageLoader languageLoader, int questionID){
         if (questionID <= 0){
             throw new DownloadingException("Invalid question id");
         }
@@ -34,7 +34,7 @@ public final class Downloader {
         } catch (MalformedURLException e){
             throw new DownloadingException("Invalid url");
         }
-        this.fileManager = fileManager;
+        this.languageLoader = languageLoader;
     }
     public void downloadQuestions(){
         try {
@@ -71,11 +71,12 @@ public final class Downloader {
             System.out.println("No code blocks in submission:"+header);
             return;
         }
-        Language loader = fileManager.byName(name);
+
+        Language loader = languageLoader.byName(name);
         if (loader == null){
             System.out.println("Cannot find a language with the name "+name);
         }
-        File directory = fileManager.getDirectory(loader);
+        File directory = languageLoader.getDirectory(loader);
 
         for (Element element: codeBlocks){
             saveOther(element.toString(), directory);

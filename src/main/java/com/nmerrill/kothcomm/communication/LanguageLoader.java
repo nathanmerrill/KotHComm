@@ -37,6 +37,9 @@ public final class LanguageLoader<T extends AbstractPlayer<T>> {
     }
 
     public Language<T> byName(String name){
+        if (loaders.size() == 1){
+            return loaders.getOnly();
+        }
         RichIterable<Language<T>> iter = loaders.selectWith(this::namesMatch, name);
         if (iter.isEmpty()){
             return null;
