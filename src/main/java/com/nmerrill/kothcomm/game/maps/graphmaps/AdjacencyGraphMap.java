@@ -2,7 +2,7 @@ package com.nmerrill.kothcomm.game.maps.graphmaps;
 
 import com.nmerrill.kothcomm.game.maps.graphmaps.bounds.Bounds;
 import com.nmerrill.kothcomm.game.maps.MapPoint;
-import com.nmerrill.kothcomm.game.maps.graphmaps.adjacencies.AdjacencySet;
+import com.nmerrill.kothcomm.game.maps.graphmaps.neighborhoods.Neighborhood;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.set.MutableSet;
@@ -13,12 +13,12 @@ import java.util.Random;
 
 public class AdjacencyGraphMap<U extends MapPoint, T> implements GraphMap<U, T>{
     private final Bounds<U> bounds;
-    private final AdjacencySet<U> adjacencySet;
+    private final Neighborhood<U> neighborhood;
     private final MutableMap<U, T> points;
 
-    public AdjacencyGraphMap(Bounds<U> bounds, AdjacencySet<U> adjacencySet){
+    public AdjacencyGraphMap(Bounds<U> bounds, Neighborhood<U> neighborhood){
         this.bounds = bounds;
-        this.adjacencySet = adjacencySet;
+        this.neighborhood = neighborhood;
         this.points = Maps.mutable.empty();
     }
 
@@ -31,7 +31,7 @@ public class AdjacencyGraphMap<U extends MapPoint, T> implements GraphMap<U, T>{
     @Override
     public MutableSet<U> getNeighbors(U origin) {
         bounds.checkBounds(origin);
-        return adjacencySet.getAdjacencies(origin).select(bounds::inBounds);
+        return neighborhood.getAdjacencies(origin).select(bounds::inBounds);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class AdjacencyGraphMap<U extends MapPoint, T> implements GraphMap<U, T>{
     public boolean isNeighbor(U origin, U neighbor) {
         bounds.checkBounds(origin);
         bounds.checkBounds(neighbor);
-        return adjacencySet.getAdjacencies(origin).contains(neighbor);
+        return neighborhood.getAdjacencies(origin).contains(neighbor);
     }
 
     @Override
