@@ -2,10 +2,6 @@ package com.ppcg.kothcomm.game.maps.generators;
 
 import com.ppcg.kothcomm.game.maps.MapPoint;
 import com.ppcg.kothcomm.game.maps.gridmaps.GridMap;
-import com.ppcg.kothcomm.game.maps.gridmaps.adjacencies.AdjacencySet;
-import com.ppcg.kothcomm.game.maps.gridmaps.bounds.Bounds;
-
-import java.util.stream.Collectors;
 
 
 public class Fill<T> implements Generator<GridMap<?, T>>{
