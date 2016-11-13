@@ -45,7 +45,6 @@ public class Arguments {
 
     public static <T extends Arguments> T parse(String[] args, T argClass){
         JCommander commander = new JCommander(argClass);
-        commander.setCaseSensitiveOptions(false);
         commander.parse(args);
         return argClass;
     }

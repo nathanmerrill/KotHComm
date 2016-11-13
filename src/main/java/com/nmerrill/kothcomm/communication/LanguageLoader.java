@@ -78,7 +78,7 @@ public final class LanguageLoader<T extends AbstractPlayer<T>> {
         }
         File directory = new File(submissionsDirectory, directoryName);
         //noinspection ResultOfMethodCallIgnored
-        directory.mkdir();
+        directory.mkdirs();
         File[] folders = directory.listFiles();
         return Lists.mutable.of(folders);
     }
