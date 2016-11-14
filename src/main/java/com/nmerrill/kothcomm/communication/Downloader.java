@@ -83,7 +83,7 @@ public final class Downloader {
         File directory = languageLoader.getDirectory(loader);
 
         for (Element element: codeBlocks){
-            saveOther(element.toString(), directory);
+            saveOther(element.text(), directory);
         }
 
     }
