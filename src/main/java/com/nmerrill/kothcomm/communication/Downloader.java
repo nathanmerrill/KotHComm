@@ -60,9 +60,13 @@ public final class Downloader {
         Document document = Jsoup.parse(html);
         Elements elements = document.select("h1,h2,h3,h4,h5,h6");
         if (elements.isEmpty()){
-            System.out.print("No header found");
+            System.out.println("No header found");
+            return;
         }
         String header = elements.get(0).text();
+        if (header.contains("Invalid")){
+            return;
+        }
         String[] parts =  header.split(",");
         String name = parts[0];
         String language = parts.length < 2 ? "" : parts[1];

@@ -20,9 +20,6 @@ public class Arguments {
     @Parameter(names = {"-d", "--directory"}, description = "Directory for submissions")
     public String directory = "submissions";
 
-    @Parameter(names = {"-D", "--download"}, description = "Whether new submissions should be downloaded")
-    public boolean shouldDownload = false;
-
     @Parameter(names = {"-q", "--question-id"}, description = "Question id to download from")
     public int questionID = -1;
 
@@ -31,6 +28,9 @@ public class Arguments {
 
     @Parameter(names = {"-g", "--gui"}, description = "Whether to use a GUI")
     public boolean useGui = false;
+
+    @Parameter(names = {"-h", "--help"}, description = "Help")
+    public boolean help = false;
 
     public Random getRandom(){
         if (randomSeed == -1){
@@ -45,7 +45,12 @@ public class Arguments {
 
     public static <T extends Arguments> T parse(String[] args, T argClass){
         JCommander commander = new JCommander(argClass);
+        commander.setCaseSensitiveOptions(false);
         commander.parse(args);
+        if (argClass.help){
+            commander.usage();
+            System.exit(0);
+        }
         return argClass;
     }
 
