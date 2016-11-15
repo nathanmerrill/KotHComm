@@ -87,7 +87,7 @@ public final class Scoreboard<T> implements Comparator<T>, Iterable<T> {
             return "No scores";
         }
         int currentRank = 1;
-        int index = 1;
+        int index = 0;
         double lastScore = Double.MIN_VALUE;
         for (ObjectDoublePair pair :scores.keyValuesView()){
             String name = pair.getOne().toString().split("\n")[0];

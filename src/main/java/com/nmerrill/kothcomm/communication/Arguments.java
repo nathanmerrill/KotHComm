@@ -32,11 +32,16 @@ public class Arguments {
     @Parameter(names = {"-h", "--help"}, description = "Help")
     public boolean help = false;
 
+
     public Random getRandom(){
         if (randomSeed == -1){
             return new Random();
         }
         return new Random(randomSeed);
+    }
+
+    public boolean validQuestionID(){
+        return questionID > 0;
     }
 
     public File submissionDirectory(){
