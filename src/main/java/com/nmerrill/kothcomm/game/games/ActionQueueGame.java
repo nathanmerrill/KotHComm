@@ -12,14 +12,12 @@ public abstract class ActionQueueGame<T extends AbstractPlayer<T>> extends Abstr
         this(new ActionQueue());
     }
     @Override
-    protected boolean step() {
-        if (isFinished()){
-            return false;
-        }
-        return queue.tick();
+    protected void step() {
+        queue.tick();
     }
 
-    protected boolean isFinished(){
+    @Override
+    public boolean finished(){
         return queue.isEmpty();
     }
 }

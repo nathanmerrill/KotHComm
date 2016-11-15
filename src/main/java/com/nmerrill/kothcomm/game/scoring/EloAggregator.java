@@ -1,6 +1,6 @@
 package com.nmerrill.kothcomm.game.scoring;
 
-import com.nmerrill.kothcomm.utils.iterables.PermutationIterable;
+import com.nmerrill.kothcomm.utils.iterables.Itertools;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.list.primitive.MutableDoubleList;
 import org.eclipse.collections.api.map.primitive.MutableObjectDoubleMap;
@@ -30,7 +30,7 @@ public final class EloAggregator<T> implements Aggregator<Scoreboard<T>> {
             MutableObjectDoubleMap<T> scores = scoreboard.scores();
             normalize(scores);
             MutableObjectDoubleMap<T> updates = ObjectDoubleMaps.mutable.empty();
-            for (MutableList<T> pairing : new PermutationIterable<>(scores.keySet())) {
+            for (MutableList<T> pairing : Itertools.permutation(scores.keySet())) {
                 MutableList<Pair<T, Double>> expected = pairing.zip(expectedScore(pairing, ratings));
                 expected.forEach(pair -> {
                     T item = pair.getOne();

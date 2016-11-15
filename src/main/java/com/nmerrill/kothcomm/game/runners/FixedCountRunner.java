@@ -29,7 +29,7 @@ public final class FixedCountRunner<T extends AbstractPlayer<T>> {
             runner.createGame().run();
         }
         Scoreboard<PlayerType<T>> scoreboard = runner.scoreboard();
-        stream.print(scoreboard);
+        stream.println(scoreboard.scoreTable());
         return scoreboard;
     }
 

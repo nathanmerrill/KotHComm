@@ -14,12 +14,13 @@ public abstract class MaxActionQueueGame<T extends AbstractPlayer<T>> extends Ac
     }
 
     @Override
-    protected boolean step() {
+    protected void step() {
+        super.step();
         stepsRemaining--;
-        return super.step() && stepsRemaining > 0;
     }
 
-    protected boolean isFinished(){
-        return super.isFinished() || stepsRemaining <= 0;
+    @Override
+    public boolean finished() {
+        return super.finished() || stepsRemaining <= 0;
     }
 }

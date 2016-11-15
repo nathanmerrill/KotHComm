@@ -1,6 +1,8 @@
 package com.nmerrill.kothcomm.utils.iterables;
 
+import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.collections.impl.factory.primitive.IntLists;
 
 import java.util.List;
@@ -8,29 +10,35 @@ import java.util.Random;
 
 public final class Itertools {
     private Itertools(){}
-    public static <T> SubsequenceIterable<T> combination(Iterable<T> list, int size){
-        return new CombinationIterable<>(list, size);   
+    
+    
+    public static <T> SubsequenceIterable<T> combination(Iterable<T> iter, int max){
+        MutableList<T> list = Lists.mutable.ofAll(iter);
+        return new SubsequenceIterable<>(list, () -> new CombinationIterator(list.size(), max));
     }
-    public static <T> SubsequenceIterable<T> combinationWithReplacement(Iterable<T> list, int size){
-        return new CombinationWithReplacementIterable<>(list, size);
+    public static <T> SubsequenceIterable<T> combinationWithReplacement(Iterable<T> iter, int max){
+        MutableList<T> list = Lists.mutable.ofAll(iter);
+        return new SubsequenceIterable<>(list, () -> new CombinationWithReplacementIterator(list.size(), max));
     }
-    public static <T> SubsequenceIterable<T> permutation(Iterable<T> list, int size){
-        return new PermutationIterable<>(list, size);
+    public static <T> SubsequenceIterable<T> permutation(Iterable<T> iter, int max){
+        MutableList<T> list = Lists.mutable.ofAll(iter);
+        return new SubsequenceIterable<>(list, () -> new PermutationIterator(list.size(), max));
     }
-    public static <T> SubsequenceIterable<T> product(Iterable<T> list, int size){
-        return new ProductIterable<>(list, size);
+    public static <T> SubsequenceIterable<T> product(Iterable<T> iter, int max){
+        MutableList<T> list = Lists.mutable.ofAll(iter);
+        return new SubsequenceIterable<>(list, () -> new ProductIterator(list.size(), max));
     }
-    public static <T> SubsequenceIterable<T> combination(Iterable<T> list){
-        return new CombinationIterable<>(list, 2);
+    public static <T> SubsequenceIterable<T> combination(Iterable<T> iter){
+        return combination(iter, 2);
     }
-    public static <T> SubsequenceIterable<T> combinationWithReplacement(Iterable<T> list){
-        return new CombinationWithReplacementIterable<>(list, 2);
+    public static <T> SubsequenceIterable<T> combinationWithReplacement(Iterable<T> iter){
+        return combinationWithReplacement(iter, 2);
     }
-    public static <T> SubsequenceIterable<T> permutation(Iterable<T> list){
-        return new PermutationIterable<>(list, 2);
+    public static <T> SubsequenceIterable<T> permutation(Iterable<T> iter){
+        return permutation(iter, 2);
     }
-    public static <T> SubsequenceIterable<T> product(Iterable<T> list){
-        return new ProductIterable<>(list, 2);
+    public static <T> SubsequenceIterable<T> product(Iterable<T> iter){
+        return product(iter, 2);
     }
 
     public static MutableIntList range(int min, int max, int step){

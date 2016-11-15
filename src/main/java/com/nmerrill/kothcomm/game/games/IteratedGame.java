@@ -8,10 +8,12 @@ public abstract class IteratedGame<T extends AbstractPlayer<T>> extends Abstract
         this.iterations = iterations;
     }
     @Override
-    protected boolean step() {
+    protected void step() {
         iterations--;
-        iterate();
+    }
+
+    @Override
+    public boolean finished() {
         return iterations >= 0;
     }
-    protected abstract void iterate();
 }

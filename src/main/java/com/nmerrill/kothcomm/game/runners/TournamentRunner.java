@@ -53,13 +53,15 @@ public final class TournamentRunner<T extends AbstractPlayer<T>> {
 
     public AbstractGame<T> createGame() {
         resolveGames();
-        return tournament.get(aggregate);
+        AbstractGame<T> game = tournament.get(aggregate);
+        currentGames.add(game);
+        return game;
     }
 
 
     private void resolveGames() {
         MutableSet<AbstractGame<T>> finishedGames = currentGames.select(AbstractGame::finished);
-        if (finishedGames.size() > 1) {
+        if (finishedGames.size() > 0) {
             scoreList.addAll(
                     finishedGames
                             .tap(currentGames::remove)

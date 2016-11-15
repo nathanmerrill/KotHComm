@@ -12,14 +12,11 @@ public abstract class AbstractGame<T extends AbstractPlayer<T>> {
     protected Random random;
     protected MutableList<T> players;
     private boolean started;
-    private boolean finished;
-    private Scoreboard<T> scores;
 
     public AbstractGame(){
         this.players = Lists.mutable.empty();
         this.random = new Random();
         this.started = false;
-        this.finished = false;
     }
 
     public final void addPlayers(MutableCollection<T> players){
@@ -45,12 +42,12 @@ public abstract class AbstractGame<T extends AbstractPlayer<T>> {
 
     protected abstract void setup();
 
-    protected abstract boolean step();
+    protected abstract void step();
 
     public abstract Scoreboard<T> getScores();
 
     public final boolean next(){
-        if (finished){
+        if (finished()){
             return false;
         }
         if (!started){
@@ -58,30 +55,19 @@ public abstract class AbstractGame<T extends AbstractPlayer<T>> {
             started = true;
             return true;
         }
-        if (step()) {
-            return true;
-        }
-        finished = true;
-        scores = getScores();
-        return false;
+        step();
+        return finished();
     }
 
-    public final boolean started(){
-        return started;
-    }
-
-    public final boolean finished(){
-        return finished;
-    }
+    public abstract boolean finished();
 
     public final Scoreboard<T> run(){
         setup();
         started = true;
-        //noinspection StatementWithEmptyBody
-        while (step()){ }
-        finished = true;
-        scores = getScores();
-        return scores;
+        while (!finished()){
+            step();
+        }
+        return getScores();
     }
 
 

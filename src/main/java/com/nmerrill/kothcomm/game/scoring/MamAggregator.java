@@ -54,7 +54,7 @@ public final class MamAggregator<T> implements Aggregator<Scoreboard<T>> {
 
     private void affirm(Twin<T> preference, Set<Twin<T>> affirmations, MutableSet<T> players) {
         affirmations.add(preference);
-        for (T player : players.withoutAll(Lists.fixedSize.of(preference.getOne(), preference.getTwo()))){
+        for (T player : players.clone().withoutAll(Lists.fixedSize.of(preference.getOne(), preference.getTwo()))){
             Twin<T> one = Tuples.twin(player, preference.getOne());
             Twin<T> two = Tuples.twin(player, preference.getTwo());
             if (affirmations.contains(one) && !affirmations.contains(two)) {
