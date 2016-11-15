@@ -33,21 +33,14 @@ public final class JavaLoader<T extends AbstractPlayer<T>> implements Language<T
 
     @Override
     public MutableList<PlayerType<T>> loadPlayers(MutableList<File> files) {
-        return files
-                .select(f -> f.getName().endsWith(".java"))
-                .collect(compiler::compile)
-                .collect(this::cast)
-                .collect(this::classToPlayerType);
+        return compiler.compile(files.select(f -> f.getName().endsWith(".java")))
+                .collectIf(playerType::isAssignableFrom, this::classToPlayerType);
     }
 
     @SuppressWarnings("unchecked")
-    private Class<? extends T> cast(Class clazz){
-        return clazz.asSubclass(playerType);
-    }
-
-    private PlayerType<T> classToPlayerType(Class<? extends T> clazz){
+    private PlayerType<T> classToPlayerType(Class clazz){
         try {
-            Constructor<? extends T> constructor = clazz.getConstructor();
+            Constructor<? extends T> constructor = clazz.asSubclass(playerType).getConstructor();
             return new PlayerType<>(clazz.getSimpleName(), () -> safeCallConstructor(constructor));
         } catch(NoSuchMethodException e){
             throw new LanguageLoadException(e);

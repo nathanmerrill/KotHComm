@@ -31,7 +31,6 @@ public final class LocalJavaLoader<T extends AbstractPlayer<T>> implements Langu
         return "local";
     }
 
-
     @Override
     public MutableList<PlayerType<T>> loadPlayers(MutableList<File> files) {
         return suppliers.toList();
