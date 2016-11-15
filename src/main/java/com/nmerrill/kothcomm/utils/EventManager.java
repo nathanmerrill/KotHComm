@@ -39,7 +39,7 @@ public class EventManager<T> {
         Pair<Integer, T> keys = reverseMapping.get(listener);
         if (keys != null){
             eventNums.remove(keys.getOne());
-            listeners.get(keys.getTwo()).remove(listener);
+            listeners.remove(keys.getTwo(), listener);
         }
     }
 
