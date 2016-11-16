@@ -12,21 +12,21 @@ public final class Itertools {
     private Itertools(){}
     
     
-    public static <T> SubsequenceIterable<T> combination(Iterable<T> iter, int max){
+    public static <T> SubsequenceIterable<T> combination(Iterable<T> iter, int length){
         MutableList<T> list = Lists.mutable.ofAll(iter);
-        return new SubsequenceIterable<>(list, () -> new CombinationIterator(list.size(), max));
+        return new SubsequenceIterable<>(list, () -> new CombinationIterator(list.size(), length));
     }
-    public static <T> SubsequenceIterable<T> combinationWithReplacement(Iterable<T> iter, int max){
+    public static <T> SubsequenceIterable<T> combinationWithReplacement(Iterable<T> iter, int length){
         MutableList<T> list = Lists.mutable.ofAll(iter);
-        return new SubsequenceIterable<>(list, () -> new CombinationWithReplacementIterator(list.size(), max));
+        return new SubsequenceIterable<>(list, () -> new CombinationWithReplacementIterator(list.size(), length));
     }
-    public static <T> SubsequenceIterable<T> permutation(Iterable<T> iter, int max){
+    public static <T> SubsequenceIterable<T> permutation(Iterable<T> iter, int length){
         MutableList<T> list = Lists.mutable.ofAll(iter);
-        return new SubsequenceIterable<>(list, () -> new PermutationIterator(list.size(), max));
+        return new SubsequenceIterable<>(list, () -> new PermutationIterator(list.size(), length));
     }
-    public static <T> SubsequenceIterable<T> product(Iterable<T> iter, int max){
+    public static <T> SubsequenceIterable<T> product(Iterable<T> iter, int length){
         MutableList<T> list = Lists.mutable.ofAll(iter);
-        return new SubsequenceIterable<>(list, () -> new ProductIterator(list.size(), max));
+        return new SubsequenceIterable<>(list, () -> new ProductIterator(list.size(), length));
     }
     public static <T> SubsequenceIterable<T> combination(Iterable<T> iter){
         return combination(iter, 2);

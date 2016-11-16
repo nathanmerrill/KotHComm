@@ -2,8 +2,8 @@ package com.nmerrill.kothcomm.utils.iterables;
 
 public final class CombinationWithReplacementIterator extends PoolIterator {
 
-    public CombinationWithReplacementIterator(int size, int max){
-        super(size, max);
+    public CombinationWithReplacementIterator(int maxDigit, int listSize){
+        super(maxDigit, listSize);
     }
 
     protected void nextDigits(int index) {
@@ -11,7 +11,7 @@ public final class CombinationWithReplacementIterator extends PoolIterator {
             return;
         }
         int digit = digits.get(index);
-        int digitMax = (index + 1 == size) ? max - 1 : digits.get(index + 1);
+        int digitMax = (index + 1 == listSize) ? maxDigit - 1 : digits.get(index + 1);
         if (digit == digitMax) {
             nextDigits(index - 1);
             digits.set(index, digits.get(index - 1));
@@ -27,6 +27,6 @@ public final class CombinationWithReplacementIterator extends PoolIterator {
 
     @Override
     public boolean isFinished() {
-        return digits.allSatisfy(i -> i == max);
+        return digits.allSatisfy(i -> i == maxDigit);
     }
 }

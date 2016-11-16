@@ -3,8 +3,8 @@ package com.nmerrill.kothcomm.utils.iterables;
 
 public final class ProductIterator extends PoolIterator {
 
-    public ProductIterator(int size, int max){
-        super(size, max);
+    public ProductIterator(int maxDigit, int listSize){
+        super(maxDigit, listSize);
     }
 
     @Override
@@ -17,7 +17,7 @@ public final class ProductIterator extends PoolIterator {
             return;
         }
         int digit = digits.get(index);
-        int maxDigit = max - 1;
+        int maxDigit = this.maxDigit - 1;
         if (digit == maxDigit) {
             nextDigits(index -1);
             digits.set(index, 0);
@@ -28,6 +28,6 @@ public final class ProductIterator extends PoolIterator {
 
     @Override
     public boolean isFinished() {
-        return digits.allSatisfy(i -> i == max);
+        return digits.allSatisfy(i -> i == maxDigit);
     }
 }

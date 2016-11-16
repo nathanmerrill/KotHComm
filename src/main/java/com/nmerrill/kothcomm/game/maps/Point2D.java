@@ -53,7 +53,7 @@ public final class Point2D extends MapPoint implements Comparable<Point2D> {
     }
 
     public double diagonalDistance(Point2D other){
-        return Math.sqrt(Math.pow(other.x, 2)+Math.pow(other.y, 2));
+        return Math.sqrt(Math.pow(other.x-x, 2)+Math.pow(other.y-y, 2));
     }
 
     public Point2D move(int x, int y){

@@ -7,27 +7,29 @@ import java.util.Arrays;
 
 public abstract class PoolIterator {
     protected final MutableIntList digits;
-    protected final int size;
-    protected final int max;
-    public PoolIterator(int size, int max){
-        assert (size <= max);
+    protected final int listSize;
+    protected final int maxDigit;
+    public PoolIterator(int maxDigit, int listSize){
+        if (listSize > maxDigit){
+            throw new RuntimeException();
+        }
         digits = IntLists.mutable.empty();
-        this.size = size;
-        this.max = max;
+        this.listSize = listSize;
+        this.maxDigit = maxDigit;
     }
 
     public MutableIntList next(){
         if (digits.isEmpty()){
             if (repeats()){
-                int[] arr = new int[size];
+                int[] arr = new int[listSize];
                 Arrays.fill(arr, 0);
                 this.digits.addAll(IntLists.mutable.of(arr));
             } else {
-                this.digits.addAll(Itertools.range(size));
+                this.digits.addAll(Itertools.range(listSize));
             }
             return this.digits;
         }
-        nextDigits(size-1);
+        nextDigits(listSize -1);
         return this.digits;
     }
 

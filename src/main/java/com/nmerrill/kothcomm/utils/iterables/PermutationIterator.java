@@ -6,9 +6,9 @@ import org.eclipse.collections.impl.factory.SortedSets;
 public final class PermutationIterator extends PoolIterator {
 
     private final MutableSortedSet<Integer> availableDigits;
-    public PermutationIterator(int size, int max){
-        super(size, max);
-        availableDigits = SortedSets.mutable.withAll(Itertools.range(size, max).collect(i->i));
+    public PermutationIterator(int maxDigit, int listSize){
+        super(maxDigit, listSize);
+        availableDigits = SortedSets.mutable.withAll(Itertools.range(listSize, maxDigit).collect(i->i));
     }
 
     @Override
@@ -36,8 +36,8 @@ public final class PermutationIterator extends PoolIterator {
 
     @Override
     public boolean isFinished() {
-        for (int i = 0; i < size; i++){
-            if (digits.get(i) != max - i -1){
+        for (int i = 0; i < listSize; i++){
+            if (digits.get(i) != maxDigit - i -1){
                 return false;
             }
         }

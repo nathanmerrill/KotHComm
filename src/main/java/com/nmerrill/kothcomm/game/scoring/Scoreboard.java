@@ -6,9 +6,7 @@ import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.list.primitive.DoubleList;
 import org.eclipse.collections.api.map.primitive.MutableObjectDoubleMap;
 import org.eclipse.collections.api.set.MutableSet;
-import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 import org.eclipse.collections.api.tuple.primitive.ObjectDoublePair;
-import org.eclipse.collections.impl.factory.SortedSets;
 import org.eclipse.collections.impl.factory.primitive.DoubleLists;
 import org.eclipse.collections.impl.factory.primitive.ObjectDoubleMaps;
 
@@ -18,7 +16,7 @@ import java.util.Iterator;
 
 public final class Scoreboard<T> implements Comparator<T>, Iterable<T> {
     private final MutableObjectDoubleMap<T> scores;
-    private final Cache<MutableSortedSet<T>> ranking;
+    private final Cache<MutableList<T>> ranking;
     private final double defaultScore;
     private int ordering;
 
@@ -68,8 +66,8 @@ public final class Scoreboard<T> implements Comparator<T>, Iterable<T> {
     }
 
 
-    private MutableSortedSet<T> calculateRankings(){
-        return SortedSets.mutable.ofAll(this, scores.keySet());
+    private MutableList<T> calculateRankings(){
+        return scores.keysView().toSortedList(this);
     }
 
     @Override
@@ -77,7 +75,7 @@ public final class Scoreboard<T> implements Comparator<T>, Iterable<T> {
         return ordering*Double.compare(scores.get(o1), scores.get(o2));
     }
 
-    public MutableSortedSet<T> rank() {
+    public MutableList<T> rank() {
         return ranking.get(this::calculateRankings);
     }
 

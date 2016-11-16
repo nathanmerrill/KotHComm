@@ -2,8 +2,8 @@ package com.nmerrill.kothcomm.utils.iterables;
 
 public final class CombinationIterator extends PoolIterator {
 
-    public CombinationIterator(int size, int max){
-        super(size, max);
+    public CombinationIterator(int maxDigit, int listSize){
+        super(maxDigit, listSize);
     }
 
     @Override
@@ -17,7 +17,8 @@ public final class CombinationIterator extends PoolIterator {
         }
         int digit = digits.get(index);
 
-        int digitMax = max - size + index;
+        int digitMax = maxDigit - listSize + index;
+
         if (digit == digitMax) {
             nextDigits(index - 1);
             digits.set(index, digits.get(index - 1) + 1);
@@ -28,8 +29,8 @@ public final class CombinationIterator extends PoolIterator {
 
     @Override
     public boolean isFinished() {
-        int offset = max - size;
-        for (int i = 0; i < size; i++){
+        int offset = maxDigit - listSize;
+        for (int i = 0; i < listSize; i++){
             if (digits.get(i) != offset + i){
                 return false;
             }
