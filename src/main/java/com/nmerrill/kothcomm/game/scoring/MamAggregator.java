@@ -41,7 +41,7 @@ public final class MamAggregator<T> implements Aggregator<Scoreboard<T>> {
         Set<Twin<T>> affirmations = new HashSet<>();
         majorities.forEach(t -> this.affirm(t, affirmations, players));
 
-        return Scoreboard.toScoreboard(players.toSortedList((o1, o2) -> {
+        Scoreboard<T> scoreboard = Scoreboard.toScoreboard(players.toSortedList((o1, o2) -> {
             Twin<T> pair = Tuples.twin(o1, o2);
             if (affirmations.contains(pair)) {
                 return -1;
@@ -50,6 +50,8 @@ public final class MamAggregator<T> implements Aggregator<Scoreboard<T>> {
             }
             return 0;
         }));
+        scoreboard.showScores();
+        return scoreboard;
     }
 
     private void affirm(Twin<T> preference, Set<Twin<T>> affirmations, MutableSet<T> players) {

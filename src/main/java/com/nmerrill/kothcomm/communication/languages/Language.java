@@ -9,5 +9,6 @@ import java.io.File;
 public interface Language<T extends AbstractPlayer<T>> {
     String directoryName();
     String name();
+    boolean fileBased();
     MutableList<PlayerType<T>> loadPlayers(MutableList<File> files);
 }

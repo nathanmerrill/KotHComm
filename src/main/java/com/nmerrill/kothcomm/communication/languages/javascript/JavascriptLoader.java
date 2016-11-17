@@ -12,6 +12,12 @@ public final class JavascriptLoader<T extends AbstractPlayer<T>> implements Lang
     public JavascriptLoader(){
 
     }
+
+    @Override
+    public boolean fileBased() {
+        return true;
+    }
+
     @Override
     public String directoryName() {
         return "js";

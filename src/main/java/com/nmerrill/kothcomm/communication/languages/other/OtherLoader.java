@@ -13,6 +13,12 @@ public final class OtherLoader<T extends AbstractPlayer<T>> implements Language<
     public OtherLoader(Function<PipeCommunicator, T> pipeBot){
         this.pipeBot = pipeBot;
     }
+
+    @Override
+    public boolean fileBased() {
+        return true;
+    }
+
     @Override
     public String directoryName() {
         return "other";

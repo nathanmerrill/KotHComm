@@ -72,11 +72,10 @@ public final class LanguageLoader<T extends AbstractPlayer<T>> {
     }
 
     private MutableList<File> getFiles(Language loader){
-        String directoryName = loader.directoryName();
-        if (directoryName == null) {
+        if (loader.fileBased()){
             return null;
         }
-        File directory = new File(submissionsDirectory, directoryName);
+        File directory = new File(submissionsDirectory, loader.directoryName());
         //noinspection ResultOfMethodCallIgnored
         directory.mkdirs();
         File[] folders = directory.listFiles();

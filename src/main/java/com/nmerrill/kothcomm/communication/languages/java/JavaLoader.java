@@ -22,6 +22,11 @@ public final class JavaLoader<T extends AbstractPlayer<T>> implements Language<T
     }
 
     @Override
+    public boolean fileBased() {
+        return true;
+    }
+
+    @Override
     public String directoryName() {
         return "java";
     }

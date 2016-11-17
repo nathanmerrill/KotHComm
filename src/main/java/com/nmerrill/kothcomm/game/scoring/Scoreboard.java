@@ -19,12 +19,22 @@ public final class Scoreboard<T> implements Comparator<T>, Iterable<T> {
     private final Cache<MutableList<T>> ranking;
     private final double defaultScore;
     private int ordering;
+    private boolean showScores;
 
     public Scoreboard(double defaultScore){
         scores = ObjectDoubleMaps.mutable.empty();
         ranking = new Cache<>();
         ordering = 1;
         this.defaultScore = defaultScore;
+        this.showScores = true;
+    }
+
+    public void showScores() {
+        this.showScores = true;
+    }
+
+    public void hideScores() {
+        this.showScores = false;
     }
 
     public Scoreboard(){
@@ -95,7 +105,9 @@ public final class Scoreboard<T> implements Comparator<T>, Iterable<T> {
             }
             index++;
             builder.append(currentRank).append(".\t");
-            builder.append(score).append("\t");
+            if (showScores) {
+                builder.append(score).append("\t");
+            }
             builder.append(name);
             builder.append('\n');
         }
