@@ -13,11 +13,20 @@ import java.net.URLClassLoader;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+/**
+ * This class can be used to take a list of files and compile them into a list of classes
+ *
+ * Use of this class requires the JDK, not the JRE.
+ */
 public final class Compiler {
     private final DiagnosticCollector<JavaFileObject> diagnostics;
     private final JavaCompiler compiler;
     private final StandardJavaFileManager fileManager;
 
+    /**
+     *  Creates your compiler.  Uses the system java compiler, and requires the JDK
+     *  If the JDK is not found, a LanguageLoadException will be thrown
+     */
     public Compiler() {
         diagnostics = new DiagnosticCollector<>();
         compiler = ToolProvider.getSystemJavaCompiler();
@@ -27,10 +36,19 @@ public final class Compiler {
         fileManager = compiler.getStandardFileManager(diagnostics, null, null);
     }
 
+    /**
+     * Compiles a list of files as a collection.  The files should have no package declaration.
+     * If compilation is not successful, a LanguageLoadException is thrown
+     *
+     * @param files Files that you want to compile
+     * @return List of classes for each file.
+     */
+
     public MutableList<Class> compile(MutableList<File> files) {
         if (files.size() == 0) {
             return Lists.mutable.empty();
         }
+        DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
         JavaCompiler.CompilationTask task = compiler.getTask(
                 null,
                 null,

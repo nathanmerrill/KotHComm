@@ -11,31 +11,52 @@ import java.lang.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-
+/**
+ * Loads players contained in Java files.
+ * Players should be located in the /java folder in the submissions directory
+ * @param <T> the type of player you are loading
+ */
 public final class JavaLoader<T extends AbstractPlayer<T>> implements Language<T> {
 
     private final Class<T> playerType;
     private final Compiler compiler;
+
+    /**
+     * Create a Java loader
+     * @param playerType The class of the player you want to create.
+     */
     public JavaLoader(Class<T> playerType){
         this.playerType = playerType;
         this.compiler = new Compiler();
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean fileBased() {
         return true;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public String directoryName() {
         return "java";
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public String name() {
         return "Java";
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public MutableList<PlayerType<T>> loadPlayers(MutableList<File> files) {
         return compiler.compile(files.select(f -> f.getName().endsWith(".java")))

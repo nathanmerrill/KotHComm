@@ -1,7 +1,6 @@
 package com.nmerrill.kothcomm.communication;
 
 import com.nmerrill.kothcomm.communication.languages.Language;
-import com.nmerrill.kothcomm.game.AbstractPlayer;
 import com.nmerrill.kothcomm.game.PlayerType;
 import org.eclipse.collections.impl.factory.Lists;
 import org.testng.Assert;
@@ -11,9 +10,7 @@ import org.testng.util.Strings;
 import java.util.List;
 
 public abstract class LanguageTest {
-    protected class TestPlayer extends AbstractPlayer<TestPlayer>{
 
-    }
     public abstract Language<TestPlayer> getLanguage();
 
     @Test

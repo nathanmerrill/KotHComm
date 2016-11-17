@@ -1,5 +1,6 @@
 package com.nmerrill.kothcomm.communication.languages.java;
 
+import com.nmerrill.kothcomm.communication.FileTest;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.impl.factory.Lists;
 import org.testng.Assert;
@@ -8,17 +9,18 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.List;
 
-public class CompilerTest {
-    private final File testFolder = new File("compiler_test");
+public class CompilerTest implements FileTest {
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @BeforeClass
-    public void createTestFolder(){
-        testFolder.mkdir();
+    public void before(){
+        createTestFolder();
+    }
+
+    @Override
+    public File testDirectory() {
+        return new File("compiler_test");
     }
 
     @Test
@@ -46,35 +48,15 @@ public class CompilerTest {
         Assert.assertEquals(output,create(classes.get(1)).toString());
     }
 
-    @AfterClass(alwaysRun = true)
-    public void deleteTestFolder(){
-        deleteRecursive(testFolder);
-    }
 
     private Object create(Class<?> clazz) throws Exception{
         return clazz.getConstructor().newInstance();
     }
 
-    private File write(String contents, String filename) throws IOException {
-        File location = new File(testFolder, filename);
-        FileWriter writer = new FileWriter(location);
-        writer.write(contents);
-        writer.close();
-        return location;
+
+    @AfterClass(alwaysRun = true)
+    public void after(){
+        deleteTestFolder();
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    private void deleteRecursive(File file){
-        if (file.isFile()){
-            file.delete();
-            return;
-        }
-        File[] children = testFolder.listFiles();
-        if (children != null){
-            for (File child: children){
-                deleteRecursive(child);
-            }
-        }
-        testFolder.delete();
-    }
 }

@@ -23,7 +23,7 @@ public final class LocalJavaLoader<T extends AbstractPlayer<T>> implements Langu
 
     @Override
     public boolean fileBased() {
-        return true;
+        return false;
     }
 
     @Override
