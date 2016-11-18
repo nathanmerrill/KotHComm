@@ -8,7 +8,7 @@ public abstract class Event {
     public Event(){
         cancelled = false;
     }
-    public boolean isCanceled(){
+    public boolean isCancelled(){
         return cancelled;
     }
     public void cancel(){
