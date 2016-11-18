@@ -24,7 +24,7 @@ public final class Scoreboard<T> implements Comparator<T>, Iterable<T> {
     public Scoreboard(double defaultScore){
         scores = ObjectDoubleMaps.mutable.empty();
         ranking = new Cache<>();
-        ordering = 1;
+        ordering = -1;
         this.defaultScore = defaultScore;
         this.showScores = true;
     }
@@ -55,15 +55,15 @@ public final class Scoreboard<T> implements Comparator<T>, Iterable<T> {
     }
 
     public boolean isAscending() {
-        return ordering == 1;
+        return ordering == -1;
     }
 
     public void setAscending() {
-        ordering = 1;
+        ordering = -1;
     }
 
     public void setDescending(){
-        ordering = -1;
+        ordering = 1;
     }
 
     public void addScore(T item, double score){
