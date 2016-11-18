@@ -50,7 +50,7 @@ public final class MamAggregator<T> implements Aggregator<Scoreboard<T>> {
             }
             return 0;
         }));
-        scoreboard.showScores();
+        scoreboard.hideScores();
         return scoreboard;
     }
 
