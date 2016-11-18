@@ -96,7 +96,13 @@ public final class MamAggregator<T> implements Aggregator<Scoreboard<T>> {
     }
 
     private int getPreferenceCount(Twin<T> players, MutableList<? extends Scoreboard<T>> votes) {
-        return votes.count(i -> i.compare(players.getOne(), players.getTwo()) < 0);
+        return votes.count(scoreboard -> {
+            T p1 = players.getOne(), p2 = players.getTwo();
+            if (!scoreboard.contains(p1) || !scoreboard.contains(p2)){
+                return false;
+            }
+            return scoreboard.compare(players.getOne(), players.getTwo()) > 0;
+        });
     }
 
 
