@@ -27,7 +27,7 @@ public final class SquareBounds implements Bounds<Point2D> {
     }
 
     public SquareBounds(int size){
-        this(new Point2D(0,0), new Point2D(size, size));
+        this(new Point2D(0,0), new Point2D(size-1, size-1));
     }
 
     @Override
