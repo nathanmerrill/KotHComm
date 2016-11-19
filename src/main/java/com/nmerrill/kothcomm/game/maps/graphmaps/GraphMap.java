@@ -1,9 +1,10 @@
 package com.nmerrill.kothcomm.game.maps.graphmaps;
 
 import com.nmerrill.kothcomm.game.maps.GameMap;
-import com.nmerrill.kothcomm.game.maps.graphmaps.bounds.Bounds;
 import com.nmerrill.kothcomm.game.maps.MapPoint;
+import com.nmerrill.kothcomm.game.maps.graphmaps.bounds.Bounds;
 import com.nmerrill.kothcomm.utils.iterables.Itertools;
+import org.eclipse.collections.api.block.function.Function;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.MutableMap;
@@ -12,21 +13,18 @@ import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.collections.impl.factory.Maps;
 import org.eclipse.collections.impl.factory.Sets;
 
-import java.util.ArrayDeque;
-import java.util.Iterator;
-import java.util.Queue;
-import java.util.Random;
+import java.util.*;
 
 public interface GraphMap<U extends MapPoint, T> extends GameMap<U, T>, Iterable<U> {
 
     MutableSet<U> getNeighbors(U origin);
 
-    default MutableSet<U> getNeighbors(U origin, int maxDistance){
+    static <U> MutableSet<U> getNeighbors(U origin, int maxDistance, Function<U, ? extends Collection<U>> neighborFunction){
         MutableSet<U> points = Sets.mutable.empty();
         points.add(origin);
         MutableSet<U> borders = points.clone();
         for (int i = 1; i <= maxDistance; i++){
-            borders = borders.flatCollect(this::getNeighbors);
+            borders = borders.flatCollect(neighborFunction);
             borders.removeIf(points::contains);
             if (borders.isEmpty()){
                 break;
@@ -34,6 +32,10 @@ public interface GraphMap<U extends MapPoint, T> extends GameMap<U, T>, Iterable
             points.addAll(borders);
         }
         return points;
+    }
+
+    default MutableSet<U> getNeighbors(U origin, int maxDistance){
+        return getNeighbors(origin, maxDistance, this::getNeighbors);
     }
 
     boolean isNeighbor(U origin, U neighbor);
