@@ -120,6 +120,7 @@ public final class Scoreboard<T> implements Comparator<T>, Iterable<T> {
                 .keyValuesView()
                 .aggregateInPlaceBy(p -> map.apply(p.getOne()), DoubleLists.mutable::empty, (l, p) -> l.add(p.getTwo()))
                 .forEachKeyValue((j,l) -> scoreboard.addScore(j, aggregator.valueOf(l)));
+        scoreboard.ordering = ordering;
         return scoreboard;
     }
 

@@ -58,6 +58,9 @@ public final class TournamentRunner<T extends AbstractPlayer<T>> {
         return game;
     }
 
+    public MutableList<Scoreboard<PlayerType<T>>> getScoreList() {
+        return scoreList;
+    }
 
     private void resolveGames() {
         MutableSet<AbstractGame<T>> finishedGames = currentGames.select(AbstractGame::finished);

@@ -154,7 +154,7 @@ public final class GameManager<T extends AbstractPlayer<T>> {
     }
 
     public MutableList<PlayerType<T>> allPlayers(){
-        return registeredPlayers.clone();
+        return registeredPlayers.clone().shuffleThis(this.getRandom());
     }
 
 

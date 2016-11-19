@@ -13,7 +13,6 @@ import java.util.Iterator;
 
 
 public final class RoundRobin<T extends AbstractPlayer<T>> implements Tournament<T> {
-    private final Iterable<MutableList<PlayerType<T>>> iterable;
     private final GameManager<T> manager;
     private Iterator<MutableList<PlayerType<T>>> iterator;
 
@@ -21,15 +20,18 @@ public final class RoundRobin<T extends AbstractPlayer<T>> implements Tournament
         if (manager.gameSize() > manager.allPlayers().size()){
             throw new InvalidPlayerCountException("RoundRobin does not support duplicate players");
         }
-        iterable = Itertools.combination(manager.allPlayers(), manager.gameSize());
-        iterator = iterable.iterator();
         this.manager = manager;
+        nextIterator();
+    }
+
+    private void nextIterator(){
+        iterator = Itertools.combination(manager.allPlayers(), manager.gameSize()).iterator();
     }
 
     @Override
     public AbstractGame<T> get(Scoreboard<PlayerType<T>> scoreboard) {
         if (!iterator.hasNext()){
-            iterator = iterable.iterator();
+            nextIterator();
         }
         return manager.constructFromType(iterator.next());
     }

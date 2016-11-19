@@ -2,7 +2,7 @@ package com.nmerrill.kothcomm.game;
 
 import java.util.function.Supplier;
 
-public final class PlayerType<T extends AbstractPlayer<T>> {
+public final class PlayerType<T extends AbstractPlayer<T>> implements Comparable<PlayerType<T>>{
     private final Supplier<T> supplier;
     private final String name;
 
@@ -29,7 +29,11 @@ public final class PlayerType<T extends AbstractPlayer<T>> {
         PlayerType that = (PlayerType) o;
 
         return name.equals(that.name);
+    }
 
+    @Override
+    public int compareTo(PlayerType<T> o) {
+        return this.getName().compareTo(o.getName());
     }
 
     @Override

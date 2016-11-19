@@ -101,7 +101,7 @@ public final class MamAggregator<T> implements Aggregator<Scoreboard<T>> {
             if (!scoreboard.contains(p1) || !scoreboard.contains(p2)){
                 return false;
             }
-            return scoreboard.compare(players.getOne(), players.getTwo()) > 0;
+            return scoreboard.compare(players.getOne(), players.getTwo()) < 0;
         });
     }
 
