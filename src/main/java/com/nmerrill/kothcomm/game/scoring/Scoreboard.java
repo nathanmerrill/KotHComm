@@ -103,6 +103,7 @@ public final class Scoreboard<T> implements Comparator<T>, Iterable<T> {
             if (score != lastScore){
                 currentRank = index+1;
             }
+            lastScore = score;
             index++;
             builder.append(currentRank).append(".\t");
             if (showScores) {
