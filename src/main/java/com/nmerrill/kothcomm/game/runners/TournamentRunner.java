@@ -48,6 +48,7 @@ public final class TournamentRunner<T extends AbstractPlayer<T>> {
     }
 
     public Scoreboard<PlayerType<T>> scoreboard() {
+        resolveGames();
         return aggregate;
     }
 
@@ -59,6 +60,7 @@ public final class TournamentRunner<T extends AbstractPlayer<T>> {
     }
 
     public MutableList<Scoreboard<PlayerType<T>>> getScoreList() {
+        resolveGames();
         return scoreList;
     }
 
