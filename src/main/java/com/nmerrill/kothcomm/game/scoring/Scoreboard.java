@@ -7,16 +7,17 @@ import org.eclipse.collections.api.list.primitive.DoubleList;
 import org.eclipse.collections.api.map.primitive.MutableObjectDoubleMap;
 import org.eclipse.collections.api.set.MutableSet;
 import org.eclipse.collections.api.tuple.primitive.ObjectDoublePair;
+import org.eclipse.collections.impl.factory.Lists;
+import org.eclipse.collections.impl.factory.Sets;
 import org.eclipse.collections.impl.factory.primitive.DoubleLists;
 import org.eclipse.collections.impl.factory.primitive.ObjectDoubleMaps;
 
 import java.util.Comparator;
-import java.util.Iterator;
 
 
-public final class Scoreboard<T> implements Comparator<T>, Iterable<T> {
+public final class Scoreboard<T> implements Comparator<T> {
     private final MutableObjectDoubleMap<T> scores;
-    private final Cache<MutableList<T>> ranking;
+    private final Cache<MutableList<MutableSet<T>>> ranking;
     private final double defaultScore;
     private int ordering;
     private boolean showScores;
@@ -44,7 +45,6 @@ public final class Scoreboard<T> implements Comparator<T>, Iterable<T> {
     public MutableSet<T> items(){
         return scores.keysView().toSet();
     }
-
 
     public MutableObjectDoubleMap<T> scores(){
         return ObjectDoubleMaps.mutable.ofAll(scores);
@@ -76,8 +76,20 @@ public final class Scoreboard<T> implements Comparator<T>, Iterable<T> {
     }
 
 
-    private MutableList<T> calculateRankings(){
-        return scores.keysView().toSortedList(this);
+    private MutableList<MutableSet<T>> calculateRankings(){
+        MutableList<T> rankings = scores.keysView().toSortedList(this);
+        MutableList<MutableSet<T>> withTies = Lists.mutable.empty();
+        double currentScore = 0;
+        MutableSet<T> currentSet = null;
+        for (T item: rankings){
+            if (currentSet == null || currentScore != getScore(item)){
+                currentSet = Sets.mutable.empty();
+                currentScore = getScore(item);
+                withTies.add(currentSet);
+            }
+            currentSet.add(item);
+        }
+        return withTies;
     }
 
     @Override
@@ -85,7 +97,7 @@ public final class Scoreboard<T> implements Comparator<T>, Iterable<T> {
         return ordering*Double.compare(scores.get(o1), scores.get(o2));
     }
 
-    public MutableList<T> rank() {
+    public MutableList<MutableSet<T>> rank() {
         return ranking.get(this::calculateRankings);
     }
 
@@ -144,13 +156,5 @@ public final class Scoreboard<T> implements Comparator<T>, Iterable<T> {
         return scores.containsKey(item);
     }
 
-    @Override
-    public Iterator<T> iterator() {
-        return rank().iterator();
-    }
-
-    public MutableList<T> toList() {
-        return rank().toList();
-    }
 
 }

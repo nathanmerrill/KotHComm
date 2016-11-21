@@ -23,7 +23,7 @@ public final class FixedCountRunner<T extends AbstractPlayer<T>> {
     public Scoreboard<PlayerType<T>> run(int numGames, PrintStream stream) {
         int updateFrequency = MathTools.clamp(numGames / 100, 1, 100);
         for (int i = 0; i < numGames; i++) {
-            if (numGames % updateFrequency == 0) {
+            if (i % updateFrequency == 0) {
                 stream.println("Game " + i);
             }
             runner.createGame().run();

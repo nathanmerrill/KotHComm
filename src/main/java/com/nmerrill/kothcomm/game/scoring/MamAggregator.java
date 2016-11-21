@@ -27,8 +27,8 @@ public final class MamAggregator<T> implements Aggregator<Scoreboard<T>> {
 
     @Override
     public Scoreboard<T> aggregate(MutableList<? extends Scoreboard<T>> scores) {
-        MutableList<MutableList<T>> votes = scores.collect(Scoreboard::rank);
-        MutableSet<T> players = votes.flatCollect(i -> i).toSet();
+//        MutableList<MutableList<MutableSet<T>>> votes = scores.collect(Scoreboard::rank);
+        MutableSet<T> players = scores.flatCollect(Scoreboard::items).toSet();
         MutableList<Twin<T>> playerPairs = Itertools.permutation(players).toList()
                 .collect(l -> Tuples.twin(l.get(0), l.get(1)));
 
