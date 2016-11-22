@@ -1,4 +1,4 @@
-package com.nmerrill.kothcomm.gui;
+package com.nmerrill.kothcomm.ui.gui;
 
 import com.nmerrill.kothcomm.game.scoring.Scoreboard;
 import javafx.beans.property.ReadOnlyObjectWrapper;

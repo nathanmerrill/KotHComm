@@ -1,12 +1,9 @@
 package com.nmerrill.kothcomm.game.runners;
 
+import com.nmerrill.kothcomm.game.AbstractPlayer;
 import com.nmerrill.kothcomm.game.PlayerType;
 import com.nmerrill.kothcomm.game.scoring.Scoreboard;
-import com.nmerrill.kothcomm.utils.MathTools;
-import com.nmerrill.kothcomm.utils.NullStream;
-import com.nmerrill.kothcomm.game.AbstractPlayer;
-
-import java.io.PrintStream;
+import com.nmerrill.kothcomm.ui.text.TextUI;
 
 
 public final class FixedCountRunner<T extends AbstractPlayer<T>> {
@@ -17,19 +14,18 @@ public final class FixedCountRunner<T extends AbstractPlayer<T>> {
     }
 
     public Scoreboard<PlayerType<T>> run(int numGames){
-        return run(numGames, new NullStream());
+        return run(numGames, new TextUI());
     }
 
-    public Scoreboard<PlayerType<T>> run(int numGames, PrintStream stream) {
-        int updateFrequency = MathTools.clamp(numGames / 100, 1, 100);
+    public Scoreboard<PlayerType<T>> run(int numGames, TextUI printer) {
+        printer.out.println("Running "+numGames+" games");
         for (int i = 0; i < numGames; i++) {
-            if (i % updateFrequency == 0) {
-                stream.println("Game " + i);
-            }
+            printer.printProgress(i, numGames);
             runner.createGame().run();
         }
+        printer.printProgress(numGames, numGames);
         Scoreboard<PlayerType<T>> scoreboard = runner.scoreboard();
-        stream.println(scoreboard.scoreTable());
+        printer.printScoreboard(scoreboard);
         return scoreboard;
     }
 

@@ -20,22 +20,12 @@ public final class Scoreboard<T> implements Comparator<T> {
     private final Cache<MutableList<MutableSet<T>>> ranking;
     private final double defaultScore;
     private int ordering;
-    private boolean showScores;
 
-    public Scoreboard(double defaultScore){
+    public Scoreboard(double defaultScore) {
         scores = ObjectDoubleMaps.mutable.empty();
         ranking = new Cache<>();
         ordering = 1;
         this.defaultScore = defaultScore;
-        this.showScores = true;
-    }
-
-    public void showScores() {
-        this.showScores = true;
-    }
-
-    public void hideScores() {
-        this.showScores = false;
     }
 
     public Scoreboard(){
@@ -99,32 +89,6 @@ public final class Scoreboard<T> implements Comparator<T> {
 
     public MutableList<MutableSet<T>> rank() {
         return ranking.get(this::calculateRankings);
-    }
-
-    public String scoreTable() {
-        StringBuilder builder = new StringBuilder();
-        if (scores.isEmpty()){
-            return "No scores";
-        }
-        int currentRank = 1;
-        int index = 0;
-        double lastScore = Double.MIN_VALUE;
-        for (ObjectDoublePair pair :scoresOrdered()){
-            String name = pair.getOne().toString().split("\n")[0];
-            double score = pair.getTwo();
-            if (score != lastScore){
-                currentRank = index+1;
-            }
-            lastScore = score;
-            index++;
-            builder.append(currentRank).append(".\t");
-            if (showScores) {
-                builder.append(score).append("\t");
-            }
-            builder.append(name);
-            builder.append('\n');
-        }
-        return builder.toString();
     }
 
     public <U> Scoreboard<U> mapScoreboard(Function<T, U> map, Function<DoubleList, Double> aggregator){

@@ -1,15 +1,15 @@
 package com.nmerrill.kothcomm.communication.languages.java;
 
-import com.nmerrill.kothcomm.exceptions.LanguageLoadException;
-import com.nmerrill.kothcomm.game.PlayerType;
-import com.nmerrill.kothcomm.game.AbstractPlayer;
 import com.nmerrill.kothcomm.communication.languages.Language;
+import com.nmerrill.kothcomm.exceptions.LanguageLoadException;
+import com.nmerrill.kothcomm.game.AbstractPlayer;
+import com.nmerrill.kothcomm.game.PlayerType;
 import org.eclipse.collections.api.list.MutableList;
 
 import java.io.File;
-import java.lang.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 
 /**
  * Loads players contained in Java files.
@@ -60,7 +60,13 @@ public final class JavaLoader<T extends AbstractPlayer<T>> implements Language<T
     @Override
     public MutableList<PlayerType<T>> loadPlayers(MutableList<File> files) {
         return compiler.compile(files.select(f -> f.getName().endsWith(".java")))
-                .collectIf(playerType::isAssignableFrom, this::classToPlayerType);
+                .collectIf(this::isConstructable, this::classToPlayerType);
+    }
+
+    private boolean isConstructable(Class clazz){
+        return playerType.isAssignableFrom(clazz) &&
+                !Modifier.isAbstract(clazz.getModifiers()) &&
+                !Modifier.isInterface(clazz.getModifiers());
     }
 
     @SuppressWarnings("unchecked")

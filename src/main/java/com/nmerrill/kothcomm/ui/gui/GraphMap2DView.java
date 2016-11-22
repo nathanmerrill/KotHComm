@@ -1,4 +1,4 @@
-package com.nmerrill.kothcomm.gui;
+package com.nmerrill.kothcomm.ui.gui;
 
 import com.nmerrill.kothcomm.game.maps.Point2D;
 import com.nmerrill.kothcomm.game.maps.graphmaps.GraphMap;

@@ -1,4 +1,4 @@
-package com.nmerrill.kothcomm.gui;
+package com.nmerrill.kothcomm.ui.gui;
 
 
 public interface GameNode {

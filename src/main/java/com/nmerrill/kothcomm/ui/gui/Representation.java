@@ -1,4 +1,4 @@
-package com.nmerrill.kothcomm.gui;
+package com.nmerrill.kothcomm.ui.gui;
 
 import javafx.scene.paint.Color;
 import org.eclipse.collections.api.tuple.Pair;

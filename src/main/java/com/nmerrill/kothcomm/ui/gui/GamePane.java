@@ -1,4 +1,4 @@
-package com.nmerrill.kothcomm.gui;
+package com.nmerrill.kothcomm.ui.gui;
 
 import com.nmerrill.kothcomm.game.games.AbstractGame;
 import javafx.collections.ListChangeListener;
