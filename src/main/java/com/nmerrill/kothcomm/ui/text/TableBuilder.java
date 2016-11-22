@@ -13,7 +13,7 @@ import java.util.Arrays;
 
 public class TableBuilder {
     public enum BorderType {
-        NONE, ASCII, UNICODE
+        NONE, ASCII
     }
 
     public enum BorderPosition  {
@@ -59,40 +59,6 @@ public class TableBuilder {
             default:
                 return '+';
         }
-    }
-
-    private char unicodeBorder(BorderPosition position){
-        switch (position){
-            case TOP:
-            case BOTTOM:
-                return '═';
-            case LEFT:
-            case RIGHT:
-                return '║';
-            case HORIZONTAL:
-                return '─';
-            case VERTICAL:
-                return '│';
-            case TOP_LEFT:
-                return '╔';
-            case TOP_CENTER:
-                return '╤';
-            case TOP_RIGHT:
-                return '╗';
-            case MIDDLE_LEFT:
-                return '╟';
-            case MIDDLE_CENTER:
-                return '┼';
-            case MIDDLE_RIGHT:
-                return '╢';
-            case BOTTOM_LEFT:
-                return '╚';
-            case BOTTOM_CENTER:
-                return '╧';
-            case BOTTOM_RIGHT:
-                return '╝';
-        }
-        return '\u0000';
     }
 
     private BorderType borderType;
@@ -233,10 +199,8 @@ public class TableBuilder {
             case NONE:
                 return noneBorder(position);
             case ASCII:
-                return asciiBorder(position);
-            case UNICODE:
             default:
-                return unicodeBorder(position);
+                return asciiBorder(position);
         }
     }
 
