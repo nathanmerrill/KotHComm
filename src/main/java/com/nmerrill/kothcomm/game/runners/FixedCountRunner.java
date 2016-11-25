@@ -7,9 +7,9 @@ import com.nmerrill.kothcomm.ui.text.TextUI;
 
 
 public final class FixedCountRunner<T extends AbstractPlayer<T>> {
-    private final TournamentRunner<T> runner;
+    private final TournamentRunner<T, ?> runner;
 
-    public FixedCountRunner(TournamentRunner<T> runner){
+    public FixedCountRunner(TournamentRunner<T, ?> runner){
         this.runner = runner;
     }
 

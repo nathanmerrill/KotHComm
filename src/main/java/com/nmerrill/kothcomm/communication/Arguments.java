@@ -17,6 +17,9 @@ public class Arguments {
     @Parameter(names = {"-e", "--exclude"}, description = "Languages that should be excluded.  Use 'other' for languages without built-in support, or 'local' for local classes.  You can prefix a language with `non` to exclude everything but that language", variableArity = true)
     public List<String> excludedLanguages = new ArrayList<>();
 
+    @Parameter(names = {"-t", "--test-bot"}, description = "Test a single bot.  Only games that involve that bot will be run")
+    public String botName = null;
+
     @Parameter(names = {"-d", "--directory"}, description = "Directory for submissions")
     public String directory = "submissions";
 
@@ -32,6 +35,14 @@ public class Arguments {
     @Parameter(names = {"-h", "--help"}, description = "Help")
     public boolean help = false;
 
+
+    public boolean shouldTestBot(){
+        return botName != null && !botName.equals("");
+    }
+
+    public String getBotName(){
+        return botName;
+    }
 
     public Random getRandom(){
         if (randomSeed == -1){

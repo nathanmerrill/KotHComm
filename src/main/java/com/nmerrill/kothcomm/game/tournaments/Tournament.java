@@ -1,10 +1,8 @@
 package com.nmerrill.kothcomm.game.tournaments;
 
-import com.nmerrill.kothcomm.game.games.AbstractGame;
-import com.nmerrill.kothcomm.game.AbstractPlayer;
-import com.nmerrill.kothcomm.game.PlayerType;
 import com.nmerrill.kothcomm.game.scoring.Scoreboard;
+import org.eclipse.collections.api.list.MutableList;
 
-public interface Tournament<T extends AbstractPlayer<T>>{
-    AbstractGame<T> get(Scoreboard<PlayerType<T>> ranking);
+public interface Tournament<T>{
+    MutableList<T> get(int count, Scoreboard<T> ranking);
 }

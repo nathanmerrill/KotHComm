@@ -1,37 +1,37 @@
 package com.nmerrill.kothcomm.game.tournaments;
 
-import com.nmerrill.kothcomm.game.games.AbstractGame;
 import com.nmerrill.kothcomm.game.AbstractPlayer;
-import com.nmerrill.kothcomm.game.GameManager;
 import com.nmerrill.kothcomm.game.PlayerType;
 import com.nmerrill.kothcomm.game.scoring.Scoreboard;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.tuple.primitive.ObjectDoublePair;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Random;
 
 
-public final class AdjacentPlayer<T extends AbstractPlayer<T>> implements Tournament<T> {
+public final class AdjacentPlayer<T extends AbstractPlayer<T>> implements Tournament<PlayerType<T>> {
     private final Queue<PlayerType<T>> focuses;
-    private final GameManager<T> manager;
+    private final MutableList<PlayerType<T>> players;
+    private final Random random;
 
-    public AdjacentPlayer(GameManager<T> manager) {
-        this.manager = manager;
+    public AdjacentPlayer(MutableList<PlayerType<T>> players, Random random) {
+        this.players = players;
+        this.random = random;
         focuses = new LinkedList<>();
     }
 
     @Override
-    public AbstractGame<T> get(Scoreboard<PlayerType<T>> scoreboard) {
+    public MutableList<PlayerType<T>> get(int count, Scoreboard<PlayerType<T>> scoreboard) {
         if (focuses.isEmpty()) {
-            focuses.addAll(scoreboard.items().toList().shuffleThis(manager.getRandom()));
+            focuses.addAll(scoreboard.items().toList().shuffleThis(random));
         }
-        MutableList<PlayerType<T>> players = rangeAround(focuses.poll(), scoreboard);
-        return manager.constructFromType(players);
+        return rangeAround(count, focuses.poll(), scoreboard);
     }
 
-    private <U> MutableList<U> rangeAround(U player, Scoreboard<U> scoreboard) {
+    private <U> MutableList<U> rangeAround(int gameSize, U player, Scoreboard<U> scoreboard) {
         MutableList<U> sorted = scoreboard.scoresOrdered().collect(ObjectDoublePair::getOne);
-        int gameSize = manager.gameSize();
         if (sorted.size() < gameSize) {
             return sorted;
         }

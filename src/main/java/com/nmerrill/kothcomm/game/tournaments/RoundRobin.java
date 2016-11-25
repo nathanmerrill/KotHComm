@@ -2,38 +2,40 @@ package com.nmerrill.kothcomm.game.tournaments;
 
 import com.nmerrill.kothcomm.exceptions.InvalidPlayerCountException;
 import com.nmerrill.kothcomm.game.AbstractPlayer;
-import com.nmerrill.kothcomm.game.GameManager;
 import com.nmerrill.kothcomm.game.PlayerType;
-import com.nmerrill.kothcomm.game.games.AbstractGame;
 import com.nmerrill.kothcomm.game.scoring.Scoreboard;
 import com.nmerrill.kothcomm.utils.iterables.Itertools;
 import org.eclipse.collections.api.list.MutableList;
 
 import java.util.Iterator;
+import java.util.Random;
 
 
-public final class RoundRobin<T extends AbstractPlayer<T>> implements Tournament<T> {
-    private final GameManager<T> manager;
+public final class RoundRobin<T extends AbstractPlayer<T>> implements Tournament<PlayerType<T>> {
+
+    private final MutableList<PlayerType<T>> players;
+    private final Random random;
     private Iterator<MutableList<PlayerType<T>>> iterator;
 
-    public RoundRobin(GameManager<T> manager){
-        if (manager.gameSize() > manager.allPlayers().size()){
-            throw new InvalidPlayerCountException("RoundRobin does not support duplicate players");
+    public RoundRobin(MutableList<PlayerType<T>> players, Random random){
+        if (players.size() < 2){
+            throw new InvalidPlayerCountException("RoundRobin requires at least 2 players");
         }
-        this.manager = manager;
-        nextIterator();
+        this.players = players;
+        this.random = random;
     }
 
-    private void nextIterator(){
-        iterator = Itertools.combination(manager.allPlayers(), manager.gameSize()).iterator();
+    private void nextIterator(int count){
+        iterator = Itertools.combination(players, count).iterator();
     }
 
     @Override
-    public AbstractGame<T> get(Scoreboard<PlayerType<T>> scoreboard) {
-        if (!iterator.hasNext()){
-            nextIterator();
+    public MutableList<PlayerType<T>> get(int size, Scoreboard<PlayerType<T>> scoreboard) {
+        //TODO:  support changing game size
+        if (iterator == null || !iterator.hasNext()){
+            nextIterator(size);
         }
-        return manager.constructFromType(iterator.next());
+        return iterator.next();
     }
 
 }

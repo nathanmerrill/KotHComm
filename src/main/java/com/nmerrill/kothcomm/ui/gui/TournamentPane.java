@@ -15,12 +15,12 @@ import java.util.HashMap;
 import java.util.function.Function;
 
 public class TournamentPane<T extends AbstractPlayer<T>, U extends AbstractGame<T>> extends BorderPane {
-    private final TournamentRunner<T> tournamentRunner;
+    private final TournamentRunner<T, U> tournamentRunner;
     private final MenuBar menubar;
     private final TabPane games;
     private final Function<U, ? extends Pane> gamePane;
     private final HashMap<U, Tab> tabs;
-    public TournamentPane(TournamentRunner<T> tournamentRunner, Function<U, ? extends Pane> gamePane){
+    public TournamentPane(TournamentRunner<T, U> tournamentRunner, Function<U, ? extends Pane> gamePane){
         this.tournamentRunner = tournamentRunner;
         menubar = new MenuBar();
         this.setTop(menubar);
@@ -56,9 +56,8 @@ public class TournamentPane<T extends AbstractPlayer<T>, U extends AbstractGame<
         return menubar.getMenus().remove(menu);
     }
 
-    @SuppressWarnings("unchecked")
     public void addGame(){
-        U game = (U) tournamentRunner.createGame();
+        U game = tournamentRunner.createGame();
         game.start();
         Tab tab = new Tab("Game "+games.getTabs().size(),gamePane.apply(game));
         games.getTabs().add(tab);
