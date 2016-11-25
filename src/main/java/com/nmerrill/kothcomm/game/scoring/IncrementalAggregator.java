@@ -17,7 +17,7 @@ public abstract class IncrementalAggregator<T> implements Aggregator<T>{
         if (scores.size() >= history.size()){
             if (this.history.zip(scores).allSatisfy(p -> p.getOne().equals(p.getTwo()))){
                 updateAll(scores.subList(history.size(), scores.size()));
-                history = scores;
+                history = scores.clone();
             }
         } else {
             current = null;

@@ -19,6 +19,7 @@ public class ScoredRankingsAggregator<T> extends IncrementalAggregator<Scoreboar
     public Scoreboard<T> update(Scoreboard<T> recent, Scoreboard<T> currentAggregate) {
         if (currentAggregate == null){
             currentAggregate = new Scoreboard<>();
+            currentAggregate.setDescending();
         }
         MutableList<MutableSet<T>> rankings = recent.rank();
         MutableSet<T> top = rankings.getFirst();
