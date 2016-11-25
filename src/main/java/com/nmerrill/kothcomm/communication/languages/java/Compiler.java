@@ -75,6 +75,7 @@ public final class Compiler {
         } else {
             String errors = diagnostics.getDiagnostics().stream()
                     .map(diagnostic ->
+                            (diagnostic.getSource()==null)?"":
                             "Error at "+diagnostic.getSource().getName()
                                     + " line " + diagnostic.getLineNumber()
                                     + ": " +diagnostic.getMessage(null)
@@ -82,4 +83,6 @@ public final class Compiler {
             throw new LanguageLoadException(errors);
         }
     }
+
+
 }
