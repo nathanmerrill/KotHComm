@@ -57,6 +57,10 @@ public final class Scoreboard<T> implements Comparator<T> {
     }
 
     public void addScore(T item, double score){
+        scores.updateValue(item, 0, d -> d+score);
+    }
+
+    public void setScore(T item, double score){
         scores.put(item, score);
         ranking.breakCache();
     }
@@ -96,14 +100,14 @@ public final class Scoreboard<T> implements Comparator<T> {
         this.scores
                 .keyValuesView()
                 .aggregateInPlaceBy(p -> map.apply(p.getOne()), DoubleLists.mutable::empty, (l, p) -> l.add(p.getTwo()))
-                .forEachKeyValue((j,l) -> scoreboard.addScore(j, aggregator.valueOf(l)));
+                .forEachKeyValue((j,l) -> scoreboard.setScore(j, aggregator.valueOf(l)));
         scoreboard.ordering = ordering;
         return scoreboard;
     }
 
     static <T> Scoreboard<T> toScoreboard(MutableList<T> ordered){
         Scoreboard<T> scoreboard = new Scoreboard<>();
-        ordered.zipWithIndex().forEach(p -> scoreboard.addScore(p.getOne(), p.getTwo()));
+        ordered.zipWithIndex().forEach(p -> scoreboard.setScore(p.getOne(), p.getTwo()));
         return scoreboard;
     }
 

@@ -16,14 +16,14 @@ public final class STVAggregator<T> implements Aggregator<Scoreboard<T>> {
     public Scoreboard<T> aggregate(MutableList<? extends Scoreboard<T>> scores) {
         MutableBag<MutableList<MutableSet<T>>> votes = scores.collect(Scoreboard::rank).toBag();
         Scoreboard<T> scoreboard = new Scoreboard<>();
-        scores.flatCollect(Scoreboard::items).forEachWith(scoreboard::addScore, 0.0);
+        scores.flatCollect(Scoreboard::items).forEachWith(scoreboard::setScore, 0.0);
 
         MutableBag<List<Integer>> set = Bags.mutable.empty();
         set.add(Lists.mutable.empty());
 
         while (!votes.isEmpty()) {
             MutableSet<T> losers = countVotes(votes).bottomOccurrences(1)
-                    .tap(p -> scoreboard.addScore(p.getOne(), p.getTwo()))
+                    .tap(p -> scoreboard.setScore(p.getOne(), p.getTwo()))
                     .collect(ObjectIntPair::getOne).toSet();
             MutableBag<MutableList<MutableSet<T>>> transferredVotes =
                     votes.select(list -> list.getFirst().anySatisfy(losers::contains));

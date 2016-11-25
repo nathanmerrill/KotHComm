@@ -27,7 +27,7 @@ public final class ItemAggregator<T> implements Aggregator<Scoreboard<T>> {
         MutableMap<T, MutableDoubleList> map = scores.flatCollect(s -> s.scores().keyValuesView())
                 .aggregateInPlaceBy(ObjectDoublePair::getOne, DoubleLists.mutable::empty, (list, d) -> list.add(d.getTwo()));
         Scoreboard<T> scoreboard = new Scoreboard<>();
-        map.forEach((i,l) -> scoreboard.addScore(i, aggregator.apply(l)));
+        map.forEach((i,l) -> scoreboard.setScore(i, aggregator.apply(l)));
         return scoreboard;
     }
 }
