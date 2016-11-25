@@ -63,7 +63,10 @@ public final class TournamentRunner<T extends AbstractPlayer<T>, U extends Abstr
     public U createGame() {
         resolveGames();
         U game = gameSupplier.get();
-        game.addPlayers(tournament.get(gameSize, aggregate).collect(PlayerType::create));
+        MutableList<T> players = tournament.get(gameSize, aggregate).collect(PlayerType::create);
+        players.forEachWith(AbstractPlayer::setRandom, random);
+        game.addPlayers(players);
+        game.setRandom(random);
         currentGames.add(game);
         return game;
     }

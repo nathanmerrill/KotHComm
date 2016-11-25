@@ -16,8 +16,8 @@ public abstract class IncrementalAggregator<T> implements Aggregator<T>{
     public T aggregate(MutableList<? extends T> scores){
         if (scores.size() >= history.size()){
             if (this.history.zip(scores).allSatisfy(p -> p.getOne().equals(p.getTwo()))){
-                history = scores;
                 updateAll(scores.subList(history.size(), scores.size()));
+                history = scores;
             }
         } else {
             current = null;
