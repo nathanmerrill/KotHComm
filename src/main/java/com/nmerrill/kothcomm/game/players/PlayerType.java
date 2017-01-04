@@ -1,4 +1,4 @@
-package com.nmerrill.kothcomm.game;
+package com.nmerrill.kothcomm.game.players;
 
 import java.util.function.Supplier;
 

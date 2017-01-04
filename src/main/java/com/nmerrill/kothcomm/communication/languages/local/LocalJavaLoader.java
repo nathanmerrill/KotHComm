@@ -1,8 +1,8 @@
 package com.nmerrill.kothcomm.communication.languages.local;
 
 import com.nmerrill.kothcomm.communication.languages.Language;
-import com.nmerrill.kothcomm.game.AbstractPlayer;
-import com.nmerrill.kothcomm.game.PlayerType;
+import com.nmerrill.kothcomm.game.players.AbstractPlayer;
+import com.nmerrill.kothcomm.game.players.PlayerType;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.MutableSet;
 import org.eclipse.collections.impl.factory.Sets;

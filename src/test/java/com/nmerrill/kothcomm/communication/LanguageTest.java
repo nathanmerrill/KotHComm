@@ -1,7 +1,7 @@
 package com.nmerrill.kothcomm.communication;
 
 import com.nmerrill.kothcomm.communication.languages.Language;
-import com.nmerrill.kothcomm.game.PlayerType;
+import com.nmerrill.kothcomm.game.players.PlayerType;
 import org.eclipse.collections.impl.factory.Lists;
 import org.testng.Assert;
 import org.testng.annotations.Test;

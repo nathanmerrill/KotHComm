@@ -1,6 +1,6 @@
 package com.nmerrill.kothcomm.game.games;
 
-import com.nmerrill.kothcomm.game.AbstractPlayer;
+import com.nmerrill.kothcomm.game.players.AbstractPlayer;
 import com.nmerrill.kothcomm.game.scoring.Scoreboard;
 import org.eclipse.collections.api.collection.MutableCollection;
 import org.eclipse.collections.api.list.MutableList;
@@ -10,7 +10,7 @@ import java.util.Random;
 
 public abstract class AbstractGame<T extends AbstractPlayer<T>> {
     protected Random random;
-    protected MutableList<T> players;
+    protected final MutableList<T> players;
     private boolean started;
 
     public AbstractGame(){

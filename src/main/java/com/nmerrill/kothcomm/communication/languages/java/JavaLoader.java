@@ -2,8 +2,8 @@ package com.nmerrill.kothcomm.communication.languages.java;
 
 import com.nmerrill.kothcomm.communication.languages.Language;
 import com.nmerrill.kothcomm.exceptions.LanguageLoadException;
-import com.nmerrill.kothcomm.game.AbstractPlayer;
-import com.nmerrill.kothcomm.game.PlayerType;
+import com.nmerrill.kothcomm.game.players.AbstractPlayer;
+import com.nmerrill.kothcomm.game.players.PlayerType;
 import org.eclipse.collections.api.list.MutableList;
 
 import java.io.File;

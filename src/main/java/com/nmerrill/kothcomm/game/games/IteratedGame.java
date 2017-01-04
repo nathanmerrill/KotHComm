@@ -1,6 +1,6 @@
 package com.nmerrill.kothcomm.game.games;
 
-import com.nmerrill.kothcomm.game.AbstractPlayer;
+import com.nmerrill.kothcomm.game.players.AbstractPlayer;
 
 public abstract class IteratedGame<T extends AbstractPlayer<T>> extends AbstractGame<T> {
     private int iterations;

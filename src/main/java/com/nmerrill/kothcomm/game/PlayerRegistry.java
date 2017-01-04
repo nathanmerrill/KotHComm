@@ -1,5 +1,7 @@
 package com.nmerrill.kothcomm.game;
 
+import com.nmerrill.kothcomm.game.players.AbstractPlayer;
+import com.nmerrill.kothcomm.game.players.PlayerType;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.impl.factory.Lists;
 

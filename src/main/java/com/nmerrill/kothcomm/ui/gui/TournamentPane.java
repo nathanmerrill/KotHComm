@@ -1,6 +1,6 @@
 package com.nmerrill.kothcomm.ui.gui;
 
-import com.nmerrill.kothcomm.game.AbstractPlayer;
+import com.nmerrill.kothcomm.game.players.AbstractPlayer;
 import com.nmerrill.kothcomm.game.games.AbstractGame;
 import com.nmerrill.kothcomm.game.runners.TournamentRunner;
 import javafx.scene.Scene;

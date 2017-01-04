@@ -1,8 +1,8 @@
 package com.nmerrill.kothcomm.game.runners;
 
-import com.nmerrill.kothcomm.game.AbstractPlayer;
-import com.nmerrill.kothcomm.game.PlayerType;
 import com.nmerrill.kothcomm.game.games.AbstractGame;
+import com.nmerrill.kothcomm.game.players.AbstractPlayer;
+import com.nmerrill.kothcomm.game.players.PlayerType;
 import com.nmerrill.kothcomm.game.scoring.Aggregator;
 import com.nmerrill.kothcomm.game.scoring.Scoreboard;
 import com.nmerrill.kothcomm.game.tournaments.Tournament;

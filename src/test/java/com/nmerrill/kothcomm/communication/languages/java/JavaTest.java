@@ -3,7 +3,7 @@ package com.nmerrill.kothcomm.communication.languages.java;
 import com.nmerrill.kothcomm.communication.FileTest;
 import com.nmerrill.kothcomm.communication.LanguageTest;
 import com.nmerrill.kothcomm.communication.TestPlayer;
-import com.nmerrill.kothcomm.game.PlayerType;
+import com.nmerrill.kothcomm.game.players.PlayerType;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.impl.factory.Lists;
 import org.testng.Assert;

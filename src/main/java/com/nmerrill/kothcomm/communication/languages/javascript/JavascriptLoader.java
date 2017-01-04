@@ -1,7 +1,7 @@
 package com.nmerrill.kothcomm.communication.languages.javascript;
 
-import com.nmerrill.kothcomm.game.AbstractPlayer;
-import com.nmerrill.kothcomm.game.PlayerType;
+import com.nmerrill.kothcomm.game.players.AbstractPlayer;
+import com.nmerrill.kothcomm.game.players.PlayerType;
 import com.nmerrill.kothcomm.communication.languages.Language;
 import org.eclipse.collections.api.list.MutableList;
 
