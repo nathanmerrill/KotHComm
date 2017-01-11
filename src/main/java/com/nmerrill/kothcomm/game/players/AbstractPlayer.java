@@ -4,14 +4,14 @@ import java.util.Random;
 
 public abstract class AbstractPlayer<T extends AbstractPlayer<T>> {
 
-    private PlayerType<T> type;
+    private Submission<T> type;
     private Random random;
 
-    public final void setType(PlayerType<T> type){
+    public final void setType(Submission<T> type){
         this.type = type;
     }
 
-    public final PlayerType<T> getType(){
+    public final Submission<T> getType(){
         return type;
     }
 

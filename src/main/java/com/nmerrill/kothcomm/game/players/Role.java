@@ -13,7 +13,7 @@ public class Role<T> {
         return clazz.isInstance(player);
     }
 
-    public final boolean is(PlayerType type){
+    public final boolean is(Submission type){
         return clazz.isAssignableFrom(type.getClass());
     }
 

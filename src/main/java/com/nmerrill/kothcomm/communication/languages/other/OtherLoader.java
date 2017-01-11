@@ -1,6 +1,6 @@
 package com.nmerrill.kothcomm.communication.languages.other;
 
-import com.nmerrill.kothcomm.game.players.PlayerType;
+import com.nmerrill.kothcomm.game.players.Submission;
 import com.nmerrill.kothcomm.game.players.AbstractPlayer;
 import com.nmerrill.kothcomm.communication.languages.Language;
 import org.eclipse.collections.api.list.MutableList;
@@ -30,7 +30,7 @@ public final class OtherLoader<T extends AbstractPlayer<T>> implements Language<
     }
 
     @Override
-    public MutableList<PlayerType<T>> loadPlayers(MutableList<File> files) {
-        return files.collect(f -> new PlayerType<>(f.getName(), () -> pipeBot.apply(new PipeCommunicator(f))));
+    public MutableList<Submission<T>> loadPlayers(MutableList<File> files) {
+        return files.collect(f -> new Submission<>(f.getName(), () -> pipeBot.apply(new PipeCommunicator(f))));
     }
 }

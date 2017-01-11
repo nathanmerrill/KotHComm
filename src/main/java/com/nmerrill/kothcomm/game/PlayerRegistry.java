@@ -1,25 +1,25 @@
 package com.nmerrill.kothcomm.game;
 
 import com.nmerrill.kothcomm.game.players.AbstractPlayer;
-import com.nmerrill.kothcomm.game.players.PlayerType;
+import com.nmerrill.kothcomm.game.players.Submission;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.impl.factory.Lists;
 
 import java.util.function.Supplier;
 
 public final class PlayerRegistry<T extends AbstractPlayer<T>> {
-    private final MutableList<PlayerType<T>> registeredPlayers;
+    private final MutableList<Submission<T>> registeredPlayers;
     public PlayerRegistry(){
         this.registeredPlayers = Lists.mutable.empty();
     }
 
 
-    public void register(MutableList<PlayerType<T>> playerTypes){
-        playerTypes.forEach(this::register);
+    public void register(MutableList<Submission<T>> submissions){
+        submissions.forEach(this::register);
     }
 
-    public void register(PlayerType<T> playerType){
-        registeredPlayers.add(playerType);
+    public void register(Submission<T> submission){
+        registeredPlayers.add(submission);
     }
 
     public void register(Class<? extends AbstractPlayer<T>> clazz, Supplier<T> supplier){
@@ -27,7 +27,7 @@ public final class PlayerRegistry<T extends AbstractPlayer<T>> {
     }
 
     public void register(String name, Supplier<T> supplier){
-        registeredPlayers.add(new PlayerType<>(name, supplier));
+        registeredPlayers.add(new Submission<>(name, supplier));
     }
 //
 //    public AbstractGame<T> construct(MutableCollection<T> players){
@@ -36,17 +36,17 @@ public final class PlayerRegistry<T extends AbstractPlayer<T>> {
 //        return game;
 //    }
 //
-//    public AbstractGame<T> constructFromType(MutableList<PlayerType<T>> players){
+//    public AbstractGame<T> constructFromType(MutableList<Submission<T>> players){
 //        if (players.size() < 2){
 //            throw new InvalidPlayerCountException("Too few players!");
 //        }
 //
 //        return construct(
 //                players.subList(0, gameSize())
-//                        .collect(PlayerType::create));
+//                        .collect(Submission::create));
 //    }
 
-    public MutableList<PlayerType<T>> allPlayers(){
+    public MutableList<Submission<T>> allPlayers(){
         return registeredPlayers.clone();
     }
 

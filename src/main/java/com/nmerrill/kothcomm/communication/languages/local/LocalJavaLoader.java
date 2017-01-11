@@ -2,7 +2,7 @@ package com.nmerrill.kothcomm.communication.languages.local;
 
 import com.nmerrill.kothcomm.communication.languages.Language;
 import com.nmerrill.kothcomm.game.players.AbstractPlayer;
-import com.nmerrill.kothcomm.game.players.PlayerType;
+import com.nmerrill.kothcomm.game.players.Submission;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.MutableSet;
 import org.eclipse.collections.impl.factory.Sets;
@@ -12,13 +12,13 @@ import java.util.function.Supplier;
 
 
 public final class LocalJavaLoader<T extends AbstractPlayer<T>> implements Language<T> {
-    private final MutableSet<PlayerType<T>> suppliers;
+    private final MutableSet<Submission<T>> suppliers;
     public LocalJavaLoader(){
         suppliers = Sets.mutable.empty();
     }
 
     public void register(String name, Supplier<T> supplier){
-        suppliers.add(new PlayerType<>(name, supplier));
+        suppliers.add(new Submission<>(name, supplier));
     }
 
     @Override
@@ -37,7 +37,7 @@ public final class LocalJavaLoader<T extends AbstractPlayer<T>> implements Langu
     }
 
     @Override
-    public MutableList<PlayerType<T>> loadPlayers(MutableList<File> files) {
+    public MutableList<Submission<T>> loadPlayers(MutableList<File> files) {
         return suppliers.toList();
     }
 }

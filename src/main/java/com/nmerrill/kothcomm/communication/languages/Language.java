@@ -1,6 +1,6 @@
 package com.nmerrill.kothcomm.communication.languages;
 
-import com.nmerrill.kothcomm.game.players.PlayerType;
+import com.nmerrill.kothcomm.game.players.Submission;
 import com.nmerrill.kothcomm.game.players.AbstractPlayer;
 import org.eclipse.collections.api.list.MutableList;
 
@@ -32,5 +32,5 @@ public interface Language<T extends AbstractPlayer<T>> {
      * @param files Files that should be loaded.  Needs to be passed if the language is file based
      * @return A list of players
      */
-    MutableList<PlayerType<T>> loadPlayers(MutableList<File> files);
+    MutableList<Submission<T>> loadPlayers(MutableList<File> files);
 }

@@ -2,7 +2,7 @@ package com.nmerrill.kothcomm.communication;
 
 import com.nmerrill.kothcomm.communication.languages.Language;
 import com.nmerrill.kothcomm.exceptions.LanguageLoadException;
-import com.nmerrill.kothcomm.game.players.PlayerType;
+import com.nmerrill.kothcomm.game.players.Submission;
 import com.nmerrill.kothcomm.game.players.AbstractPlayer;
 import org.eclipse.collections.api.RichIterable;
 import org.eclipse.collections.api.list.MutableList;
@@ -84,7 +84,7 @@ public final class LanguageLoader<T extends AbstractPlayer<T>> {
         return Lists.mutable.of(folders);
     }
 
-    public MutableList<PlayerType<T>> load(){
+    public MutableList<Submission<T>> load(){
         return getLoaders().flatCollect(l -> l.loadPlayers(getFiles(l)));
     }
 

@@ -1,7 +1,7 @@
 package com.nmerrill.kothcomm.communication.languages.javascript;
 
 import com.nmerrill.kothcomm.game.players.AbstractPlayer;
-import com.nmerrill.kothcomm.game.players.PlayerType;
+import com.nmerrill.kothcomm.game.players.Submission;
 import com.nmerrill.kothcomm.communication.languages.Language;
 import org.eclipse.collections.api.list.MutableList;
 
@@ -29,7 +29,7 @@ public final class JavascriptLoader<T extends AbstractPlayer<T>> implements Lang
     }
 
     @Override
-    public MutableList<PlayerType<T>> loadPlayers(MutableList<File> files) {
+    public MutableList<Submission<T>> loadPlayers(MutableList<File> files) {
         return null;
     }
 }

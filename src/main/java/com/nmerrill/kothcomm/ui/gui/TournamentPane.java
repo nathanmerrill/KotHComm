@@ -2,7 +2,7 @@ package com.nmerrill.kothcomm.ui.gui;
 
 import com.nmerrill.kothcomm.game.players.AbstractPlayer;
 import com.nmerrill.kothcomm.game.games.AbstractGame;
-import com.nmerrill.kothcomm.game.runners.TournamentRunner;
+import com.nmerrill.kothcomm.game.TournamentRunner;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;

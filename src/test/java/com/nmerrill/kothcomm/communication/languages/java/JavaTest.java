@@ -3,7 +3,7 @@ package com.nmerrill.kothcomm.communication.languages.java;
 import com.nmerrill.kothcomm.communication.FileTest;
 import com.nmerrill.kothcomm.communication.LanguageTest;
 import com.nmerrill.kothcomm.communication.TestPlayer;
-import com.nmerrill.kothcomm.game.players.PlayerType;
+import com.nmerrill.kothcomm.game.players.Submission;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.impl.factory.Lists;
 import org.testng.Assert;
@@ -32,9 +32,9 @@ public class JavaTest extends LanguageTest implements FileTest {
         String playerName = "Player";
         File player = write("import com.nmerrill.kothcomm.communication.TestPlayer; public class "+playerName+" extends TestPlayer { }", playerName+".java");
         File invalidPlayer = write("public class InvalidPlayer { }", "InvalidPlayer.java");
-        MutableList<PlayerType<TestPlayer>> playerTypes = loader.loadPlayers(Lists.mutable.of(player, invalidPlayer));
-        Assert.assertEquals(1, playerTypes.size());
-        Assert.assertEquals(playerName, playerTypes.getOnly().create().getClass().getName());
+        MutableList<Submission<TestPlayer>> submissions = loader.loadPlayers(Lists.mutable.of(player, invalidPlayer));
+        Assert.assertEquals(1, submissions.size());
+        Assert.assertEquals(playerName, submissions.getOnly().create().getClass().getName());
     }
 
     @Override

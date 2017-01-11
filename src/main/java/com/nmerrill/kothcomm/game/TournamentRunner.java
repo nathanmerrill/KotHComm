@@ -1,8 +1,8 @@
-package com.nmerrill.kothcomm.game.runners;
+package com.nmerrill.kothcomm.game;
 
 import com.nmerrill.kothcomm.game.games.AbstractGame;
 import com.nmerrill.kothcomm.game.players.AbstractPlayer;
-import com.nmerrill.kothcomm.game.players.PlayerType;
+import com.nmerrill.kothcomm.game.players.Submission;
 import com.nmerrill.kothcomm.game.scoring.Aggregator;
 import com.nmerrill.kothcomm.game.scoring.Scoreboard;
 import com.nmerrill.kothcomm.game.tournaments.Tournament;
@@ -18,19 +18,19 @@ import java.util.function.Supplier;
 
 
 public final class TournamentRunner<T extends AbstractPlayer<T>, U extends AbstractGame<T>> {
-    private final Tournament<PlayerType<T>> tournament;
-    private final Aggregator<Scoreboard<PlayerType<T>>> gameAggregator;
+    private final Tournament<Submission<T>> tournament;
+    private final Aggregator<Scoreboard<Submission<T>>> gameAggregator;
     private final Function<DoubleList, Double> playerAggregator;
-    private final MutableList<Scoreboard<PlayerType<T>>> scoreList;
+    private final MutableList<Scoreboard<Submission<T>>> scoreList;
     private final MutableSet<U> currentGames;
     private final Supplier<U> gameSupplier;
     private final int gameSize;
     private final Random random;
-    private Scoreboard<PlayerType<T>> aggregate;
+    private Scoreboard<Submission<T>> aggregate;
 
     public TournamentRunner(
-            Tournament<PlayerType<T>> tournament,
-            Aggregator<Scoreboard<PlayerType<T>>> gameAggregator,
+            Tournament<Submission<T>> tournament,
+            Aggregator<Scoreboard<Submission<T>>> gameAggregator,
             Function<DoubleList, Double> playerAggregator,
             int gameSize,
             Supplier<U> gameSupplier,
@@ -47,15 +47,15 @@ public final class TournamentRunner<T extends AbstractPlayer<T>, U extends Abstr
         this.random = random;
     }
 
-    public TournamentRunner(Tournament<PlayerType<T>> tournament,
-                            Aggregator<Scoreboard<PlayerType<T>>> gameAggregator,
+    public TournamentRunner(Tournament<Submission<T>> tournament,
+                            Aggregator<Scoreboard<Submission<T>>> gameAggregator,
                             int gameSize,
                             Supplier<U> gameSupplier,
                             Random random) {
         this(tournament, gameAggregator, DoubleList::average, gameSize, gameSupplier, random);
     }
 
-    public Scoreboard<PlayerType<T>> scoreboard() {
+    public Scoreboard<Submission<T>> scoreboard() {
         resolveGames();
         return aggregate;
     }
@@ -63,7 +63,7 @@ public final class TournamentRunner<T extends AbstractPlayer<T>, U extends Abstr
     public U createGame() {
         resolveGames();
         U game = gameSupplier.get();
-        MutableList<T> players = tournament.get(gameSize, aggregate).collect(PlayerType::create);
+        MutableList<T> players = tournament.get(gameSize, aggregate).collect(Submission::create);
         players.forEachWith(AbstractPlayer::setRandom, random);
         game.addPlayers(players);
         game.setRandom(random);
@@ -71,7 +71,7 @@ public final class TournamentRunner<T extends AbstractPlayer<T>, U extends Abstr
         return game;
     }
 
-    public MutableList<Scoreboard<PlayerType<T>>> getScoreList() {
+    public MutableList<Scoreboard<Submission<T>>> getScoreList() {
         resolveGames();
         return scoreList;
     }

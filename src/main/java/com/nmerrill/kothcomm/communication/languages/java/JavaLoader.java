@@ -3,7 +3,7 @@ package com.nmerrill.kothcomm.communication.languages.java;
 import com.nmerrill.kothcomm.communication.languages.Language;
 import com.nmerrill.kothcomm.exceptions.LanguageLoadException;
 import com.nmerrill.kothcomm.game.players.AbstractPlayer;
-import com.nmerrill.kothcomm.game.players.PlayerType;
+import com.nmerrill.kothcomm.game.players.Submission;
 import org.eclipse.collections.api.list.MutableList;
 
 import java.io.File;
@@ -58,7 +58,7 @@ public final class JavaLoader<T extends AbstractPlayer<T>> implements Language<T
      * @inheritDoc
      */
     @Override
-    public MutableList<PlayerType<T>> loadPlayers(MutableList<File> files) {
+    public MutableList<Submission<T>> loadPlayers(MutableList<File> files) {
         return compiler.compile(files.select(f -> f.getName().endsWith(".java")))
                 .collectIf(this::isConstructable, this::classToPlayerType);
     }
@@ -70,10 +70,10 @@ public final class JavaLoader<T extends AbstractPlayer<T>> implements Language<T
     }
 
     @SuppressWarnings("unchecked")
-    private PlayerType<T> classToPlayerType(Class clazz){
+    private Submission<T> classToPlayerType(Class clazz){
         try {
             Constructor<? extends T> constructor = clazz.asSubclass(playerType).getConstructor();
-            return new PlayerType<>(clazz.getSimpleName(), () -> safeCallConstructor(constructor));
+            return new Submission<>(clazz.getSimpleName(), () -> safeCallConstructor(constructor));
         } catch(NoSuchMethodException e){
             throw new LanguageLoadException(e);
         }

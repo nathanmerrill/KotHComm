@@ -1,7 +1,7 @@
 package com.nmerrill.kothcomm.communication;
 
 import com.nmerrill.kothcomm.communication.languages.Language;
-import com.nmerrill.kothcomm.game.players.PlayerType;
+import com.nmerrill.kothcomm.game.players.Submission;
 import org.eclipse.collections.impl.factory.Lists;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -17,7 +17,7 @@ public abstract class LanguageTest {
     public void testLanguage(){
         Language<TestPlayer> language = getLanguage();
         Assert.assertNotNull(language.directoryName());
-        List<PlayerType<TestPlayer>> players = language.loadPlayers(Lists.mutable.empty());
+        List<Submission<TestPlayer>> players = language.loadPlayers(Lists.mutable.empty());
         Assert.assertNotNull(players);
         String directoryName = language.directoryName();
         if (language.fileBased()) {
