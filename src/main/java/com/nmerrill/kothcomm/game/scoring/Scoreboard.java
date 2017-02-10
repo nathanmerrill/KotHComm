@@ -1,6 +1,7 @@
 package com.nmerrill.kothcomm.game.scoring;
 
 import com.nmerrill.kothcomm.utils.Cache;
+import org.eclipse.collections.api.RichIterable;
 import org.eclipse.collections.api.block.function.Function;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.list.primitive.DoubleList;
@@ -58,6 +59,10 @@ public final class Scoreboard<T> implements Comparator<T> {
 
     public void addScore(T item, double score){
         scores.updateValue(item, 0, d -> d+score);
+    }
+
+    public void addScores(RichIterable<T> items, double score){
+        items.forEachWith(this::addScore, score);
     }
 
     public void setScore(T item, double score){

@@ -11,7 +11,7 @@ public abstract class PoolIterator {
     protected final int maxDigit;
     public PoolIterator(int maxDigit, int listSize){
         if (listSize > maxDigit){
-            throw new RuntimeException();
+            throw new RuntimeException("Max digit must be smaller than the list size");
         }
         digits = IntLists.mutable.empty();
         this.listSize = listSize;

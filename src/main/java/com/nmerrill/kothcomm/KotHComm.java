@@ -22,7 +22,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class KoTHComm<T extends AbstractPlayer<T>, U extends AbstractGame<T>> {
+public class KotHComm<T extends AbstractPlayer<T>, U extends AbstractGame<T>> {
     private final Supplier<U> gameSupplier;
     private final MutableList<Language<T>> languages;
     private final LocalJavaLoader<T> localLoader;
@@ -32,7 +32,7 @@ public class KoTHComm<T extends AbstractPlayer<T>, U extends AbstractGame<T>> {
     private int gameSize;
     private boolean shouldDownload;
 
-    public KoTHComm(Supplier<U> gameSupplier){
+    public KotHComm(Supplier<U> gameSupplier){
         this.gameSupplier = gameSupplier;
         this.languages = Lists.mutable.empty();
         localLoader = new LocalJavaLoader<>();

@@ -7,6 +7,7 @@ import org.eclipse.collections.impl.factory.Sets;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -17,6 +18,10 @@ public class SubsequenceIterable<T> implements Iterable<MutableList<T>> {
     public SubsequenceIterable(MutableList<T> pool, Supplier<PoolIterator> iteratorSupplier) {
         this.pool = pool;
         this.iteratorSupplier = iteratorSupplier;
+    }
+
+    public SubsequenceIterable(MutableList<T> pool, int listSize, BiFunction<Integer, Integer, PoolIterator> iteratorSupplier){
+        this(pool, () -> iteratorSupplier.apply(pool.size(), listSize));
     }
 
     private class SubsequenceIterator implements Iterator<MutableList<T>> {
