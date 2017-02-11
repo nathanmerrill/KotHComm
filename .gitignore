@@ -21,3 +21,5 @@ build/
 gradle/
 out/
 target/
+/gradlew
+/gradlew.bat
