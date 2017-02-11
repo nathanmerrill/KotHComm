@@ -1,4 +1,4 @@
-package com.nmerrill.kothcomm;
+package com.nmerrill.kothcomm.game;
 
 import com.nmerrill.kothcomm.communication.Arguments;
 import com.nmerrill.kothcomm.communication.Downloader;
@@ -8,7 +8,6 @@ import com.nmerrill.kothcomm.communication.languages.local.LocalJavaLoader;
 import com.nmerrill.kothcomm.game.games.AbstractGame;
 import com.nmerrill.kothcomm.game.players.AbstractPlayer;
 import com.nmerrill.kothcomm.game.players.Submission;
-import com.nmerrill.kothcomm.game.TournamentRunner;
 import com.nmerrill.kothcomm.game.scoring.ItemAggregator;
 import com.nmerrill.kothcomm.game.scoring.Scoreboard;
 import com.nmerrill.kothcomm.game.tournaments.Sampling;

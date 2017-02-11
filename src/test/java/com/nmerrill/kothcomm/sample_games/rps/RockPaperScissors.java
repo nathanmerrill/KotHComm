@@ -1,6 +1,6 @@
 package com.nmerrill.kothcomm.sample_games.rps;
 
-import com.nmerrill.kothcomm.KotHComm;
+import com.nmerrill.kothcomm.game.KotHComm;
 import com.nmerrill.kothcomm.sample_games.rps.players.PaperPlayer;
 import com.nmerrill.kothcomm.sample_games.rps.players.RandomPlayer;
 import com.nmerrill.kothcomm.sample_games.rps.players.RockPlayer;
