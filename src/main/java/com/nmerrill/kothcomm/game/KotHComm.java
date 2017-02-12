@@ -8,6 +8,7 @@ import com.nmerrill.kothcomm.communication.languages.local.LocalJavaLoader;
 import com.nmerrill.kothcomm.game.games.AbstractGame;
 import com.nmerrill.kothcomm.game.players.AbstractPlayer;
 import com.nmerrill.kothcomm.game.players.Submission;
+import com.nmerrill.kothcomm.game.scoring.Aggregator;
 import com.nmerrill.kothcomm.game.scoring.ItemAggregator;
 import com.nmerrill.kothcomm.game.scoring.Scoreboard;
 import com.nmerrill.kothcomm.game.tournaments.Sampling;
@@ -25,6 +26,7 @@ public class KotHComm<T extends AbstractPlayer<T>, U extends AbstractGame<T>> {
     private final Supplier<U> gameSupplier;
     private final MutableList<Language<T>> languages;
     private final LocalJavaLoader<T> localLoader;
+    private Aggregator<Scoreboard<Submission<T>>> aggregator;
     private BiFunction<MutableList<Submission<T>>, Random, Tournament<Submission<T>>> tournamentSupplier;
     private Arguments arguments;
     private TextUI printer;
@@ -41,6 +43,7 @@ public class KotHComm<T extends AbstractPlayer<T>, U extends AbstractGame<T>> {
         this.arguments = new Arguments();
         this.shouldDownload = true;
         this.printer = new TextUI();
+        this.aggregator = new ItemAggregator<>();
     }
 
     public void addLanguage(Language<T> language){
@@ -57,6 +60,10 @@ public class KotHComm<T extends AbstractPlayer<T>, U extends AbstractGame<T>> {
 
     public void setPrinter(TextUI printer) {
         this.printer = printer;
+    }
+
+    public void setAggregator(Aggregator<Scoreboard<Submission<T>>> aggregator) {
+        this.aggregator = aggregator;
     }
 
     public void shouldDownload(boolean shouldDownload) {
@@ -90,8 +97,7 @@ public class KotHComm<T extends AbstractPlayer<T>, U extends AbstractGame<T>> {
         Random random = arguments.getRandom();
         Tournament<Submission<T>> tournament = tournamentSupplier.apply(players, random);
 
-        TournamentRunner<T, U> runner =
-                new TournamentRunner<>(tournament, new ItemAggregator<>(), gameSize, gameSupplier, random);
+        TournamentRunner<T, U> runner = new TournamentRunner<>(tournament, aggregator, gameSize, gameSupplier, random);
         printer.out.println("Running "+arguments.iterations+" games");
         for (int i = 0; i < arguments.iterations; i++) {
             printer.printProgress(i, arguments.iterations);
