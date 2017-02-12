@@ -1,96 +1,114 @@
 package com.nmerrill.kothcomm.game.maps.generators.mazes;
 
-import com.nmerrill.kothcomm.game.maps.generators.Generator;
-import com.nmerrill.kothcomm.game.maps.graphmaps.GraphMapImpl;
 import com.nmerrill.kothcomm.game.maps.Point2D;
+import com.nmerrill.kothcomm.game.maps.generators.Generator;
+import com.nmerrill.kothcomm.game.maps.graphmaps.GraphGraphMap;
+import com.nmerrill.kothcomm.game.maps.graphmaps.bounds.point2D.SquareRegion;
 import com.nmerrill.kothcomm.utils.iterables.Itertools;
+import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.list.primitive.MutableBooleanList;
 import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.impl.factory.primitive.BooleanLists;
+import org.eclipse.collections.impl.factory.primitive.IntSets;
 
-import java.util.List;
 import java.util.Random;
-import java.util.stream.IntStream;
 
-public class Ellers implements Generator<GraphMapImpl<Point2D, ?>> {
+public class Ellers implements Generator<GraphGraphMap<Point2D, ?>> {
     private final Random random;
-    private final int minX, maxX, minY, maxY;
-    public Ellers(Point2D p1, Point2D p2, Random random){
+    private final SquareRegion region;
+    private MutableList<MutableIntSet> currentLine;
+    private Point2D currentOffset;
+    private GraphGraphMap<Point2D, ?> currentMap;
+
+    public Ellers(SquareRegion region, Random random) {
         this.random = random;
-        if (p1.getX() < p2.getX()){
-            minX = p1.getX();
-            maxX = p2.getX()+1;
-        } else {
-            minX = p2.getX();
-            maxX = p1.getX()+1;
-        }
-        if (p1.getY() < p2.getY()){
-            minY = p1.getY();
-            maxY = p2.getY()+1;
-        } else {
-            minY = p2.getY();
-            maxY = p1.getY()+1;
-        }
+        this.region = region;
     }
-    public Ellers(Point2D p1, Point2D p2){
-        this(p1, p2, new Random());
+
+    public Ellers(SquareRegion region) {
+        this(region, new Random());
     }
 
     @Override
-    public void generate(GraphMapImpl<Point2D, ?> map) {
-        MutableIntList states = Itertools.range(maxX-minX);
-        IntStream.range(minY, maxY).forEach(y -> {
-            IntStream.range(minX, maxX).forEach(x->map.put(new Point2D(x, y), null));
-            connectNeighbors(states).forEach(x ->
-                map.connect(new Point2D(minX+x, y), new Point2D(minX+x+1, y))
-            );
+    public void generate(GraphGraphMap<Point2D, ?> map) {
+        int width = region.getWidth();
+        int height = region.getHeight();
+        currentLine = Itertools.range(0, width).collect(IntSets.mutable::of).toList();
+        currentMap = map;
+        for (int y = 0; y < height; y++) {
+            currentOffset = new Point2D(region.getLeft(), region.getBottom()+y);
+            connectSets();
+            if (y == height -1){
+                break;
+            }
+            newLine();
+        }
+        while (currentLine.toSet().size() > 1){
+            connectSets();
+        }
+    }
+
+    private void connectSets(){
+        for (int x = 0; x < region.getWidth() - 1; x++) {
+            MutableIntSet currentSet = currentLine.get(x);
+            MutableIntSet adjacentSet = currentLine.get(x + 1);
+            if (currentSet.equals(adjacentSet)) {
+                break;
+            }
+            if (random.nextBoolean()) {
+                break;
+            }
+            Point2D currentPoint = currentOffset.moveX(x);
+            currentMap.connect(currentPoint, currentPoint.moveX(1));
+            MutableIntSet smaller, larger;
+            if (currentSet.size() < adjacentSet.size()) {
+                smaller = currentSet;
+                larger = adjacentSet;
+            } else {
+                smaller = adjacentSet;
+                larger = currentSet;
+            }
+            larger.addAll(smaller);
+            smaller.forEach(i -> currentLine.set(i, adjacentSet));
+        }
+    }
+
+    private void newLine(){
+        currentLine.toSet().forEach(set -> {
+            MutableIntList list = set.toList();
+            MutableBooleanList bits = randomBits(set.size());
+            for (int i = 0; i < set.size(); i++) {
+                int x = list.get(i);
+                if (bits.get(i)) {
+                    Point2D currentPoint = currentOffset.move(x, 0);
+                    currentMap.connect(currentPoint, currentPoint.moveY(1));
+                } else {
+                    set.remove(list.get(i));
+                    currentLine.set(x, IntSets.mutable.of(x));
+                }
+            }
         });
-
     }
 
-    private List<Integer> nextLine(List<Integer> states){
-        return null;
+    private MutableBooleanList randomBits(int count) {
+        MutableBooleanList bits = BooleanLists.mutable.empty();
+        if (count < 32) {
+            int intBits = random.nextInt((1 << count) - 1);
+            for (int i = 0; i < count; i++) {
+                bits.add(((intBits >> i) & 1) == 0);
+            }
+            return bits;
+        }
+        while (true) {
+            bits.clear();
+            for (int i = 0; i < count; i++) {
+                bits.add(random.nextBoolean());
+            }
+            if (bits.anySatisfy(i -> i)) {
+                return bits;
+            }
+        }
     }
 
-
-    private MutableIntList connectNeighbors(MutableIntList states){
-        return Itertools.range(0, states.size()-1)
-                .select(x -> states.get(x+1) != states.get(x))
-                .select(i -> random.nextBoolean());
-    }
-    /*
-    states = range(self.maze.width)
-        for y in xrange(self.maze.height):
-    states = self.generate_line(y, states)
-
-    def generate_line(self, y, states):
-            self.connect_neighbors(y, states)
-            if y == self.maze.height-1:
-            while not all(x == states[0] for x in states):x
-            self.connect_neighbors(y, states)
-            else:
-    states = self.connect_lines(y, states)
-            return states
-
-    def connect_neighbors(self, y, states):
-            for x in xrange(self.maze.width-1):
-            if states[x] != states[x+1]:
-            if random.random() < self.weight:
-            self.maze.get((x, y)).connect_to_cell(Directions(Directions.RIGHT))
-    to_replace = states[x+1]
-            for index, value in enumerate(states):
-            if value == to_replace:
-    states[index] = states[x]
-
-    def connect_lines(self, y, states):
-    new_states = range(max(states)+1, max(states)+1+len(states))
-    states_left = {state for state in states}
-    states_to_pick = range(len(states))
-            random.shuffle(states_to_pick)
-            for index in states_to_pick:
-            if states[index] in states_left or random.random() >= self.weight:
-            self.maze.get((index, y)).connect_to_cell(Directions(Directions.BOTTOM))
-    new_states[index] = states[index]
-            if states[index] in states_left:
-            states_left.remove(states[index])
-            return new_states
-            */
 }

@@ -1,12 +1,13 @@
 package com.nmerrill.kothcomm.game.maps.graphmaps.bounds.point2D;
 
 import com.nmerrill.kothcomm.game.maps.Point2D;
-import com.nmerrill.kothcomm.game.maps.graphmaps.bounds.Bounds;
+import com.nmerrill.kothcomm.game.maps.graphmaps.bounds.WrappingRegion;
+import com.nmerrill.kothcomm.utils.MathTools;
 
-public final class SquareBounds implements Bounds<Point2D> {
-    private final int left, right, top, bottom;
+public final class SquareRegion implements WrappingRegion<Point2D> {
+    private final int left, right, top, bottom, width, height;
 
-    public SquareBounds(Point2D origin, Point2D opposite){
+    public SquareRegion(Point2D origin, Point2D opposite){
         if (origin.getX() == opposite.getX() || origin.getY() == opposite.getY()){
             throw new IllegalArgumentException("Origin and opposite cannot have the same x or y coordinates");
         }
@@ -24,6 +25,8 @@ public final class SquareBounds implements Bounds<Point2D> {
             bottom = opposite.getY();
             top = origin.getY();
         }
+        width = right - left;
+        height = top - bottom;
     }
 
     public int getLeft() {
@@ -42,8 +45,33 @@ public final class SquareBounds implements Bounds<Point2D> {
         return bottom;
     }
 
-    public SquareBounds(int size){
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public SquareRegion(int size){
         this(new Point2D(0,0), new Point2D(size-1, size-1));
+    }
+
+    @Override
+    public Point2D wrap(Point2D point) {
+        return new Point2D(
+                wrap(point.getX(), left, width),
+                wrap(point.getY(), bottom, height)
+        );
+    }
+
+    private int wrap(int val, int min, int range){
+        return MathTools.modulo(val - min, range) + min;
+    }
+
+    @Override
+    public Point2D startingPoint() {
+        return new Point2D(left, top);
     }
 
     @Override

@@ -2,7 +2,7 @@ package com.nmerrill.kothcomm.game.maps.generators.mazes;
 
 import com.nmerrill.kothcomm.game.maps.generators.Generator;
 import com.nmerrill.kothcomm.game.maps.MapPoint;
-import com.nmerrill.kothcomm.game.maps.graphmaps.GraphMapImpl;
+import com.nmerrill.kothcomm.game.maps.graphmaps.GraphGraphMap;
 import com.nmerrill.kothcomm.utils.iterables.Itertools;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.MutableSet;
@@ -14,7 +14,7 @@ import org.eclipse.collections.impl.tuple.Tuples;
 import java.util.Random;
 import java.util.function.ToIntFunction;
 
-public class GrowingTree<U extends MapPoint> implements Generator<GraphMapImpl<U, ?>> {
+public class GrowingTree<U extends MapPoint> implements Generator<GraphGraphMap<U, ?>> {
 
     @SuppressWarnings({"SameReturnValue", "UnusedParameters"})
     public static int selectOldest(MutableList<? extends MapPoint> points){
@@ -48,7 +48,7 @@ public class GrowingTree<U extends MapPoint> implements Generator<GraphMapImpl<U
     }
 
     @Override
-    public void generate(GraphMapImpl<U, ?> map) {
+    public void generate(GraphGraphMap<U, ?> map) {
         MutableList<U> locations = map.locations().toList();
         U start = locations.get(random.nextInt(locations.size()));
         MutableList<U> borders = map.getNeighbors(start).toList();

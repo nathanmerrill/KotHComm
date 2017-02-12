@@ -3,7 +3,7 @@ package com.nmerrill.kothcomm.game.maps.graphmaps;
 
 import com.nmerrill.kothcomm.game.maps.MapPoint;
 import com.nmerrill.kothcomm.game.maps.ReadonlyGameMap;
-import com.nmerrill.kothcomm.game.maps.graphmaps.bounds.Bounds;
+import com.nmerrill.kothcomm.game.maps.graphmaps.bounds.Region;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.MutableSet;
 
@@ -50,8 +50,8 @@ public class ReadonlyGraphMap<U extends MapPoint, T> extends ReadonlyGameMap<U, 
         return map.randomFilledLocation();
     }
 
-    public ReadonlyGraphMap<U, T> subMap(Bounds<U> bounds){
-        return new ReadonlyGraphMap<>(map.subMap(bounds));
+    public ReadonlyGraphMap<U, T> subMap(Region<U> region){
+        return new ReadonlyGraphMap<>(map.subMap(region));
     }
 
     public MutableList<T> items(){

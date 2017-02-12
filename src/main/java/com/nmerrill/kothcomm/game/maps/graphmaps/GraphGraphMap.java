@@ -1,7 +1,7 @@
 package com.nmerrill.kothcomm.game.maps.graphmaps;
 
 import com.nmerrill.kothcomm.game.maps.MapPoint;
-import com.nmerrill.kothcomm.game.maps.graphmaps.bounds.Bounds;
+import com.nmerrill.kothcomm.game.maps.graphmaps.bounds.Region;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.multimap.MutableMultimap;
@@ -12,21 +12,21 @@ import org.eclipse.collections.impl.factory.Multimaps;
 import java.util.Objects;
 
 
-public class GraphMapImpl<U extends MapPoint, T> implements GraphMap<U, T>{
+public class GraphGraphMap<U extends MapPoint, T> implements GraphMap<U, T>{
 
     private final MutableMultimap<U, U> connections;
     private final MutableMap<U, T> items;
 
-    public GraphMapImpl(){
+    public GraphGraphMap(){
         connections = Multimaps.mutable.set.empty();
         items = Maps.mutable.empty();
     }
 
     @Override
-    public GraphMapImpl<U, T> subMap(Bounds<U> bounds) {
-        GraphMapImpl<U, T> map = new GraphMapImpl<>();
-        map.connections.putAll(connections.selectKeysValues((i, j) -> bounds.inBounds(i) && bounds.inBounds(j)));
-        map.items.putAll(items.select((i, j) -> bounds.inBounds(i)));
+    public GraphGraphMap<U, T> subMap(Region<U> region) {
+        GraphGraphMap<U, T> map = new GraphGraphMap<>();
+        map.connections.putAll(connections.selectKeysValues((i, j) -> region.inBounds(i) && region.inBounds(j)));
+        map.items.putAll(items.select((i, j) -> region.inBounds(i)));
         return map;
     }
 

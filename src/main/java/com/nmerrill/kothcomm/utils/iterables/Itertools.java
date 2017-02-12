@@ -1,9 +1,11 @@
 package com.nmerrill.kothcomm.utils.iterables;
 
+import org.eclipse.collections.api.LazyIntIterable;
+import org.eclipse.collections.api.block.procedure.primitive.IntProcedure;
+import org.eclipse.collections.api.iterator.IntIterator;
 import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.list.primitive.MutableIntList;
 import org.eclipse.collections.impl.factory.Lists;
-import org.eclipse.collections.impl.factory.primitive.IntLists;
+import org.eclipse.collections.impl.lazy.primitive.AbstractLazyIntIterable;
 
 import java.util.List;
 import java.util.Random;
@@ -41,19 +43,41 @@ public final class Itertools {
         return product(iter, 2);
     }
 
-    public static MutableIntList range(int min, int max, int step){
-        MutableIntList range = IntLists.mutable.empty();
-        for (int i = min; i < max; i += step){
-            range.add(i);
-        }
-        return range;
+    public static LazyIntIterable range(int min, int max, int step){
+        return new AbstractLazyIntIterable(){
+            @Override
+            public IntIterator intIterator() {
+                return new IntIterator() {
+                    int current = min;
+                    @Override
+                    public int next() {
+                        int ret = current;
+                        current += step;
+                        return ret;
+                    }
+
+                    @Override
+                    public boolean hasNext() {
+                        return current < max;
+                    }
+                };
+            }
+
+            @Override
+            public void each(IntProcedure procedure) {
+                for (int i = min; i < max; i+=step){
+                    procedure.accept(i);
+                }
+            }
+        };
+
     }
 
-    public static MutableIntList range(int min, int max){
+    public static LazyIntIterable range(int min, int max){
         return range(min, max, 1);
     }
 
-    public static MutableIntList range(int max){
+    public static LazyIntIterable range(int max){
         return range(0, max);
     }
 

@@ -2,7 +2,7 @@ package com.nmerrill.kothcomm.game.maps.graphmaps;
 
 import com.nmerrill.kothcomm.game.maps.GameMap;
 import com.nmerrill.kothcomm.game.maps.MapPoint;
-import com.nmerrill.kothcomm.game.maps.graphmaps.bounds.Bounds;
+import com.nmerrill.kothcomm.game.maps.graphmaps.bounds.Region;
 import com.nmerrill.kothcomm.utils.iterables.Itertools;
 import org.eclipse.collections.api.block.function.Function;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -72,8 +72,8 @@ public interface GraphMap<U extends MapPoint, T> extends GameMap<U, T>, Iterable
         return randomFilledLocation(new Random());
     }
 
-    default GraphMap<U, T> subMap(Bounds<U> bounds){
-        return new BoundedGraphMap<>(this, bounds);
+    default GraphMap<U, T> subMap(Region<U> region){
+        return new GraphMapView<>(this, region);
     }
 
     MutableList<T> items();

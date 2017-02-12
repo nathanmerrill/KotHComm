@@ -1,13 +1,15 @@
 package com.nmerrill.kothcomm.game.maps.graphmaps.bounds.point2D;
 
-import com.nmerrill.kothcomm.game.maps.graphmaps.bounds.Bounds;
+import com.nmerrill.kothcomm.game.maps.graphmaps.bounds.Region;
 import com.nmerrill.kothcomm.game.maps.Point2D;
 
-public final class TriangularBounds implements Bounds<Point2D> {
+public final class TriangularRegion implements Region<Point2D> {
     private final double a;
     private final int s1, s2, s3, t1, t2, t3;
 
-    public TriangularBounds(Point2D p0, Point2D p1, Point2D p2){
+    private final Point2D startingPoint;
+
+    public TriangularRegion(Point2D p0, Point2D p1, Point2D p2){
         if (p0.equals(p1) || p0.equals(p2) || p1.equals(p2)){
             throw new IllegalArgumentException("Points cannot be on the same location");
         }
@@ -23,10 +25,16 @@ public final class TriangularBounds implements Bounds<Point2D> {
         t1 = p0.getX()*p1.getY() - p0.getY()*p1.getX();
         t2 = p0.getY() - p1.getY();
         t3 = p1.getX() - p0.getX();
+        startingPoint = p0;
     }
 
-    public TriangularBounds(int size){
+    public TriangularRegion(int size){
         this(new Point2D(0,0), new Point2D(0, size), new Point2D(size, 0));
+    }
+
+    @Override
+    public Point2D startingPoint() {
+        return startingPoint;
     }
 
     @Override

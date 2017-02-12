@@ -1,6 +1,6 @@
 package com.nmerrill.kothcomm.game.maps.graphmaps;
 
-import com.nmerrill.kothcomm.game.maps.graphmaps.bounds.Bounds;
+import com.nmerrill.kothcomm.game.maps.graphmaps.bounds.Region;
 import com.nmerrill.kothcomm.game.maps.MapPoint;
 import com.nmerrill.kothcomm.game.maps.graphmaps.neighborhoods.Neighborhood;
 import org.eclipse.collections.api.list.MutableList;
@@ -11,27 +11,27 @@ import org.eclipse.collections.impl.factory.Maps;
 import java.util.Iterator;
 import java.util.Random;
 
-public class AdjacencyGraphMap<U extends MapPoint, T> implements GraphMap<U, T>{
-    private final Bounds<U> bounds;
+public class NeighborhoodGraphMap<U extends MapPoint, T> implements GraphMap<U, T>{
+    private final Region<U> region;
     private final Neighborhood<U> neighborhood;
     private final MutableMap<U, T> points;
 
-    public AdjacencyGraphMap(Bounds<U> bounds, Neighborhood<U> neighborhood){
-        this.bounds = bounds;
+    public NeighborhoodGraphMap(Region<U> region, Neighborhood<U> neighborhood){
+        this.region = region;
         this.neighborhood = neighborhood;
         this.points = Maps.mutable.empty();
     }
 
     @Override
     public boolean isEmpty(U point) {
-        bounds.checkBounds(point);
+        region.checkBounds(point);
         return !points.containsKey(point);
     }
 
     @Override
     public MutableSet<U> getNeighbors(U origin) {
-        bounds.checkBounds(origin);
-        return neighborhood.getAdjacencies(origin).select(bounds::inBounds);
+        region.checkBounds(origin);
+        return neighborhood.getAdjacencies(origin).select(region::inBounds);
     }
 
     @Override
@@ -41,14 +41,14 @@ public class AdjacencyGraphMap<U extends MapPoint, T> implements GraphMap<U, T>{
 
     @Override
     public boolean isNeighbor(U origin, U neighbor) {
-        bounds.checkBounds(origin);
-        bounds.checkBounds(neighbor);
+        region.checkBounds(origin);
+        region.checkBounds(neighbor);
         return neighborhood.getAdjacencies(origin).contains(neighbor);
     }
 
     @Override
     public void put(U point, T item) {
-        bounds.checkBounds(point);
+        region.checkBounds(point);
         if (item == null){
             points.remove(point);
         } else {
@@ -58,13 +58,13 @@ public class AdjacencyGraphMap<U extends MapPoint, T> implements GraphMap<U, T>{
 
     @Override
     public T clear(U point) {
-        bounds.checkBounds(point);
+        region.checkBounds(point);
         return points.remove(point);
     }
 
     @Override
     public T get(U point) {
-        bounds.checkBounds(point);
+        region.checkBounds(point);
         return points.get(point);
     }
 
@@ -90,7 +90,7 @@ public class AdjacencyGraphMap<U extends MapPoint, T> implements GraphMap<U, T>{
 
     @Override
     public boolean outOfBounds(U point) {
-        return bounds.outOfBounds(point);
+        return region.outOfBounds(point);
     }
 
     @Override
