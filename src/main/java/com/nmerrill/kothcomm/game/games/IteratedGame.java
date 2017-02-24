@@ -23,6 +23,6 @@ public abstract class IteratedGame<T extends AbstractPlayer<T>> extends Abstract
 
     @Override
     public boolean finished() {
-        return iterations >= 0;
+        return iterations <= 0;
     }
 }
