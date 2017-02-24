@@ -56,7 +56,7 @@ public abstract class AbstractGame<T extends AbstractPlayer<T>> {
             return true;
         }
         step();
-        return finished();
+        return !finished();
     }
 
     public abstract boolean finished();
