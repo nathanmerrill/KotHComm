@@ -44,17 +44,14 @@ If you don't want to use Gradle, you have 2 other options:
  
 ##Write some code
 
-1. Make a player class.  It should extend from AbstractPlayer.
-
+- Make a player class.  It should extend from AbstractPlayer.
 ```java
 import com.nmerrill.kothcomm.game.players.AbstractPlayer;
 public abstract class TestPlayer extends AbstractPlayer<TestPlayer> {
       //This is the public API for submissions.  Put the methods that they will need to implement here
 }
 ```
-
-2. Make a game class.  It should extend from AbstractGame.  If your game has a fixed number of iterations, you can use IteratedGame.  If your game will run off of an Action queue, you can use ActionQueueGame or MaxActionQueueGame.
-
+- Make a game class.  It should extend from AbstractGame.  If your game has a fixed number of iterations, you can use IteratedGame.  If your game will run off of an Action queue, you can use ActionQueueGame or MaxActionQueueGame.
 ```java
 import com.nmerrill.kothcomm.game.scoring.Scoreboard;
 
@@ -84,9 +81,7 @@ public class TestGame extends AbstractGame<TestPlayer> {
     }
 }
 ```
-
-3. Make a main class:
-
+- Make a main class:
 ```java
 import com.nmerrill.kothcomm.game.KotHComm;
 
