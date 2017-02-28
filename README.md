@@ -28,13 +28,14 @@ Here's a list of all of the components of KoTHComm:
 
 I highly recommend using [Gradle](https://gradle.org/) to build your project.  If you do, you can use KoTHComm as a library by adding the following to your build.gradle:
 
-
-    repositories {
-        maven { url "https://jitpack.io" }
-    }
-    dependencies {
-        compile 'com.github.nathanmerrill:KoTHComm:1.0.1'
-    }
+```gradle
+repositories {
+    maven { url "https://jitpack.io" }
+}
+dependencies {
+    compile 'com.github.nathanmerrill:KoTHComm:1.0.1'
+}
+```
 
 If you don't want to use Gradle, you have 2 other options:
 
@@ -43,57 +44,59 @@ If you don't want to use Gradle, you have 2 other options:
  
 ##Write some code
 
-1. Make a player class.  It should extend from AbstractPlayer.  For example:
+1. Make a player class.  It should extend from AbstractPlayer.
 
+```java
+import com.nmerrill.kothcomm.game.players.AbstractPlayer;
+public abstract class TestPlayer extends AbstractPlayer<TestPlayer> {
+      //This is the public API for submissions.  Put the methods that they will need to implement here
+}
+```
 
-    import com.nmerrill.kothcomm.game.players.AbstractPlayer;
-    
-    public abstract class TestPlayer extends AbstractPlayer<TestPlayer> {
-          //This is the public API for submissions.  Put the methods that they will need to implement here
-    }
- 
 2. Make a game class.  It should extend from AbstractGame.  If your game has a fixed number of iterations, you can use IteratedGame.  If your game will run off of an Action queue, you can use ActionQueueGame or MaxActionQueueGame.
 
+```java
+import com.nmerrill.kothcomm.game.scoring.Scoreboard;
 
-    import com.nmerrill.kothcomm.game.scoring.Scoreboard;
-    
-    public class TestGame extends AbstractGame<TestPlayer> {
-        protected void setup() {
-             //This method is called before your game starts.  
-             //Your random variable will be initialized, and use the players variable to access the players in the game
-        }
-    
-        @Override
-        public Scoreboard<TestPlayer> getScores() {
-            //You should return the current scores of all of the players
-            //Ensure that the scores are as meaningful as possible, so that more data can be used to rank the players
-            return null;
-        }
-    
-        @Override
-        public boolean finished() {
-            // You Should return true if the game is finished
-            return false;
-        }
-    
-        @Override
-        protected void step() {
-            //Step will be called repeatedly until finished() returns true.
-            //This is where the actual game logic goes
-        }
+public class TestGame extends AbstractGame<TestPlayer> {
+    protected void setup() {
+         //This method is called before your game starts.  
+         //Your random variable will be initialized, and use the players variable to access the players in the game
     }
+
+    @Override
+    public Scoreboard<TestPlayer> getScores() {
+        //You should return the current scores of all of the players
+        //Ensure that the scores are as meaningful as possible, so that more data can be used to rank the players
+        return null;
+    }
+
+    @Override
+    public boolean finished() {
+        // You Should return true if the game is finished
+        return false;
+    }
+
+    @Override
+    protected void step() {
+        //Step will be called repeatedly until finished() returns true.
+        //This is where the actual game logic goes
+    }
+}
+```
 
 3. Make a main class:
 
+```java
+import com.nmerrill.kothcomm.game.KotHComm;
 
-    import com.nmerrill.kothcomm.game.KotHComm;
-    
-    public class Main {
-        public static void main(String[] args){
-            KotHComm<TestPlayer, TestGame> kotHComm = new KotHComm<>(TestGame::new);
-            //KotHComm is highly customizable. A large number of methods on kotHComm allow you to set how you want your KotH to run.
-            kotHComm.run(args);
-        }
+public class Main {
+    public static void main(String[] args){
+        KotHComm<TestPlayer, TestGame> kotHComm = new KotHComm<>(TestGame::new);
+        //KotHComm is highly customizable. A large number of methods on kotHComm allow you to set how you want your KotH to run.
+        kotHComm.run(args);
     }
-    
+}
+```
+
 Congrats, you've started your first King of the Hill challenge!
