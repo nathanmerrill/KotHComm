@@ -33,4 +33,31 @@ dependencies {
 
 }
 
+task copyTestResources(type: Copy) {
+    from "${projectDir}/src/test/resources"
+    into "${buildDir}/classes/test"
+}
+processTestResources.dependsOn copyTestResources
 
+test {
+    useTestNG()
+}
+
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.3'
+}
+
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+    }
+    test {
+        java {
+            srcDir 'test'
+        }
+    }
+}
