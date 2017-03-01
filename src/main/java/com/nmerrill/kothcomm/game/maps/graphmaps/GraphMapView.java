@@ -7,6 +7,7 @@ import com.nmerrill.kothcomm.utils.iterables.Itertools;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.set.MutableSet;
+import org.eclipse.collections.api.set.UnsortedSetIterable;
 import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.impl.factory.Lists;
 
@@ -23,12 +24,12 @@ public class GraphMapView<U extends MapPoint, T> implements GraphMap<U, T>{
         this.map = map;
     }
 
-    public MutableSet<U> getNeighbors(U origin){
+    public UnsortedSetIterable<U> getNeighbors(U origin){
         region.checkBounds(origin);
         return map.getNeighbors(origin).select(region::inBounds);
     }
 
-    public MutableSet<U> getNeighbors(U origin, int maxDistance){
+    public UnsortedSetIterable<U> getNeighbors(U origin, int maxDistance){
         region.checkBounds(origin);
         return map.getNeighbors(origin, maxDistance).select(region::inBounds);
     }

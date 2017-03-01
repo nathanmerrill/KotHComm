@@ -6,6 +6,7 @@ import com.nmerrill.kothcomm.game.maps.ReadonlyGameMap;
 import com.nmerrill.kothcomm.game.maps.graphmaps.bounds.Region;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.MutableSet;
+import org.eclipse.collections.api.set.UnsortedSetIterable;
 
 public class ReadonlyGraphMap<U extends MapPoint, T> extends ReadonlyGameMap<U, T>{
     private final GraphMap<U, T> map;
@@ -14,11 +15,11 @@ public class ReadonlyGraphMap<U extends MapPoint, T> extends ReadonlyGameMap<U, 
         this.map = map;
     }
 
-    public MutableSet<U> getNeighbors(U origin){
+    public UnsortedSetIterable<U> getNeighbors(U origin){
         return map.getNeighbors(origin);
     }
 
-    public MutableSet<U> getNeighbors(U origin, int maxDistance){
+    public UnsortedSetIterable<U> getNeighbors(U origin, int maxDistance){
         return map.getNeighbors(origin, maxDistance);
     }
 

@@ -1,7 +1,7 @@
 package com.nmerrill.kothcomm.game.maps.generators.mazes;
 
-import com.nmerrill.kothcomm.game.maps.generators.Generator;
 import com.nmerrill.kothcomm.game.maps.MapPoint;
+import com.nmerrill.kothcomm.game.maps.generators.Generator;
 import com.nmerrill.kothcomm.game.maps.graphmaps.GraphGraphMap;
 import com.nmerrill.kothcomm.utils.iterables.Itertools;
 import org.eclipse.collections.api.list.MutableList;
@@ -21,20 +21,20 @@ public class GrowingTree<U extends MapPoint> implements Generator<GraphGraphMap<
         return 0;
     }
     public static int selectNewest(MutableList<? extends MapPoint> points){
-        return points.size()-1;
-    }
-    public static <U extends MapPoint> ToIntFunction<MutableList<U>> randomSelection(){
-        return randomSelection(new Random());
-    }
-    public static <U extends MapPoint> ToIntFunction<MutableList<U>> randomSelection(Random random){
-        return (MutableList<U> list) -> random.nextInt(list.size());
-    }
+            return points.size()-1;
+        }
+        public static <U extends MapPoint> ToIntFunction<MutableList<U>> randomSelection(){
+            return randomSelection(new Random());
+        }
+        public static <U extends MapPoint> ToIntFunction<MutableList<U>> randomSelection(Random random){
+            return (MutableList<U> list) -> random.nextInt(list.size());
+        }
 
-    private final ToIntFunction<MutableList<U>> selectionMethod;
-    private final Random random;
+        private final ToIntFunction<MutableList<U>> selectionMethod;
+        private final Random random;
     public GrowingTree(ToIntFunction<MutableList<U>> selectionMethod, Random random){
-        this.selectionMethod = selectionMethod;
-        this.random = random;
+            this.selectionMethod = selectionMethod;
+            this.random = random;
     }
     public GrowingTree(ToIntFunction<MutableList<U>> selectionMethod){
         this(selectionMethod, new Random());
@@ -55,6 +55,7 @@ public class GrowingTree<U extends MapPoint> implements Generator<GraphGraphMap<
         MutableList<U> visited = Lists.mutable.with();
         MutableSet<Twin<U>> connections = Sets.mutable.empty();
         visited.add(start);
+
         
         while (!borders.isEmpty()){
             U point = borders.remove(selectionMethod.applyAsInt(borders));

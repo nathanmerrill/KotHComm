@@ -9,6 +9,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.set.MutableSet;
+import org.eclipse.collections.api.set.UnsortedSetIterable;
 import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.collections.impl.factory.Maps;
 import org.eclipse.collections.impl.factory.Sets;
@@ -17,9 +18,9 @@ import java.util.*;
 
 public interface GraphMap<U extends MapPoint, T> extends GameMap<U, T>, Iterable<U> {
 
-    MutableSet<U> getNeighbors(U origin);
+    UnsortedSetIterable<U> getNeighbors(U origin);
 
-    static <U> MutableSet<U> getNeighbors(U origin, int maxDistance, Function<U, ? extends Collection<U>> neighborFunction){
+    static <U> MutableSet<U> getNeighbors(U origin, int maxDistance, Function<U, ? extends Iterable<U>> neighborFunction){
         MutableSet<U> points = Sets.mutable.empty();
         points.add(origin);
         MutableSet<U> borders = points.clone();
@@ -34,7 +35,7 @@ public interface GraphMap<U extends MapPoint, T> extends GameMap<U, T>, Iterable
         return points;
     }
 
-    default MutableSet<U> getNeighbors(U origin, int maxDistance){
+    default UnsortedSetIterable<U> getNeighbors(U origin, int maxDistance){
         return getNeighbors(origin, maxDistance, this::getNeighbors);
     }
 

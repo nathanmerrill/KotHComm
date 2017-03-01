@@ -1,10 +1,11 @@
 package com.nmerrill.kothcomm.game.maps.graphmaps;
 
-import com.nmerrill.kothcomm.game.maps.graphmaps.bounds.Region;
 import com.nmerrill.kothcomm.game.maps.MapPoint;
+import com.nmerrill.kothcomm.game.maps.graphmaps.bounds.Region;
 import com.nmerrill.kothcomm.game.maps.graphmaps.neighborhoods.Neighborhood;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.MutableMap;
+import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
 import org.eclipse.collections.impl.factory.Maps;
 
@@ -29,7 +30,7 @@ public class NeighborhoodGraphMap<U extends MapPoint, T> implements GraphMap<U, 
     }
 
     @Override
-    public MutableSet<U> getNeighbors(U origin) {
+    public ImmutableSet<U> getNeighbors(U origin) {
         region.checkBounds(origin);
         return neighborhood.getAdjacencies(origin).select(region::inBounds);
     }

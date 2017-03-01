@@ -70,7 +70,8 @@ public class Ellers implements Generator<GraphGraphMap<Point2D, ?>> {
                 larger = currentSet;
             }
             larger.addAll(smaller);
-            smaller.forEach(i -> currentLine.set(i, adjacentSet));
+            smaller.forEach(i -> currentLine.set(i, larger));
+
         }
     }
 

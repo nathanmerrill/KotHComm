@@ -5,6 +5,7 @@ import com.nmerrill.kothcomm.game.maps.BijectiveGameMap;
 import com.nmerrill.kothcomm.game.maps.MapPoint;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.MutableSet;
+import org.eclipse.collections.api.set.UnsortedSetIterable;
 
 
 public class BijectiveGraphMap<U extends MapPoint, T, V extends MapPoint, W>
@@ -22,7 +23,7 @@ public class BijectiveGraphMap<U extends MapPoint, T, V extends MapPoint, W>
     }
 
     @Override
-    public MutableSet<U> getNeighbors(U origin) {
+    public UnsortedSetIterable<U> getNeighbors(U origin) {
         return map.getNeighbors(key.to(origin)).collect(key::from);
     }
 
