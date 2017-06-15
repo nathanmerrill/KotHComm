@@ -87,7 +87,7 @@ public class KotHComm<T extends AbstractPlayer<T>, U extends AbstractGame<T>> {
     }
 
     public void run(String[] args){
-        Arguments.parse(args);
+        Arguments.parse(args, arguments);
         LanguageLoader<T> loader = new LanguageLoader<>(arguments);
         languages.forEach(loader::addLoader);
         if (shouldDownload && arguments.validQuestionID()) {
