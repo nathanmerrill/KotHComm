@@ -14,6 +14,7 @@ import org.jsoup.select.Elements;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 
@@ -98,7 +99,12 @@ public final class Downloader {
     }
 
     private void saveOther(String codeBlock, File directory){
-
+        try {
+            Files.createDirectories(directory.toPath());
+        } catch (IOException e){
+            System.out.println("Unable to create directory "+directory.getAbsolutePath());
+            return;
+        }
         int lineIndex = codeBlock.indexOf('\n');
         String fileName = codeBlock.substring(0, lineIndex).trim();
         if (!fileName.contains(".") || fileName.contains(" ")){
