@@ -69,7 +69,7 @@ public final class Downloader {
             return;
         }
         String[] parts =  header.split(",");
-        String language = parts.length < 2 ? "" : parts[1];
+        String language = parts.length < 2 ? "" : parts[1].trim();
         List<Element> codeBlocks = document.select("pre>code");
         if (codeBlocks.size() == 0){
             System.out.println("No code blocks in submission:"+header);
