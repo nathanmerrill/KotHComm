@@ -68,7 +68,6 @@ public final class Downloader {
             return;
         }
         String[] parts =  header.split(",");
-        String name = parts[0];
         String language = parts.length < 2 ? "" : parts[1];
         List<Element> codeBlocks = document.select("pre>code");
         if (codeBlocks.size() == 0){
@@ -76,9 +75,9 @@ public final class Downloader {
             return;
         }
 
-        Language loader = languageLoader.byName(name);
+        Language loader = languageLoader.byName(language);
         if (loader == null){
-            System.out.println("Cannot find a language with the name "+name);
+            System.out.println("Cannot find a language with the name "+language);
         }
         File directory = languageLoader.getDirectory(loader);
 
