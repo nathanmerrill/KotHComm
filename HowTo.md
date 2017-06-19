@@ -59,3 +59,6 @@
     - The NeighborhoodGraphMap takes a Neighborhood (lists relative connections, such as HexagonalNeighborhood or MooreNeighborhood), and a Region (the boundaries of the map), and determines connections using them.  This is less flexible (you can't just connect two arbitrary points), but it means we don't have to store connections
   - If your map isn't a GraphMap (it can't be mapped to a graph, e.g.: uses floating point numbers for position), then you'll want to extend from GameMap
   - You can use a [Generator](https://github.com/nathanmerrill/KotHComm/tree/master/src/main/java/com/nmerrill/kothcomm/game/maps/generators) to populate the contents of your map.
+  
+- Remove a bad player from the competition:
+  - Delete their post, or add "Invalid" to the title.
