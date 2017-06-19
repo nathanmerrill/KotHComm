@@ -1,28 +1,14 @@
 # KotHComm
 
-This is a framework to help you build King of the Hill challenges, which pits bots against each other in a game designed by you.
+This is a framework to help you build King of the Hill challenges, which pits bots against each other in a game designed by you.  It includes:
 
-Here's a list of all of the components of KoTHComm:
+- Automatic downloading of submissions from StackExchange
+- Support for submissions in any language capable of I/O
+- Organize your games into different types of tournaments, and combine their scores using a variety of methods
+- Maps and map generators
+- Various GUI components that you can use in your JavaFX application
 
-**Game**:  This is where the magic happens: A single game that pits players against each other.
-
-**Player**:  You will make a player class, that other submissions will implement.  We'll pass the players to your games.
-
-**Tournament**:  A tournament decides which players go into each game.  By default, `Sampling` is chosen (chooses them at random, ensuring all players are chosen an equal number of times)
-
-**Aggregator**:  An aggregator takes all of the scores, and figures out how to rank the players from the scores.  We use the average score by default.
-
-**Arguments**:  We support a large amount of runtime arguments, such as the number of games to run, or a random seed to use.  This class contains all of them, and you can extend it to support more arguments.
-
-**Downloader**:  We can automatically download submisssions from StackExchange, if you pass the question id in as an argument.  Each submission needs to have their file name on the first line of their code block
-
-**Maps**:  An assorted collection of maps and map generators are provided
-
-**Player loader**:  If you do use the downloader, we can automatically identify and load players.  If you use the `PipeLoader`, we can also communicate with submissions in any language, assuming they provide a `command.txt` giving commands on how to start them up.
-
-**UI**:  A couple of ui components are given to allow control over KoTHComm.  Still a work in progress.
-
-#How to use:
+#Getting started:
 
 ##Setup
 
@@ -33,14 +19,15 @@ repositories {
     maven { url "https://jitpack.io" }
 }
 dependencies {
-    compile 'com.github.nathanmerrill:KoTHComm:1.0.1'
+    compile 'com.github.nathanmerrill:KoTHComm:1.0.10' //Whatever the latest version is here: https://github.com/nathanmerrill/KotHComm/releases
 }
 ```
 
-If you don't want to use Gradle, you have 2 other options:
+If you don't want to use Gradle, you can also:
 
-1. Use KoTHComm as a Git submodule by cloning it into your project directory
+1. Use Maven to manage your project (you'll need to add jitpack as a repository, and this project as a dependency)
 2. Download the [latest release JAR](https://github.com/nathanmerrill/KotHComm/releases), and use it as a library
+3. Use KoTHComm as a Git submodule by cloning it into your project directory
  
 ##Write some code
 
@@ -51,11 +38,16 @@ public abstract class TestPlayer extends AbstractPlayer<TestPlayer> {
       //This is the public API for submissions.  Put the methods that they will need to implement here
 }
 ```
-- Make a game class.  It should extend from AbstractGame.  If your game has a fixed number of iterations, you can use IteratedGame.  If your game will run off of an Action queue, you can use ActionQueueGame or MaxActionQueueGame.
+- Make a game class.  It should extend from AbstractGame (or any class in the [game.games package](https://github.com/nathanmerrill/KotHComm/tree/master/src/main/java/com/nmerrill/kothcomm/game/games).
 ```java
 import com.nmerrill.kothcomm.game.scoring.Scoreboard;
 
 public class TestGame extends AbstractGame<TestPlayer> {
+
+    public TestGame(){
+        //Do not use the players or random variable here.  They are not instantiated yet
+    }
+    
     protected void setup() {
          //This method is called before your game starts.  
          //Your random variable will be initialized, and use the players variable to access the players in the game
@@ -65,7 +57,6 @@ public class TestGame extends AbstractGame<TestPlayer> {
     public Scoreboard<TestPlayer> getScores() {
         //You should return the current scores of all of the players
         //Ensure that the scores are as meaningful as possible, so that more data can be used to rank the players
-        return null;
     }
 
     @Override
@@ -94,4 +85,4 @@ public class Main {
 }
 ```
 
-Congrats, you've started your first King of the Hill challenge!
+If you are looking to do something in particular, check the [HowTo document](HowTo.md)
