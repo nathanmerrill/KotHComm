@@ -8,9 +8,9 @@ This is a framework to help you build King of the Hill challenges, which pits bo
 - Maps and map generators
 - Various GUI components that you can use in your JavaFX application
 
-#Getting started:
+# Getting started:
 
-##Setup
+## Setup
 
 I highly recommend using [Gradle](https://gradle.org/) to build your project.  If you do, you can use KoTHComm as a library by adding the following to your build.gradle:
 
@@ -29,7 +29,7 @@ If you don't want to use Gradle, you can also:
 2. Download the [latest release JAR](https://github.com/nathanmerrill/KotHComm/releases), and use it as a library
 3. Use KoTHComm as a Git submodule by cloning it into your project directory
  
-##Write some code
+## Write some code
 
 - Make a player class.  It should extend from AbstractPlayer.
 ```java
